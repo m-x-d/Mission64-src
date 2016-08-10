@@ -1875,7 +1875,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Shotgun,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_shotg/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_shotg/tris.md2",
 /* icon */		"w_shotgun",
@@ -1898,7 +1898,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_SuperShotgun,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_shotg2/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_shotg2/tris.md2",
 /* icon */		"w_sshotgun",
@@ -1921,7 +1921,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Machinegun,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_machn/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_machn/tris.md2",
 /* icon */		"w_machinegun",
@@ -1944,7 +1944,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Chaingun,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_chain/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_chain/tris.md2",
 /* icon */		"w_chaingun",
@@ -1990,7 +1990,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_GrenadeLauncher,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_launch/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_launch/tris.md2",
 /* icon */		"w_glauncher",
@@ -2013,7 +2013,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_RocketLauncher,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_rocket/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_rocket/tris.md2",
 /* icon */		"w_rlauncher",
@@ -2036,7 +2036,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_HyperBlaster,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_hyperb/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_hyperb/tris.md2",
 /* icon */		"w_hyperblaster",
@@ -2059,7 +2059,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Railgun,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_rail/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_rail/tris.md2",
 /* icon */		"w_railgun",
@@ -2082,7 +2082,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_BFG,
-		NULL, //mxd. Select sound will be played instead
+		"misc/am_pkup.wav", //mxd. Let's use something other than SG reload sound...
 		"models/weapons/g_bfg/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_bfg/tris.md2",
 /* icon */		"w_bfg",
@@ -2829,6 +2829,30 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ ""
+	},
+
+/*QUAKED key_explopack (0 .5 .8) (-16 -16 -16) (16 16 16)
+mxd. Explosive charges "key"
+*/
+	{
+		"key_explopack",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/explopack/tris.md2", 0, EF_ROTATE,
+		NULL,
+/* icon */		"k_explopack",
+/* pickup */	"Explosive Charges",
+/* width */		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		/* precache */ ""
 	},
 /*
 	{

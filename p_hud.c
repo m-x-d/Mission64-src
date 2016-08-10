@@ -490,7 +490,7 @@ static char *tnames[] = {
 
 //mxd. Keys array
 static char *knames[] = {
-	"key_data_cd", "key_power_cube", "key_pyramid", "key_data_spinner", "key_pass", "key_blue_key", "key_red_key", "key_commander_head", "key_airstrike_target",
+	"key_data_cd", "key_power_cube", "key_pyramid", "key_data_spinner", "key_pass", "key_blue_key", "key_red_key", "key_commander_head", "key_airstrike_target", "key_explopack",
 	NULL
 };
 
