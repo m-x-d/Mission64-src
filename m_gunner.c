@@ -306,12 +306,11 @@ void gunner_pain (edict_t *self, edict_t *other, float kick, int damage)
 	else
 		gi.sound (self, CHAN_VOICE, sound_pain2, 1, ATTN_NORM, 0);
 
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	if (skill->value == 3 || damage < 20) return;		// No pain anims in nightmare. mxd. Ignore low damage
 
-	if (damage <= 10)
+	if (damage <= 20) //mxd. Increased damage resistance
 		self->monsterinfo.currentmove = &gunner_move_pain3;
-	else if (damage <= 25)
+	else if (damage <= 35) //mxd. Increased damage resistance
 		self->monsterinfo.currentmove = &gunner_move_pain2;
 	else
 		self->monsterinfo.currentmove = &gunner_move_pain1;
@@ -520,12 +519,13 @@ void GunnerFire (edict_t *self)
 	target[2] += self->enemy->viewheight;
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		target[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		target[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		target[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-	}
+	}*/
+	AdjustAccuracy(self, target); //mxd. Fog & Invisibility mode adjustments
 
 	VectorSubtract (target, start, aim);
 	VectorNormalize (aim);
@@ -572,12 +572,14 @@ void GunnerGrenade (edict_t *self)
 	if(self->enemy->absmin[2] <= self->absmax[2]) target[2] = self->enemy->absmin[2];
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		target[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		target[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		target[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-	}
+	}*/
+	AdjustAccuracy(self, target); //mxd. Fog & Invisibility mode adjustments
+
 	// Lazarus - skill level-dependent accuracy
 /*	if(skill->value < 2)
 	{

@@ -96,6 +96,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FL_ROBOT				0x00200000	// Player-controlled robot or monster. Relax yaw constraints
 #define FL_REFLECT              0x00400000	// Reflection entity
 
+#define FL_INVISIBLE			0x00800000  // mxd
+
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
 
@@ -642,9 +644,9 @@ extern	int	rockets_index;
 extern	int	cells_index;
 extern	int	slugs_index;
 extern	int fuel_index;
-extern	int	homing_index;
+//extern	int	homing_index;
 extern	int	rl_index;
-extern	int	hml_index;
+//extern	int	hml_index;
 
 // means of death
 #define MOD_UNKNOWN			0
@@ -1081,6 +1083,7 @@ void M_FliesOn (edict_t *self);
 void M_CheckGround (edict_t *ent);
 qboolean M_SetDeath (edict_t *ent,mmove_t **moves);
 int  PatchMonsterModel (char *model);
+void AdjustAccuracy(edict_t * self, vec3_t target); //mxd
 //
 // g_patchplayermodels.c
 //
@@ -1206,6 +1209,8 @@ void actor_salute (edict_t *actor);
 void actor_stand (edict_t *actor);
 void actor_walk (edict_t *actor);
 void actor_walk_back (edict_t *actor);
+void actor_footstep(edict_t *actor); //mxd
+void actor_footstep_loud(edict_t *actor); //mxd
 extern mmove_t actor_move_crouch;
 extern mmove_t actor_move_crouchwalk;
 extern mmove_t actor_move_crouchwalk_back;
@@ -1482,6 +1487,7 @@ struct gclient_s
 	float		invincible_framenum;
 	float		breather_framenum;
 	float		enviro_framenum;
+	float		invisibility_framenum; //mxd
 
 	qboolean	grenade_blew_up;
 	float		grenade_time;
@@ -1973,7 +1979,7 @@ struct edict_s
 #define POWERUP_NEW_ENT     1
 #define POWERUP_USE_ITEM    2
 
-#define FLASHLIGHT_MOD
+//#define FLASHLIGHT_MOD //mxd
 #define FLASHLIGHT_USE POWERUP_NEW_ENT
 #define FLASHLIGHT_DRAIN     60
 #define FLASHLIGHT_ITEM      "Cells"

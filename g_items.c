@@ -32,11 +32,11 @@ void Weapon_Machinegun (edict_t *ent);
 void Weapon_Chaingun (edict_t *ent);
 void Weapon_HyperBlaster (edict_t *ent);
 void Weapon_RocketLauncher (edict_t *ent);
-void Weapon_Grenade (edict_t *ent);
+//void Weapon_Grenade (edict_t *ent); //mxd. Don't use grenades as a weapon
 void Weapon_GrenadeLauncher (edict_t *ent);
 void Weapon_Railgun (edict_t *ent);
 void Weapon_BFG (edict_t *ent);
-void Weapon_HomingMissileLauncher (edict_t *ent);
+//void Weapon_HomingMissileLauncher (edict_t *ent); //mxd. No HML ples
 void Weapon_Null(edict_t *ent);
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
@@ -56,9 +56,9 @@ int	rockets_index;
 int	cells_index;
 int	slugs_index;
 int fuel_index;
-int	homing_index;
+//int	homing_index;
 int	rl_index;
-int	hml_index;
+//int	hml_index;
 
 #define HEALTH_IGNORE_MAX	1
 #define HEALTH_TIMED		2
@@ -69,6 +69,7 @@ int	hml_index;
 
 void Use_Quad (edict_t *ent, gitem_t *item);
 void Use_Stasis (edict_t *ent, gitem_t *item);
+void Use_Invisibility(edict_t *ent, gitem_t *item); //mxd
 static int	quad_drop_timeout_hack;
 
 
@@ -151,8 +152,8 @@ int GetMaxAmmoByIndex (gclient_t *client, int item_index)
 		value = client->pers.max_slugs;
 	else if (item_index == fuel_index)
 		value = client->pers.max_fuel;
-	else if (item_index == homing_index)
-		value = client->pers.max_homing_rockets;
+	//else if (item_index == homing_index) //mxd
+		//value = client->pers.max_homing_rockets;
 	else
 		value = 0;
 
@@ -345,6 +346,11 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 				quad_drop_timeout_hack = (ent->nextthink - level.time) / FRAMETIME;
 			ent->item->use (other, ent->item);
 		}
+	}
+	else
+	{
+		//mxd. Insta-use all powerups
+		ent->item->use (other, ent->item);
 	}
 
 	return true;
@@ -625,6 +631,22 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 	ent->client->silencer_shots += sk_silencer_shots->value;
 
 //	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
+}
+
+//mxd. ======================================================================
+void Use_Invisibility(edict_t *ent, gitem_t *item)
+{
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem (ent);
+
+	int timeout = (sk_invisibility_time->value * 10);
+
+	if (ent->client->invisibility_framenum > level.framenum)
+		ent->client->invisibility_framenum += timeout;
+	else
+		ent->client->invisibility_framenum = level.framenum + timeout;
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);
 }
 
 //======================================================================
@@ -1853,7 +1875,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Shotgun,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_shotg/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_shotg/tris.md2",
 /* icon */		"w_shotgun",
@@ -1876,7 +1898,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_SuperShotgun,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_shotg2/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_shotg2/tris.md2",
 /* icon */		"w_sshotgun",
@@ -1899,7 +1921,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Machinegun,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_machn/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_machn/tris.md2",
 /* icon */		"w_machinegun",
@@ -1922,7 +1944,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Chaingun,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_chain/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_chain/tris.md2",
 /* icon */		"w_chaingun",
@@ -1942,19 +1964,19 @@ always owned, never in the world
 	{
 		"ammo_grenades",
 		Pickup_Ammo,
-		Use_Weapon,
+		NULL, //mxd. Don't use grenades as a weapon
 		Drop_Ammo,
-		Weapon_Grenade,
+		NULL, //mxd. Don't use grenades as a weapon
 		"misc/am_pkup.wav",
 		"models/items/ammo/grenades/medium/tris.md2", 0, 0,
-		"models/weapons/v_handgr/tris.md2",
+		NULL, //mxd. Don't use grenades as a weapon
 /* icon */		"a_grenades",
 /* pickup */	"Grenades",
 /* width */		3,
 		5,
 		"grenades",
-		IT_AMMO|IT_WEAPON,
-		WEAP_GRENADES,
+		IT_AMMO, //mxd
+		NULL, //mxd
 		NULL,
 		AMMO_GRENADES,
 /* precache */ "weapons/hgrent1a.wav weapons/hgrena1b.wav weapons/hgrenc1b.wav weapons/hgrenb1a.wav weapons/hgrenb2a.wav "
@@ -1968,7 +1990,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_GrenadeLauncher,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_launch/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_launch/tris.md2",
 /* icon */		"w_glauncher",
@@ -1991,7 +2013,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_RocketLauncher,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_rocket/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_rocket/tris.md2",
 /* icon */		"w_rlauncher",
@@ -2014,7 +2036,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_HyperBlaster,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_hyperb/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_hyperb/tris.md2",
 /* icon */		"w_hyperblaster",
@@ -2037,7 +2059,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_Railgun,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_rail/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_rail/tris.md2",
 /* icon */		"w_railgun",
@@ -2060,7 +2082,7 @@ always owned, never in the world
 		Use_Weapon,
 		Drop_Weapon,
 		Weapon_BFG,
-		"misc/w_pkup.wav",
+		NULL, //mxd. Select sound will be played instead
 		"models/weapons/g_bfg/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_bfg/tris.md2",
 /* icon */		"w_bfg",
@@ -2072,31 +2094,32 @@ always owned, never in the world
 		WEAP_BFG,
 		NULL,
 		0,
-/* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav"
+/* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav weapons/bfg_select.wav"
 	},
 
 /*QUAKED weapon_hml (.3 .3 1) (-16 -16 -16) (16 16 16)
 */
-	{
-		"weapon_hml",
-		NULL,
-		Use_Weapon,
-		NULL,
-		Weapon_HomingMissileLauncher,
-		NULL,
-		NULL, 0, EF_ROTATE,
-		"models/weapons/v_homing/tris.md2",
-/* icon */		NULL,
-/* pickup */	"Homing Rocket Launcher",
-		0,
-		1,
-		"homing rockets",
-		IT_WEAPON|IT_STAY_COOP,
-		WEAP_ROCKETLAUNCHER,
-		NULL,
-		0,
-/* precache */ "models/objects/rocket/tris.md2 weapons/rockfly.wav weapons/rocklf1a.wav weapons/rocklr1b.wav models/objects/debris2/tris.md2"
-	},
+	//mxd. No HML ples
+	//{
+		//"weapon_hml",
+		//NULL,
+		//Use_Weapon,
+		//NULL,
+		//Weapon_HomingMissileLauncher,
+		//NULL,
+		//NULL, 0, EF_ROTATE,
+		//"models/weapons/v_homing/tris.md2",
+/* icon */		//NULL,
+/* pickup */	//"Homing Rocket Launcher",
+		//0,
+		//1,
+		//"homing rockets",
+		//IT_WEAPON|IT_STAY_COOP,
+		//WEAP_ROCKETLAUNCHER,
+		//NULL,
+		//0,
+/* precache */ //"models/objects/rocket/tris.md2 weapons/rockfly.wav weapons/rocklf1a.wav weapons/rocklr1b.wav models/objects/debris2/tris.md2"
+	//},
 
 	// Lazarus: No weapon - we HAVE to have a weapon
 	{
@@ -2564,6 +2587,31 @@ gives +1 to maximum health
 		0,
 		"items/stasis_start.wav items/stasis.wav items/stasis_stop.wav"
 	},
+
+//mxd. Invisibility
+/*QUAKED item_invisibility (.3 .3 1) (-16 -16 -16) (16 16 16)
+*/
+	{
+		"item_invisibility",
+		Pickup_Powerup,
+		Use_Invisibility,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/invisibility/tris.md2", 0, EF_ROTATE,
+		NULL,
+		/* icon */		"p_invisibility",
+		/* pickup */	"Invisibility",
+		/* width */		2,
+		60,
+		NULL,
+		IT_POWERUP,
+		0,
+		NULL,
+		0,
+		/* precache */ ""
+	},
+
 	//
 	// KEYS
 	//
@@ -3237,9 +3285,9 @@ void SetItemNames (void)
 	cells_index        = ITEM_INDEX(FindItem("cells"));
 	slugs_index        = ITEM_INDEX(FindItem("slugs"));
 	fuel_index         = ITEM_INDEX(FindItem("fuel"));
-	homing_index       = ITEM_INDEX(FindItem("homing rockets"));
+	//homing_index       = ITEM_INDEX(FindItem("homing rockets"));
 	rl_index           = ITEM_INDEX(FindItem("rocket launcher"));
-	hml_index          = ITEM_INDEX(FindItem("Homing Rocket Launcher"));
+	//hml_index          = ITEM_INDEX(FindItem("Homing Rocket Launcher")); //mxd
 }
 
 

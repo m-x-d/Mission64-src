@@ -1015,7 +1015,7 @@ void SelectStartWeapon (gclient_t *client, int style)
 		client->pers.inventory[rockets_index]  = 0;
 		client->pers.inventory[cells_index]    = 0;
 		client->pers.inventory[slugs_index]    = 0;
-		client->pers.inventory[homing_index]   = 0;
+		//client->pers.inventory[homing_index]   = 0; //mxd
 	}
 
 	switch (style)

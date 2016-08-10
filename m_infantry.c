@@ -143,13 +143,13 @@ void infantry_fidget (edict_t *self)
 
 mframe_t infantry_frames_walk [] =
 {
-	ai_walk, 5,  NULL,
+	ai_walk, 5,  actor_footstep,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 5,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 5,  NULL,
-	ai_walk, 6,  NULL,
+	ai_walk, 6,  actor_footstep,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
@@ -279,12 +279,13 @@ void InfantryMachineGun (edict_t *self)
 			target[2] += self->enemy->viewheight;
 
 			// Lazarus fog reduction of accuracy
-			if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+			/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 			{
 				target[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 				target[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 				target[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-			}
+			}*/
+			AdjustAccuracy(self, target); //mxd
 
 			VectorSubtract (target, start, forward);
 			VectorNormalize (forward);
@@ -324,8 +325,8 @@ void infantry_dead (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	gi.linkentity (self);
+	//self->svflags |= SVF_DEADMONSTER; //mxd. Moved to infantry_die
+	//gi.linkentity (self);
 	M_FlyCheck (self);
 
 	// Lazarus monster fade
@@ -410,6 +411,10 @@ mmove_t infantry_move_death3 = {FRAME_death301, FRAME_death309, infantry_frames_
 void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+
+	//mxd. Stop being solid now
+	self->svflags |= SVF_DEADMONSTER; 
+	gi.linkentity(self);
 
 	self->s.skinnum |= 1;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;

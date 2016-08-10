@@ -200,6 +200,18 @@ void actor_walk (edict_t *self)
 	}
 }
 
+//mxd
+void actor_footstep(edict_t *self)
+{
+	self->s.event = EV_FOOTSTEP;
+}
+
+//mxd
+void actor_footstep_loud(edict_t *self)
+{
+	self->s.event = EV_LOUDSTEP;
+}
+
 mframe_t actor_frames_walk_back [] =
 {
 	ai_walk, -10, NULL,

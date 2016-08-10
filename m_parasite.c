@@ -71,12 +71,14 @@ void parasite_sight (edict_t *self, edict_t *other)
 
 void parasite_tap (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sound_tap, 1, ATTN_IDLE, 0);
+	if (!(self->spawnflags & SF_MONSTER_AMBUSH))		//CW: ambush => should be silent
+		gi.sound (self, CHAN_WEAPON, sound_tap, 1, ATTN_IDLE, 0);
 }
 
 void parasite_scratch (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sound_scratch, 1, ATTN_IDLE, 0);
+	if (!(self->spawnflags & SF_MONSTER_AMBUSH))		//CW: ambush => should be silent
+		gi.sound (self, CHAN_WEAPON, sound_scratch, 1, ATTN_IDLE, 0);
 }
 
 void parasite_search (edict_t *self)
@@ -284,8 +286,14 @@ void parasite_pain (edict_t *self, edict_t *other, float kick, int damage)
 
 	self->pain_debounce_time = level.time + 3;
 
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	//if (skill->value == 3)
+		//return;		// no pain anims in nightmare
+
+	if (skill->value > 1)
+		return;		// no pain anims in nightmare (CW: or hard)
+
+	if (damage <= 10)	//CW: shrug off low damage
+		return;
 
 	if (random() < 0.5)
 		gi.sound (self, CHAN_VOICE, sound_pain1, 1, ATTN_NORM, 0);

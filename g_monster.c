@@ -219,6 +219,30 @@ void AttackFinished (edict_t *self, float time)
 	self->monsterinfo.attack_finished = level.time + time;
 }
 
+//mxd
+void AdjustAccuracy(edict_t *self, vec3_t target)
+{
+	// Lazarus fog reduction of accuracy
+	if (self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	{
+		target[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
+		target[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
+		target[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
+	}
+
+	// Make enemies miss invisible players
+	if (self->enemy->flags & FL_INVISIBLE)
+	{
+		vec3_t v;
+		VectorSubtract(target, self->s.origin, v);
+		//float dist = VectorLength(v);
+		float missmultiplier = min(VectorLength(v), 512.0f) / 512.0f; // 0..1
+
+		target[0] += crandom() * 128 * missmultiplier;
+		target[1] += crandom() * 128 * missmultiplier;
+		target[2] += crandom() * 64 * missmultiplier;
+	}
+}
 
 void M_CheckGround (edict_t *ent)
 {

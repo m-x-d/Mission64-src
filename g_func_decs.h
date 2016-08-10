@@ -96,17 +96,17 @@ extern void Weapon_HyperBlaster_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Weapon_Blaster ( edict_t * ent ) ;
 extern void Weapon_Blaster_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Blaster_Fire ( edict_t * ent , vec3_t g_offset , int damage , qboolean hyper , int effect , int color ) ;
-extern void Weapon_HomingMissileLauncher ( edict_t * ent ) ;
-extern void Weapon_HomingMissileLauncher_Fire ( edict_t * ent , qboolean altfire ) ;
+//extern void Weapon_HomingMissileLauncher ( edict_t * ent ) ; //mxd. No HML ples
+//extern void Weapon_HomingMissileLauncher_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Weapon_RocketLauncher ( edict_t * ent ) ;
 extern void Weapon_RocketLauncher_Fire ( edict_t * ent , qboolean altfire ) ;
 extern edict_t * rocket_target ( edict_t * self , vec3_t start , vec3_t forward ) ;
 extern void Weapon_GrenadeLauncher ( edict_t * ent ) ;
 extern void weapon_grenadelauncher_fire ( edict_t * ent , qboolean altfire ) ;
-extern void Weapon_Grenade ( edict_t * ent ) ;
-extern void weapon_grenade_fire ( edict_t * ent , qboolean held ) ;
-extern void Weapon_Generic ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
-extern void Weapon_Generic2 ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
+//extern void Weapon_Grenade ( edict_t * ent ) ; //mxd. Don't use grenades as a weapon
+//extern void weapon_grenade_fire ( edict_t * ent , qboolean held ) ; //mxd
+extern void Weapon_Generic ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND, char *PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ; //mxd. Select sounds
+extern void Weapon_Generic2 ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND , char *PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
 extern void Drop_Weapon ( edict_t * ent , gitem_t * item ) ;
 extern void Use_Weapon ( edict_t * ent , gitem_t * in_item ) ;
 extern void Think_Weapon ( edict_t * ent ) ;

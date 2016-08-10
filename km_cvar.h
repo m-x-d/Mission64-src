@@ -164,6 +164,7 @@ extern cvar_t	*sk_breather_time;
 extern cvar_t	*sk_enviro_time;
 extern cvar_t	*sk_silencer_shots;
 extern cvar_t	*sk_stasis_time;
+extern cvar_t	*sk_invisibility_time; //mxd
 
 // CTF stuff
 extern	cvar_t	*use_techs;          // enables techs

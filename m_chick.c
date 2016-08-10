@@ -288,12 +288,25 @@ void chick_pain (edict_t *self, edict_t *other, float kick, int damage)
 	else
 		gi.sound (self, CHAN_VOICE, sound_pain3, 1, ATTN_NORM, 0);
 
-	if (skill->value == 3)
+	/*if (skill->value == 3)
 		return;		// no pain anims in nightmare
 
 	if (damage <= 10)
 		self->monsterinfo.currentmove = &chick_move_pain1;
 	else if (damage <= 25)
+		self->monsterinfo.currentmove = &chick_move_pain2;
+	else
+		self->monsterinfo.currentmove = &chick_move_pain3;*/
+
+	if (skill->value > 1)
+		return;				// no pain anims in nightmare (CW: or hard)
+
+	if (damage <= 10)		//CW: shrug off low damage
+		return;
+
+	if (damage <= 20)		//CW: increased damage resistance
+		self->monsterinfo.currentmove = &chick_move_pain1;
+	else if (damage <= 35)	//CW: increased damage resistance
 		self->monsterinfo.currentmove = &chick_move_pain2;
 	else
 		self->monsterinfo.currentmove = &chick_move_pain3;
@@ -499,12 +512,13 @@ void ChickRocket (edict_t *self)
 		}
 
 		// Lazarus fog reduction of accuracy
-		if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+		/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 		{
 			vec[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			vec[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			vec[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-		}
+		}*/
+		AdjustAccuracy(self, vec); //mxd. Fog & Invisibility mode adjustments
 		
 		// lead target, but not if using homers
 		// 20, 35, 50, 65 chance of leading

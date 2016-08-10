@@ -185,8 +185,8 @@ void berserk_swing (edict_t *self)
 
 mframe_t berserk_frames_attack_spike [] =
 {
-		ai_charge, 0, NULL,
-		ai_charge, 0, NULL,
+		//ai_charge, 0, NULL, //mxd. Attack faster, dammit!
+		//ai_charge, 0, NULL,
 		ai_charge, 0, berserk_swing,
 		ai_charge, 0, berserk_attack_spike,
 		ai_charge, 0, NULL,
@@ -194,7 +194,7 @@ mframe_t berserk_frames_attack_spike [] =
 		ai_charge, 0, NULL,
 		ai_charge, 0, NULL
 };
-mmove_t berserk_move_attack_spike = {FRAME_att_c1, FRAME_att_c8, berserk_frames_attack_spike, berserk_run};
+mmove_t berserk_move_attack_spike = {FRAME_att_c3, FRAME_att_c8, berserk_frames_attack_spike, berserk_run}; //mxd. Initial frame was att_c1
 
 
 void berserk_attack_club (edict_t *self)
@@ -207,10 +207,10 @@ void berserk_attack_club (edict_t *self)
 
 mframe_t berserk_frames_attack_club [] =
 {	
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
+	//ai_charge, 0, NULL, //mxd. Attack faster, dammit!
+	//ai_charge, 0, NULL,
+	//ai_charge, 0, NULL,
+	//ai_charge, 0, NULL,
 	ai_charge, 0, berserk_swing,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
@@ -220,7 +220,7 @@ mframe_t berserk_frames_attack_club [] =
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL
 };
-mmove_t berserk_move_attack_club = {FRAME_att_c9, FRAME_att_c20, berserk_frames_attack_club, berserk_run};
+mmove_t berserk_move_attack_club = {FRAME_att_c13, FRAME_att_c20, berserk_frames_attack_club, berserk_run}; //mxd. Initial frame was att_c9
 
 
 void berserk_strike (edict_t *self)
@@ -327,8 +327,7 @@ void berserk_pain (edict_t *self, edict_t *other, float kick, int damage)
 	self->pain_debounce_time = level.time + 3;
 	gi.sound (self, CHAN_VOICE, sound_pain, 1, ATTN_NORM, 0);
 
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	if (skill->value > 0 || damage < 14) return; //mxd. no pain anims if not easy or damage was too small
 
 	if ((damage < 20) || (random() < 0.5))
 		self->monsterinfo.currentmove = &berserk_move_pain1;

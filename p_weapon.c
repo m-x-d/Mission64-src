@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static qboolean	is_quad;
 static byte		is_silenced;
 
-
-void weapon_grenade_fire (edict_t *ent, qboolean held);
+//mxd. No throwable grenades
+//void weapon_grenade_fire (edict_t *ent, qboolean held);
 
 
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
@@ -181,11 +181,11 @@ qboolean Pickup_Weapon (edict_t *ent, edict_t *other)
 		(other->client->pers.inventory[index] == 1) &&
 		( !deathmatch->value || other->client->pers.weapon == FindItem("blaster") ||
 		other->client->pers.weapon == FindItem("No weapon") ) )
-		other->client->newweapon = ent->item;
+			other->client->newweapon = ent->item;
 
 	// If rocket launcher, give the HML (but no ammo).
-	if (index == rl_index)
-		other->client->pers.inventory[hml_index] = other->client->pers.inventory[index];
+	//if (index == rl_index)
+		//other->client->pers.inventory[hml_index] = other->client->pers.inventory[index]; //mxd
 
 	return true;
 }
@@ -203,13 +203,14 @@ void ChangeWeapon (edict_t *ent)
 {
 	int		i;
 
-	if (ent->client->grenade_time)
+	//mxd. No throwable grenades in Q2 N64
+	/*if (ent->client->grenade_time)
 	{
 		ent->client->grenade_time = level.time;
 		ent->client->weapon_sound = 0;
 		weapon_grenade_fire (ent, false);
 		ent->client->grenade_time = 0;
-	}
+	}*/
 
 	ent->client->pers.lastweapon = ent->client->pers.weapon;
 	ent->client->pers.weapon = ent->client->newweapon;
@@ -377,7 +378,8 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 	current_weapon_index = ITEM_INDEX(ent->client->pers.weapon);
 
 	// see if we're already using it
-	if ( (index == current_weapon_index) ||
+	if (index == current_weapon_index) return; //mxd. No HML ples.
+	/*if ( (index == current_weapon_index) ||
 		 ( (index == rl_index)  && (current_weapon_index == hml_index) ) ||
 		 ( (index == hml_index) && (current_weapon_index == rl_index)  )    )
 	{
@@ -403,7 +405,7 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 		}
 		else
 			return;
-	}
+	}*/
 
 	if (item->ammo && !g_select_empty->value && !(item->flags & IT_AMMO))
 	{
@@ -414,7 +416,7 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 		{
 			// Lazarus: If player is attempting to switch to RL and doesn't have rockets,
 			//          but DOES have homing rockets, switch to HRL
-			if(index == rl_index)
+			/*if(index == rl_index)
 			{
 				if( (ent->client->pers.inventory[homing_index] > 0) &&
 					(ent->client->pers.inventory[hml_index]    > 0)    )
@@ -422,7 +424,7 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 					ent->client->newweapon = FindItem("homing rocket launcher");
 					return;
 				}
-			}
+			}*/ //mxd
 			safe_cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
@@ -461,7 +463,7 @@ void Drop_Weapon (edict_t *ent, gitem_t *item)
 	}
 
 	// Lazarus: Don't drop rocket launcher if current weapon is homing rocket launcher
-	if (index == rl_index)
+	/*if (index == rl_index)
 	{
 		int	current_weapon_index;
 		current_weapon_index = ITEM_INDEX(ent->client->pers.weapon);
@@ -470,14 +472,14 @@ void Drop_Weapon (edict_t *ent, gitem_t *item)
 			safe_cprintf (ent, PRINT_HIGH, "Can't drop current weapon\n");
 			return;
 		}
-	}
+	}*/ //mxd
 
 	Drop_Item (ent, item);
 	ent->client->pers.inventory[index]--;
 
 	// Lazarus: if dropped weapon is RL, decrement HML inventory also
-	if (item->weapmodel == WEAP_ROCKETLAUNCHER)
-		ent->client->pers.inventory[hml_index] = ent->client->pers.inventory[index];
+	//if (item->weapmodel == WEAP_ROCKETLAUNCHER)
+		//ent->client->pers.inventory[hml_index] = ent->client->pers.inventory[index]; //mxd
 }
 
 
@@ -492,11 +494,12 @@ A generic function to handle the basics of weapon thinking
 #define FRAME_IDLE_FIRST		(FRAME_FIRE_LAST + 1)
 #define FRAME_DEACTIVATE_FIRST	(FRAME_IDLE_LAST + 1)
 
-void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire))
+//mxd. Added select sounds
+void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void(*fire)(edict_t *ent, qboolean altfire))
 {
 	int		n;
-	int oldstate = ent->client->weaponstate;
-	qboolean haste_applied = false;
+	//int oldstate = ent->client->weaponstate;
+	//qboolean haste_applied = false;
 
 	if(ent->deadflag || ent->s.modelindex != MAX_MODELS-1) // VWep animations screw up corpses
 	{
@@ -507,7 +510,7 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 	{
 		if (ent->client->ps.gunframe == FRAME_DEACTIVATE_LAST)
 		{
-			ChangeWeapon (ent);
+			ChangeWeapon(ent);
 			return;
 		}
 		else if ((FRAME_DEACTIVATE_LAST - ent->client->ps.gunframe) == 4)
@@ -522,11 +525,11 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 			{
 				ent->s.frame = FRAME_pain304+1;
 				ent->client->anim_end = FRAME_pain301;
-				
 			}
 		}
 
-		ent->client->ps.gunframe++;
+		//ent->client->ps.gunframe++;
+		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 2, FRAME_DEACTIVATE_LAST); //mxd
 		return;
 	}
 
@@ -539,7 +542,14 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 			return;
 		}
 
-		ent->client->ps.gunframe++;
+		//mxd. Weapon select sound
+		if(ent->client->ps.gunframe == FRAME_SELECT_SOUND)
+		{
+			gi.sound(ent, CHAN_VOICE, gi.soundindex(PICKUP_SOUND), 1, ATTN_NORM, 0);
+		}
+
+		//ent->client->ps.gunframe++;
+		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 2, FRAME_ACTIVATE_LAST); //mxd
 		return;
 	}
 
@@ -569,7 +579,7 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 	if (ent->client->weaponstate == WEAPON_READY)
 	{
 		// Lazarus: Head off firing 2nd homer NOW, so firing animations aren't played
-		if ( ((ent->client->latched_buttons|ent->client->buttons) & BUTTONS_ATTACK) )
+		/*if ( ((ent->client->latched_buttons|ent->client->buttons) & BUTTONS_ATTACK) )
 		{
 			if (ent->client->ammo_index == homing_index)
 			{
@@ -579,10 +589,10 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 					ent->client->buttons &= ~BUTTONS_ATTACK;
 				}
 			}
-		}
+		}*/ //mxd
 
 		// Knightmare- catch alt fire commands
-		if ((ent->client->latched_buttons|ent->client->buttons) & BUTTON_ATTACK2)
+		/*if ((ent->client->latched_buttons|ent->client->buttons) & BUTTON_ATTACK2)
 		{
 			int	current_weapon_index = ITEM_INDEX(ent->client->pers.weapon);
 			
@@ -602,12 +612,12 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 				ent->client->buttons &= ~BUTTONS_ATTACK;
 				return;
 			}
-		}
+		}*/ //mxd
 
-		if ( ((ent->client->latched_buttons|ent->client->buttons) & BUTTONS_ATTACK) )
+		if (((ent->client->latched_buttons | ent->client->buttons) & BUTTONS_ATTACK))
 		{
-			if ((!ent->client->ammo_index) || 
-				( ent->client->pers.inventory[ent->client->ammo_index] >= ent->client->pers.weapon->quantity))
+			if ((!ent->client->ammo_index) ||
+				(ent->client->pers.inventory[ent->client->ammo_index] >= ent->client->pers.weapon->quantity))
 			{
 				ent->client->ps.gunframe = FRAME_FIRE_FIRST;
 				ent->client->weaponstate = WEAPON_FIRING;
@@ -691,13 +701,15 @@ void Weapon_Generic2 (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST
 
 
 //ZOID
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire))
+//mxd. Added select sounds
+void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire))
 {
 	int oldstate = ent->client->weaponstate;
 
 	Weapon_Generic2 (ent, FRAME_ACTIVATE_LAST, FRAME_FIRE_LAST, 
-		FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, pause_frames, 
-		fire_frames, fire);
+		FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, 
+		FRAME_SELECT_SOUND, PICKUP_SOUND, //mxd
+		pause_frames, fire_frames, fire);
 
 	// run the weapon frame again if hasted
 	if (Q_stricmp(ent->client->pers.weapon->pickup_name, "Grapple") == 0 &&
@@ -710,8 +722,9 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		&& oldstate == ent->client->weaponstate)
 	{
 		Weapon_Generic2 (ent, FRAME_ACTIVATE_LAST, FRAME_FIRE_LAST, 
-			FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, pause_frames, 
-			fire_frames, fire);
+			FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, 
+			FRAME_SELECT_SOUND, PICKUP_SOUND, //mxd
+			pause_frames, fire_frames, fire);
 	}
 }
 
@@ -723,7 +736,8 @@ GRENADE
 ======================================================================
 */
 
-#define GRENADE_TIMER		3.0
+//mxd. No throwable grenades in Q2 N64
+/*#define GRENADE_TIMER		3.0
 #define GRENADE_MINSPEED	400
 #define GRENADE_MAXSPEED	800
 
@@ -775,9 +789,10 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 		ent->s.frame = FRAME_wave08;
 		ent->client->anim_end = FRAME_wave01;
 	}
-}
+}*/
 
-void Weapon_Grenade (edict_t *ent)
+//mxd. Don't use grenades as a weapon
+/*void Weapon_Grenade (edict_t *ent)
 {
 	if ((ent->client->newweapon) && (ent->client->weaponstate == WEAPON_READY))
 	{
@@ -881,7 +896,7 @@ void Weapon_Grenade (edict_t *ent)
 			ent->client->weaponstate = WEAPON_READY;
 		}
 	}
-}
+}*/
 
 /*
 ======================================================================
@@ -932,7 +947,7 @@ void Weapon_GrenadeLauncher (edict_t *ent)
 	static int	pause_frames[]	= {34, 51, 59, 0};
 	static int	fire_frames[]	= {6, 0};
 
-	Weapon_Generic (ent, 5, 16, 59, 64, pause_frames, fire_frames, weapon_grenadelauncher_fire);
+	Weapon_Generic (ent, 5, 16, 59, 64, 2, "weapons/Grenlr1b.wav", pause_frames, fire_frames, weapon_grenadelauncher_fire); //mxd. Select sounds
 }
 
 /*
@@ -1047,10 +1062,11 @@ void Weapon_RocketLauncher (edict_t *ent)
 	static int	pause_frames[]	= {25, 33, 42, 50, 0};
 	static int	fire_frames[]	= {5, 0};
 
-	Weapon_Generic (ent, 4, 12, 50, 54, pause_frames, fire_frames, Weapon_RocketLauncher_Fire);
+	Weapon_Generic (ent, 4, 12, 50, 54, 2, "weapons/Rocklr1b.wav", pause_frames, fire_frames, Weapon_RocketLauncher_Fire); //mxd. Select sounds
 }
 
-void Weapon_HomingMissileLauncher_Fire (edict_t *ent, qboolean altfire)
+//mxd. No HML ples
+/*void Weapon_HomingMissileLauncher_Fire (edict_t *ent, qboolean altfire)
 {
 	ent->client->pers.fire_mode = 1;
 	Weapon_RocketLauncher_Fire (ent, false);
@@ -1063,7 +1079,7 @@ void Weapon_HomingMissileLauncher (edict_t *ent)
 	static int	fire_frames[]	= {5, 0};
 
 	Weapon_Generic (ent, 4, 12, 50, 54, pause_frames, fire_frames, Weapon_HomingMissileLauncher_Fire);
-}
+}*/ 
 /*
 ======================================================================
 
@@ -1196,7 +1212,7 @@ void Weapon_Blaster (edict_t *ent)
 	static int	pause_frames[]	= {19, 32, 0};
 	static int	fire_frames[]	= {5, 0};
 
-	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	Weapon_Generic (ent, 4, 8, 52, 55, 2, "weapons/noammo.wav", pause_frames, fire_frames, Weapon_Blaster_Fire); //mxd. Select sounds
 }
 
 
@@ -1296,7 +1312,7 @@ void Weapon_HyperBlaster (edict_t *ent)
 	static int	pause_frames[]	= {0};
 	static int	fire_frames[]	= {6, 7, 8, 9, 10, 11, 0};
 
-	Weapon_Generic (ent, 5, 20, 49, 53, pause_frames, fire_frames, Weapon_HyperBlaster_Fire);
+	Weapon_Generic (ent, 5, 20, 49, 53, 2, "weapons/Hyprbu1a.wav", pause_frames, fire_frames, Weapon_HyperBlaster_Fire); //mxd. Select sounds
 }
 
 /*
@@ -1398,7 +1414,7 @@ void Weapon_Machinegun (edict_t *ent)
 	static int	pause_frames[]	= {23, 45, 0};
 	static int	fire_frames[]	= {4, 5, 0};
 
-	Weapon_Generic (ent, 3, 5, 45, 49, pause_frames, fire_frames, Machinegun_Fire);
+	Weapon_Generic (ent, 3, 5, 45, 49, 2, "weapons/HGRENT1A.WAV", pause_frames, fire_frames, Machinegun_Fire); //mxd. Select sounds
 }
 
 void Chaingun_Fire (edict_t *ent, qboolean altfire)
@@ -1526,7 +1542,7 @@ void Weapon_Chaingun (edict_t *ent)
 	static int	pause_frames[]	= {38, 43, 51, 61, 0};
 	static int	fire_frames[]	= {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 0};
 
-	Weapon_Generic (ent, 4, 31, 61, 64, pause_frames, fire_frames, Chaingun_Fire);
+	Weapon_Generic (ent, 4, 31, 61, 64, 2, "weapons/HGRENT1A.WAV", pause_frames, fire_frames, Chaingun_Fire); //mxd. Select sounds
 }
 
 
@@ -1589,7 +1605,7 @@ void Weapon_Shotgun (edict_t *ent)
 	static int	pause_frames[]	= {22, 28, 34, 0};
 	static int	fire_frames[]	= {8, 9, 0};
 
-	Weapon_Generic (ent, 7, 18, 36, 39, pause_frames, fire_frames, weapon_shotgun_fire);
+	Weapon_Generic (ent, 7, 18, 36, 39, 2, "weapons/shotgr1b.wav", pause_frames, fire_frames, weapon_shotgun_fire); //mxd. Select sounds
 }
 
 
@@ -1643,7 +1659,7 @@ void Weapon_SuperShotgun (edict_t *ent)
 	static int	pause_frames[]	= {29, 42, 57, 0};
 	static int	fire_frames[]	= {7, 0};
 
-	Weapon_Generic (ent, 6, 17, 57, 61, pause_frames, fire_frames, weapon_supershotgun_fire);
+	Weapon_Generic (ent, 6, 17, 57, 61, 2, "weapons/sshotr1b.wav", pause_frames, fire_frames, weapon_supershotgun_fire); //mxd. Select sounds
 }
 
 
@@ -1709,7 +1725,7 @@ void Weapon_Railgun (edict_t *ent)
 	static int	pause_frames[]	= {56, 0};
 	static int	fire_frames[]	= {4, 0};
 
-	Weapon_Generic (ent, 3, 18, 56, 61, pause_frames, fire_frames, weapon_railgun_fire);
+	Weapon_Generic (ent, 3, 18, 56, 61, 0, "weapons/RAILGR1A.WAV", pause_frames, fire_frames, weapon_railgun_fire); //mxd. Select sounds
 }
 
 
@@ -1784,7 +1800,7 @@ void Weapon_BFG (edict_t *ent)
 	static int	pause_frames[]	= {39, 45, 50, 55, 0};
 	static int	fire_frames[]	= {9, 17, 0};
 
-	Weapon_Generic (ent, 8, 32, 55, 58, pause_frames, fire_frames, weapon_bfg_fire);
+	Weapon_Generic (ent, 8, 32, 55, 58, 2, "weapons/bfg_select.wav", pause_frames, fire_frames, weapon_bfg_fire); //mxd. Select sounds
 }
 
 //======================================================================

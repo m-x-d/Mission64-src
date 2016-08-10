@@ -180,11 +180,20 @@ void GladiatorGun (edict_t *self)
 	// calc direction to where we targeted
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		self->pos1[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		self->pos1[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		self->pos1[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
+	}*/
+	AdjustAccuracy(self, self->pos1); //mxd. Fog & Invisibility mode adjustments
+
+	//mxd. lead target... 20, 35, 50, 65 chance of leading
+	if (random() < (0.2 + skill->value * 0.15))
+	{
+		float time = 0.4f;
+		VectorMA(self->pos1, time, self->enemy->velocity, self->pos1);
+		VectorSubtract(self->pos1, start, dir);
 	}
 
 	VectorSubtract (self->pos1, start, dir);
@@ -271,8 +280,7 @@ void gladiator_pain (edict_t *self, edict_t *other, float kick, int damage)
 	else
 		gi.sound (self, CHAN_VOICE, sound_pain2, 1, ATTN_NORM, 0);
 
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	if (skill->value > 1 || damage < 15) return; //mxd. No pain anims in hard+
 
 	if (self->velocity[2] > 100)
 		self->monsterinfo.currentmove = &gladiator_move_pain_air;

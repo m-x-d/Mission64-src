@@ -367,17 +367,17 @@ void HelpComputer (edict_t *ent)
 	else
 	{
 		Com_sprintf (string, sizeof(string),
-			"xv 32 yv 8 picn help "			// background
-			"xv 202 yv 12 string2 \"%s\" "		// skill
-			"xv 0 yv 24 cstring2 \"%s\" "		// level name
-			"xv 0 yv 54 cstring2 \"%s\" "		// help 1
-			"xv 0 yv 110 cstring2 \"%s\" "		// help 2
-			"xv 50 yv 164 string2 \" kills     goals    secrets\" "
-			"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" ", 
+			//mxd. Always draw using white text color, also repositioned/removed some stuff
+			"xv 32 yv 28 picn help64 "			// background
+			"xv 202 yv 31 string2 \"^7%s\" "		// skill 
+			"xv 4 yv 60 cstring2 \"^7%s\" "		// level name
+			"xv 4 yv 87 cstring2 \"^7%s\" "		// help 1
+			"xv 59 yv 148 string2 \"^7%i/%i\" " // kills
+			"xv 135 yv 148 string2 \"^7%i/%i\" " // goals
+			"xv 211 yv 148 string2 \"^7%i/%i\" ", // secrets
 			sk,
 			level.level_name,
 			game.helpmessage1,
-			game.helpmessage2,
 			level.killed_monsters, level.total_monsters, 
 			level.found_goals, level.total_goals,
 			level.found_secrets, level.total_secrets);
@@ -485,6 +485,12 @@ void WhatIsIt (edict_t *ent)
 
 static char *tnames[] = {
 	"item_tech1", "item_tech2", "item_tech3", "item_tech4", "item_tech5", "item_tech6",
+	NULL
+};
+
+//mxd. Keys array
+static char *knames[] = {
+	"key_data_cd", "key_power_cube", "key_pyramid", "key_data_spinner", "key_pass", "key_blue_key", "key_red_key", "key_commander_head", "key_airstrike_target",
 	NULL
 };
 
@@ -622,6 +628,14 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIMER_RANGE] = min(max((int)sk_breather_time->value, 0), 10000);
 #endif
 	}
+	else if (ent->client->invisibility_framenum > level.framenum) //mxd
+	{
+		ent->client->ps.stats[STAT_TIMER_ICON] = gi.imageindex("p_invisibility");
+		ent->client->ps.stats[STAT_TIMER] = (ent->client->invisibility_framenum - level.framenum) / 10;
+#ifdef KMQUAKE2_ENGINE_MOD	// for enhanced HUD
+		ent->client->ps.stats[STAT_TIMER_RANGE] = min(max((int)sk_invisibility_time->value, 0), 10000);
+#endif
+	}
 #ifdef JETPACK_MOD
 	else if ( (ent->client->jetpack) &&
 			  (!ent->client->jetpack_infinite) &&
@@ -655,10 +669,26 @@ void G_SetStats (edict_t *ent)
 	//
 	// selected item
 	//
-	if (ent->client->pers.selected_item == -1)
+	/*if (ent->client->pers.selected_item == -1)
 		ent->client->ps.stats[STAT_SELECTED_ICON] = 0;
 	else
-		ent->client->ps.stats[STAT_SELECTED_ICON] = gi.imageindex (itemlist[ent->client->pers.selected_item].icon);
+		ent->client->ps.stats[STAT_SELECTED_ICON] = gi.imageindex (itemlist[ent->client->pers.selected_item].icon);*/
+	
+	//mxd. Draw keys... Are there any N64 levels, which have several of them?..
+	int i = 0;
+	gitem_t *key;
+	ent->client->ps.stats[STAT_SELECTED_ICON] = 0;
+
+	while (knames[i])
+	{
+		if ((key = FindItemByClassname(knames[i])) != NULL && ent->client->pers.inventory[ITEM_INDEX(key)])
+		{
+			ent->client->ps.stats[STAT_SELECTED_ICON] = gi.imageindex(key->icon);
+			break;
+		}
+
+		i++;
+	}
 
 	ent->client->ps.stats[STAT_SELECTED_ITEM] = ent->client->pers.selected_item;
 
@@ -760,9 +790,9 @@ void G_SetStats (edict_t *ent)
 
 #ifdef KMQUAKE2_ENGINE_MOD	// for enhanced HUD
 	if (ent->client->pers.weapon) {
-		if (ITEM_INDEX(ent->client->pers.weapon) == hml_index) // homing rocket launcher has no icon
+		/*if (ITEM_INDEX(ent->client->pers.weapon) == hml_index) // homing rocket launcher has no icon
 			ent->client->ps.stats[STAT_WEAPON] = gi.imageindex (GetItemByIndex(rl_index)->icon);
-		else
+		else*/ //mxd
 			ent->client->ps.stats[STAT_WEAPON] = gi.imageindex (ent->client->pers.weapon->icon);
 	}
 	else

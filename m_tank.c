@@ -359,12 +359,13 @@ void TankBlaster (edict_t *self)
 	end[2] += self->enemy->viewheight;
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		end[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		end[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		end[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-	}
+	}*/
+	AdjustAccuracy(self, end); //mxd. Fog & Invisibility mode adjustments
 
 	VectorSubtract (end, start, dir);
 	monster_fire_blaster (self, start, dir, 30, 800, flash_number, EF_BLASTER, BLASTER_ORANGE);
@@ -423,12 +424,13 @@ void TankRocket (edict_t *self)
 	}
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		vec[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		vec[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		vec[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-	}
+	}*/
+	AdjustAccuracy(self, vec); //mxd. Fog & Invisibility mode adjustments
 
 	VectorSubtract (vec, start, dir);
 	// lead target, but not if using homers
@@ -480,12 +482,13 @@ void TankMachineGun (edict_t *self)
 		vec[2] += self->enemy->viewheight;
 
 		// Lazarus fog reduction of accuracy
-		if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+		/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 		{
 			vec[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			vec[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			vec[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-		}
+		}*/
+		AdjustAccuracy(self, vec); //mxd. Fog & Invisibility mode adjustments
 
 		VectorSubtract (vec, start, vec);
 		vectoangles (vec, vec);

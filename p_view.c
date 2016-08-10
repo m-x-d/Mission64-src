@@ -517,6 +517,15 @@ void SV_CalcBlend (edict_t *ent)
 		if (remaining > 30 || (remaining & 4) )
 			SV_AddBlend (0.4, 1, 0.4, 0.04, ent->client->ps.blend);
 	}
+	//mxd. Invisibility
+	else if (ent->client->invisibility_framenum > level.framenum)
+	{
+		remaining = ent->client->invisibility_framenum - level.framenum;
+		if (remaining == 30)	// beginning to fade
+			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect2.wav"), 1, ATTN_NORM, 0);
+		if (remaining > 30 || (remaining & 4))
+			SV_AddBlend(1, 0.72, 0, 0.08, ent->client->ps.blend);
+	}
 
 	if (level.freeze && (level.freezeframes % 30 == 0))
 	{
@@ -953,11 +962,14 @@ void G_SetClientEffects (edict_t *ent)
 
 	ent->s.effects = 0;
 	ent->s.renderfx = RF_IR_VISIBLE; // was 0, because all players are ir-goggle visible
+	ent->s.alpha = 1.0f; //mxd
+	ent->client->ps.gunskin = 0; //mxd
+	ent->flags &= ~(FL_DISGUISED | FL_INVISIBLE); //mxd. Reset Invisibility item effect. TODO: use a separate flag?
 
 	if (ent->health <= 0 || level.intermissiontime)
 		return;
 
-	if(ent->flags & FL_DISGUISED)
+	if(ent->flags & FL_DISGUISED && !(ent->flags & FL_INVISIBLE)) //mxd. FL_INVISIBLE flag
 		ent->s.renderfx |= RF_USE_DISGUISE;
 
 	if (ent->powerarmor_time > level.time)
@@ -990,6 +1002,19 @@ void G_SetClientEffects (edict_t *ent)
 		remaining = ent->client->invincible_framenum - level.framenum;
 		if (remaining > 30 || (remaining & 4) )
 			ent->s.effects |= EF_PENT;
+	}
+
+	//mxd. Invisibility item effects
+	if (ent->client->invisibility_framenum > level.framenum)
+	{
+		remaining = ent->client->invisibility_framenum - level.framenum;
+		if (remaining > 30 || (remaining & 4))
+		{
+			ent->s.effects |= EF_DOUBLE;
+			ent->s.alpha = 0.1f;
+			ent->client->ps.gunskin = 1; // Second skin is setup to be transparent (took me a day to figure out the way to do it...)
+			ent->flags |= (FL_DISGUISED | FL_INVISIBLE);
+		}
 	}
 
 	// show cheaters!!!

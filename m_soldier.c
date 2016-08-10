@@ -233,12 +233,12 @@ void soldier_walk1_random (edict_t *self)
 
 mframe_t soldier_frames_walk1 [] =
 {
-	ai_walk, 3,  NULL,
+	ai_walk, 3,  actor_footstep,
 	ai_walk, 6,  NULL,
 	ai_walk, 2,  NULL,
 	ai_walk, 2,  NULL,
 	ai_walk, 2,  NULL,
-	ai_walk, 1,  NULL,
+	ai_walk, 1,  actor_footstep,
 	ai_walk, 6,  NULL,
 	ai_walk, 5,  NULL,
 	ai_walk, 3,  NULL,
@@ -271,12 +271,12 @@ mmove_t soldier_move_walk1 = {FRAME_walk101, FRAME_walk133, soldier_frames_walk1
 
 mframe_t soldier_frames_walk2 [] =
 {
-	ai_walk, 4,  NULL,
+	ai_walk, 4,  actor_footstep,
 	ai_walk, 4,  NULL,
 	ai_walk, 9,  NULL,
 	ai_walk, 8,  NULL,
 	ai_walk, 5,  NULL,
-	ai_walk, 1,  NULL,
+	ai_walk, 1,  actor_footstep,
 	ai_walk, 3,  NULL,
 	ai_walk, 7,  NULL,
 	ai_walk, 6,  NULL,
@@ -308,10 +308,10 @@ mmove_t soldier_move_start_run = {FRAME_run01, FRAME_run02, soldier_frames_start
 
 mframe_t soldier_frames_run [] =
 {
-	ai_run, 10, NULL,
+	ai_run, 10, actor_footstep_loud,
 	ai_run, 11, NULL,
 	ai_run, 11, NULL,
-	ai_run, 16, NULL,
+	ai_run, 16, actor_footstep_loud,
 	ai_run, 10, NULL,
 	ai_run, 15, NULL
 };
@@ -441,8 +441,7 @@ void soldier_pain (edict_t *self, edict_t *other, float kick, int damage)
 		return;
 	}
 
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	if (skill->value > 0 || damage < 9)	return;	//mxd. No pain anims in medium+; ignore low damage
 
 	r = random();
 
@@ -493,12 +492,13 @@ void soldier_fire (edict_t *self, int flash_number)
 		end[2] += self->enemy->viewheight;
 
 		// Lazarus fog reduction of accuracy
-		if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+		/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 		{
 			end[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			end[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 			end[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-		}
+		}*/
+		AdjustAccuracy(self, end); //mxd. Fog & Invisibility mode adjustments
 		
 		VectorSubtract (end, start, aim);
 		// Lazarus: Accuracy is skill level dependent
@@ -903,9 +903,9 @@ void soldier_dead (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
+	//self->svflags |= SVF_DEADMONSTER; //mxd. Moved to soldier_die
 	self->nextthink = 0;
-	gi.linkentity (self);
+	//gi.linkentity (self);
 	M_FlyCheck (self);
 
 	// Lazarus monster fade
@@ -1169,6 +1169,10 @@ mmove_t soldier_move_death6 = {FRAME_death601, FRAME_death610, soldier_frames_de
 void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+
+	//mxd. Stop being solid now
+	self->svflags |= SVF_DEADMONSTER;
+	gi.linkentity(self);
 
 	self->s.skinnum |= 1;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;

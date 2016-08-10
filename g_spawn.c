@@ -1391,23 +1391,26 @@ char *single_statusbar =
 "	pic 4 "
 "endif "
 
-// selected item
+//mxd. selected item - repurposed for drawing keys
 "if 6 "
-"	xv	296 "
+"	xv	146 " //"	xv	296 "
+"	yt	4 "
 "	pic 6 "
 "endif "
 
 "yb	-50 "
 
-// picked up item
+//mxd. picked up item (without icon)
 "if 7 "
-"	xv	0 "
-"	pic 7 "
-"	xv	26 "
-"	yb	-42 "
+//"	xv	0 "
+//"	pic 7 "
+"	xv	0 " //"	xv	26 "
+"	yt	12 " //"	yb	-42 "
 "	stat_string 8 "
-"	yb	-50 "
+//"	yb	-50 "
 "endif "
+
+"yt	8 " //mxd
 
 // timer (was xv 262)
 "if 9 "
@@ -1416,6 +1419,8 @@ char *single_statusbar =
 "	xv	296 "
 "	pic	9 "
 "endif "
+
+"yb	-50 " //mxd
 
 //  help / weapon icon 
 "if 11 "

@@ -79,12 +79,13 @@ void floater_fire_blaster (edict_t *self)
 	end[2] += self->enemy->viewheight;
 
 	// Lazarus fog reduction of accuracy
-	if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
+	/*if(self->monsterinfo.visibility < FOG_CANSEEGOOD)
 	{
 		end[0] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		end[1] += crandom() * 640 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
 		end[2] += crandom() * 320 * (FOG_CANSEEGOOD - self->monsterinfo.visibility);
-	}
+	}*/
+	AdjustAccuracy(self, end); //mxd. Fog & Invisibility mode adjustments
 	
 	VectorSubtract (end, start, dir);
 	monster_fire_blaster (self, start, dir, 1, 1000, MZ2_FLOAT_BLASTER_1, effect, BLASTER_ORANGE);

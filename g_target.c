@@ -157,7 +157,7 @@ void SP_target_speaker (edict_t *ent)
 		ent->attenuation = 0;
 
 	// check for prestarted looping sound
-	if (ent->spawnflags & 1) {
+	if (ent->spawnflags & 1 /*|| ent->spawnflags & 2*/) { //mxd. Take LOOPED_OFF into account too
 		ent->s.sound = ent->noise_index;
 #ifdef LOOP_SOUND_ATTENUATION
 		ent->s.attenuation = ent->attenuation;

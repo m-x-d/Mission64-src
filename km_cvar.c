@@ -169,6 +169,7 @@ cvar_t	*sk_breather_time;
 cvar_t	*sk_enviro_time;
 cvar_t	*sk_silencer_shots;
 cvar_t	*sk_stasis_time;
+cvar_t	*sk_invisibility_time; //mxd
 
 // CTF stuff
 cvar_t	*use_techs;          // enables techs
@@ -347,6 +348,7 @@ void InitLithiumVars (void)
 	sk_enviro_time = gi.cvar("enviro_time", "30", 0);
 	sk_silencer_shots = gi.cvar("silencer_shots", "30", 0);
 	sk_stasis_time = gi.cvar("stasis_time", "30", 0);
+	sk_invisibility_time = gi.cvar("invisibility_time", "30", 0); //mxd
 
 	// CTF stuff
 	use_techs = gi.cvar("use_techs", "0", 0);

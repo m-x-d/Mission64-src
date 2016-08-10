@@ -561,8 +561,14 @@ void brain_pain (edict_t *self, edict_t *other, float kick, int damage)
 		return;
 
 	self->pain_debounce_time = level.time + 3;
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
+	//if (skill->value == 3)
+		//return;		// no pain anims in nightmare
+
+	if (skill->value > 1)
+		return;			// no pain anims in nightmare (CW: or hard)
+
+	if (damage <= 10)	//CW: shrug off low damage
+		return;
 
 	r = random();
 	if (r < 0.33)
