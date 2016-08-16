@@ -218,6 +218,14 @@ gitem_t	*FindItem (char *pickup_name)
 	{
 		if (!it->pickup_name)
 			continue;
+
+		//mxd. Items are resolved by NAME, so we'll need to ignore our colouring prefix...
+		if (!strncmp(it->pickup_name, "^3", 2))
+		{
+			if (!Q_stricmp(it->pickup_name + 2, pickup_name))
+				return it;
+		}
+
 		if (!Q_stricmp(it->pickup_name, pickup_name))
 			return it;
 	}
