@@ -3236,6 +3236,7 @@ void use_target_monitor (edict_t *self, edict_t *other, edict_t *activator)
 	faker->light_level  = activator->light_level;
 	faker->think        = faker_animate;
 	faker->nextthink    = level.time + FRAMETIME;
+	faker->targetname = "fake_player"; //mxd. Hacky way to make it targetable from a map editor...
 	VectorCopy(activator->mins,faker->mins);
 	VectorCopy(activator->maxs,faker->maxs);
     // create a client so you can pick up items/be shot/etc while in camera
@@ -3769,6 +3770,25 @@ void use_target_change (edict_t *self, edict_t *other, edict_t *activator)
 				{
 					target_ent->spawnflags &= ~64;
 					target_ent->spawnflags |= 16;
+				}
+			}
+
+			//mxd. More special cases...
+			if(target_ent->svflags & SVF_MONSTER)
+			{
+				// Currently I'm only interested in this flag...
+				if(self->spawnflags & SF_MONSTER_GOODGUY)
+				{
+					if(!(target_ent->monsterinfo.aiflags & AI_GOOD_GUY))
+					{
+						target_ent->monsterinfo.aiflags |= AI_GOOD_GUY;
+						level.total_monsters--;
+					}
+				}
+				else if(target_ent->monsterinfo.aiflags & AI_GOOD_GUY)
+				{
+					target_ent->monsterinfo.aiflags &= ~AI_GOOD_GUY;
+					level.total_monsters++;
 				}
 			}
 		}
