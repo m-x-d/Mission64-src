@@ -290,6 +290,7 @@ typedef struct
 //ZOID
 #define IT_TECH			64
 //ZOID
+#define	IT_NO_NOAMMO_MESSAGES 128 //mxd. Still better than changing ALL Use_XXX methods to achieve a cosmetic effect...
 
 // gitem_t->weapmodel for weapons indicates model index
 #define WEAP_BLASTER			1 
@@ -1294,7 +1295,7 @@ void ClientEndServerFrame (edict_t *ent);
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire));
+void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire));
 void kick_attack (edict_t *ent);
 
 //

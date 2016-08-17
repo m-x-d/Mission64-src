@@ -425,13 +425,15 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 					return;
 				}
 			}*/ //mxd
-			safe_cprintf (ent, PRINT_HIGH, "No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
+			if (!(item->flags & IT_NO_NOAMMO_MESSAGES)) //mxd
+				safe_cprintf (ent, PRINT_HIGH, "^3No %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
 
 		if (ent->client->pers.inventory[ammo_index] < item->quantity)
 		{
-			safe_cprintf (ent, PRINT_HIGH, "Not enough %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
+			if (!(item->flags & IT_NO_NOAMMO_MESSAGES)) //mxd
+				safe_cprintf (ent, PRINT_HIGH, "^3Not enough %s for %s.\n", ammo_item->pickup_name, item->pickup_name);
 			return;
 		}
 	}

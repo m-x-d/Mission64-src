@@ -2367,7 +2367,7 @@ void CTFWeapon_Grapple (edict_t *ent)
 	}
 
 	prevstate = ent->client->weaponstate;
-	Weapon_Generic (ent, 5, 9, 31, 36, pause_frames, fire_frames, 
+	Weapon_Generic (ent, 5, 9, 31, 36, 2, "", pause_frames, fire_frames,
 		CTFWeapon_Grapple_Fire);
 
 	// if we just switched back to grapple, immediately go to fire frame

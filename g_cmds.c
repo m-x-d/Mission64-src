@@ -287,7 +287,7 @@ void SaveEntProps(edict_t *e, FILE *f)
 		e->sounds,e->count);
 	fprintf(f,"noise_index = %d\n"
 		"noise_index2= %d\n"
-		"volume      = %d\n"
+		"volume      = %g\n"
 		"attenuation = %g\n"
 		"wait        = %g\n"
 		"delay       = %g\n"
@@ -905,12 +905,12 @@ void Cmd_Use_f (edict_t *ent)
 	it = FindItem (s);
 	if (!it)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "^3unknown item: %s\n", s);
 		return;
 	}
 	if (!it->use)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "^3Item is not usable.\n");
 		return;
 	}
 	index = ITEM_INDEX(it);
@@ -924,7 +924,7 @@ void Cmd_Use_f (edict_t *ent)
 				return;
 			if(!ent->client->pers.inventory[index])
 			{
-				safe_cprintf(ent, PRINT_HIGH, "Out of item: %s\n", s);
+				safe_cprintf(ent, PRINT_HIGH, "^3Out of item: %s\n", s);
 				return;
 			}
 			else if(ent->client->pers.inventory[fuel_index] <= 0)
@@ -949,7 +949,7 @@ void Cmd_Use_f (edict_t *ent)
 	}
 	if (!ent->client->pers.inventory[index])
 	{
-		safe_cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "^3Out of item: %s\n", s);
 		return;
 	}
 
@@ -985,18 +985,18 @@ void Cmd_Drop_f (edict_t *ent)
 	it = FindItem (s);
 	if (!it)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "^3unknown item: %s\n", s);
 		return;
 	}
 	if (!it->drop)
 	{
-		safe_cprintf (ent, PRINT_HIGH, "Item is not dropable.\n");
+		safe_cprintf (ent, PRINT_HIGH, "^3Item is not dropable.\n");
 		return;
 	}
 	index = ITEM_INDEX(it);
 	if (!ent->client->pers.inventory[index])
 	{
-		safe_cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
+		safe_cprintf (ent, PRINT_HIGH, "^3Out of item: %s\n", s);
 		return;
 	}
 
@@ -1145,7 +1145,14 @@ void Cmd_WeapPrev_f (edict_t *ent)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
 			continue;
+		if (it->classname == "weapon_null")
+			continue; //mxd. Don't switch to "No Weapon" ples
+		
+		//mxd. Don't display "No ammo for unrelated weapon" messages
+		it->flags |= IT_NO_NOAMMO_MESSAGES;
 		it->use (ent, it);
+		it->flags &= ~IT_NO_NOAMMO_MESSAGES;
+
 		if (cl->pers.weapon == it)
 			return;	// successful
 	}
@@ -1181,7 +1188,14 @@ void Cmd_WeapNext_f (edict_t *ent)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
 			continue;
+		if (it->classname == "weapon_null")
+			continue; //mxd. Don't switch to "No Weapon" ples
+		
+		//mxd. Don't display "No ammo for unrelated weapon" messages
+		it->flags |= IT_NO_NOAMMO_MESSAGES;
 		it->use (ent, it);
+		it->flags &= ~IT_NO_NOAMMO_MESSAGES;
+
 		if (cl->pers.weapon == it)
 			return;	// successful
 	}
