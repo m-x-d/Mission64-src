@@ -505,8 +505,10 @@ extern void WhatsIt(edict_t *ent);
 void G_SetStats (edict_t *ent)
 {
 	gitem_t		*item;
+	gitem_t		*key; //mxd
 	int			index, cells;
 	int			power_armor_type;
+	int			i; //mxd
 
 	//
 	// health
@@ -675,10 +677,9 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_SELECTED_ICON] = gi.imageindex (itemlist[ent->client->pers.selected_item].icon);*/
 	
 	//mxd. Draw keys... Are there any N64 levels, which have several of them?..
-	int i = 0;
-	gitem_t *key;
 	ent->client->ps.stats[STAT_SELECTED_ICON] = 0;
 
+	i = 0;
 	while (knames[i])
 	{
 		if ((key = FindItemByClassname(knames[i])) != NULL && ent->client->pers.inventory[ITEM_INDEX(key)])

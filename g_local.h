@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define JETPACK_MOD
 
 // the "gameversion" client command will print this plus compile date
-#define	GAMEVERSION	"lazarus"
+#define	GAMEVERSION	"Mission64"
 
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1

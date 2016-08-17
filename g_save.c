@@ -312,8 +312,8 @@ is loaded.
 */
 void InitGame (void)
 {
-	gi.dprintf ("==== InitGame (Lazarus) ====\n");
-	gi.dprintf ("by Mr. Hyde & Mad Dog\ne-mail: rascal@vicksburg.com\n\n");
+	gi.dprintf ("==== InitGame (Mission64) ====\n");
+	gi.dprintf ("by MaxED\n\n");
 
 	// Knightmare- init lithium cvars
 	InitLithiumVars ();

@@ -234,9 +234,10 @@ void AdjustAccuracy(edict_t *self, vec3_t target)
 	if (self->enemy->flags & FL_INVISIBLE)
 	{
 		vec3_t v;
+		float missmultiplier;
 		VectorSubtract(target, self->s.origin, v);
 		//float dist = VectorLength(v);
-		float missmultiplier = min(VectorLength(v), 512.0f) / 512.0f; // 0..1
+		missmultiplier = min(VectorLength(v), 512.0f) / 512.0f; // 0..1
 
 		target[0] += crandom() * 128 * missmultiplier;
 		target[1] += crandom() * 128 * missmultiplier;

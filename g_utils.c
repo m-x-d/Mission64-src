@@ -209,7 +209,7 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 	if ((ent->message) && !(activator->svflags & SVF_MONSTER))
 	{
 //		Lazarus - change so that noise_index < 0 means no sound
-		safe_centerprintf (activator, "%s", ent->message);
+		safe_centerprintf (activator, "%s%s", "^3", ent->message); //mxd. Added text colouring
 		if (ent->noise_index > 0)
 			gi.sound (activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
 		else if (ent->noise_index == 0)

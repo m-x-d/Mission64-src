@@ -110,12 +110,12 @@ mframe_t berserk_frames_walk [] =
 	ai_walk, 6.3, NULL,
 	ai_walk, 4.9, NULL,
 	ai_walk, 6.7, NULL,
-	ai_walk, 6.0, NULL,
+	ai_walk, 6.0, actor_footstep, //mxd. Footsteps
 	ai_walk, 8.2, NULL,
 	ai_walk, 7.2, NULL,
 	ai_walk, 6.1, NULL,
 	ai_walk, 4.9, NULL,
-	ai_walk, 4.7, NULL,
+	ai_walk, 4.7, actor_footstep, //mxd. Footsteps
 	ai_walk, 4.7, NULL,
 	ai_walk, 4.8, NULL
 };
@@ -153,12 +153,13 @@ void()	berserk_runb12	=[	$r_att12 ,	berserk_runb7	] {ai_run(19);};
 
 mframe_t berserk_frames_run1 [] =
 {
-	ai_run, 21, NULL,
-	ai_run, 11, NULL,
-	ai_run, 21, NULL,
-	ai_run, 25, NULL,
-	ai_run, 18, NULL,
-	ai_run, 19, NULL
+	//mxd. Run 1.5 faster!
+	ai_run, 31, NULL, //mxd. Was 21
+	ai_run, 16, NULL, //mxd. Was 11
+	ai_run, 31, actor_footstep_loud, //mxd. Was 21
+	ai_run, 37, NULL, //mxd. Was 25
+	ai_run, 27, NULL, //mxd. Was 18
+	ai_run, 28, actor_footstep_loud //mxd. Was 19
 };
 mmove_t berserk_move_run1 = {FRAME_run1, FRAME_run6, berserk_frames_run1, NULL};
 

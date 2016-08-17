@@ -644,10 +644,12 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 //mxd. ======================================================================
 void Use_Invisibility(edict_t *ent, gitem_t *item)
 {
+	int timeout;
+	
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
 
-	int timeout = (sk_invisibility_time->value * 10);
+	timeout = (sk_invisibility_time->value * 10);
 
 	if (ent->client->invisibility_framenum > level.framenum)
 		ent->client->invisibility_framenum += timeout;
