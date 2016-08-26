@@ -143,18 +143,18 @@ void infantry_fidget (edict_t *self)
 
 mframe_t infantry_frames_walk [] =
 {
-	ai_walk, 5,  actor_footstep,
+	ai_walk, 5,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 5,  NULL,
 	ai_walk, 4,  NULL,
-	ai_walk, 5,  NULL,
-	ai_walk, 6,  actor_footstep,
+	ai_walk, 5,  actor_footstep_medium, //mxd. Footsteps
+	ai_walk, 6,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
 	ai_walk, 4,  NULL,
-	ai_walk, 5,  NULL
+	ai_walk, 5,  actor_footstep_medium //mxd. Footsteps
 };
 mmove_t infantry_move_walk = {FRAME_walk03, FRAME_walk14, infantry_frames_walk, NULL};
 
@@ -167,11 +167,11 @@ mframe_t infantry_frames_run [] =
 {
 	ai_run, 10, NULL,
 	ai_run, 20, NULL,
-	ai_run, 5,  NULL,
+	ai_run, 5,  actor_footstep_medium_loud, //mxd. Footsteps
 	ai_run, 7,  NULL,
 	ai_run, 30, NULL,
 	ai_run, 35, NULL,
-	ai_run, 2,  NULL,
+	ai_run, 2,  actor_footstep_medium_loud, //mxd. Footsteps
 	ai_run, 6,  NULL
 };
 mmove_t infantry_move_run = {FRAME_run01, FRAME_run08, infantry_frames_run, NULL};

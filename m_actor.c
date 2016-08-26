@@ -201,15 +201,46 @@ void actor_walk (edict_t *self)
 }
 
 //mxd
-void actor_footstep(edict_t *self)
+static float footstep_volume = 0.5;
+static float footstep_volume_loud = 1.0;
+static float footstep_attenuation = 3.1f;
+static float footstep_attenuation_loud = 2.85f;
+static float footstep_attenuation_mod = 0.5f;
+
+//mxd
+void actor_footstep_light(edict_t *self)
 {
-	self->s.event = EV_FOOTSTEP;
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/light%02i.wav", rand() % 4 + 1)), footstep_volume, footstep_attenuation, 0);
 }
 
 //mxd
-void actor_footstep_loud(edict_t *self)
+void actor_footstep_medium(edict_t *self)
 {
-	self->s.event = EV_LOUDSTEP;
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/medium%02i.wav", rand() % 4 + 1)), footstep_volume, footstep_attenuation - footstep_attenuation_mod, 0);
+}
+
+//mxd
+void actor_footstep_heavy(edict_t *self)
+{
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)), footstep_volume_loud, footstep_attenuation - footstep_attenuation_mod * 2.0f, 0);
+}
+
+//mxd
+void actor_footstep_light_loud(edict_t *self)
+{
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/light%02i.wav", rand() % 4 + 1)), footstep_volume_loud, footstep_attenuation_loud, 0);
+}
+
+//mxd
+void actor_footstep_medium_loud(edict_t *self)
+{
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/medium%02i.wav", rand() % 4 + 1)), footstep_volume_loud, footstep_attenuation_loud - footstep_attenuation_mod, 0);
+}
+
+//mxd
+void actor_footstep_heavy_loud(edict_t *self)
+{
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)) , footstep_volume, footstep_attenuation_loud - footstep_attenuation_mod * 2.0f, 0);
 }
 
 mframe_t actor_frames_walk_back [] =

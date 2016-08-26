@@ -190,13 +190,13 @@ mframe_t gunner_frames_walk [] =
 	ai_walk, 4, NULL,
 	ai_walk, 5, NULL,
 	ai_walk, 7, NULL,
-	ai_walk, 2, actor_footstep,
+	ai_walk, 2, actor_footstep_heavy, //mxd. Footsteps
 	ai_walk, 6, NULL,
 	ai_walk, 4, NULL,
 	ai_walk, 2, NULL,
 	ai_walk, 7, NULL,
 	ai_walk, 5, NULL,
-	ai_walk, 7, actor_footstep,
+	ai_walk, 7, actor_footstep_heavy, //mxd. Footsteps
 	ai_walk, 4, NULL
 };
 mmove_t gunner_move_walk = {FRAME_walk07, FRAME_walk19, gunner_frames_walk, NULL};
@@ -209,11 +209,11 @@ void gunner_walk (edict_t *self)
 mframe_t gunner_frames_run [] =
 {
 	ai_run, 26, NULL,
-	ai_run, 9,  actor_footstep_loud, //mxd. Footsteps
+	ai_run, 9,  actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_run, 9,  NULL,
 	ai_run, 9,  NULL,
 	ai_run, 15, NULL,
-	ai_run, 10, actor_footstep_loud, //mxd. Footsteps
+	ai_run, 10, actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_run, 13, NULL,
 	ai_run, 6,  NULL
 };
@@ -231,10 +231,10 @@ void gunner_run (edict_t *self)
 mframe_t gunner_frames_runandshoot [] =
 {
 	ai_run, 32, NULL,
-	ai_run, 15, actor_footstep_loud, //mxd. Footsteps
+	ai_run, 15, actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_run, 10, NULL,
 	ai_run, 18, NULL,
-	ai_run, 8,  actor_footstep_loud, //mxd. Footsteps
+	ai_run, 8,  actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_run, 20, NULL
 };
 

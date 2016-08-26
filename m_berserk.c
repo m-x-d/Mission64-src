@@ -110,12 +110,12 @@ mframe_t berserk_frames_walk [] =
 	ai_walk, 6.3, NULL,
 	ai_walk, 4.9, NULL,
 	ai_walk, 6.7, NULL,
-	ai_walk, 6.0, actor_footstep, //mxd. Footsteps
+	ai_walk, 6.0, actor_footstep_heavy, //mxd. Footsteps
 	ai_walk, 8.2, NULL,
 	ai_walk, 7.2, NULL,
 	ai_walk, 6.1, NULL,
 	ai_walk, 4.9, NULL,
-	ai_walk, 4.7, actor_footstep, //mxd. Footsteps
+	ai_walk, 4.7, actor_footstep_heavy, //mxd. Footsteps
 	ai_walk, 4.7, NULL,
 	ai_walk, 4.8, NULL
 };
@@ -155,11 +155,11 @@ mframe_t berserk_frames_run1 [] =
 {
 	//mxd. Run 1.5 faster!
 	ai_run, 31, NULL, //mxd. Was 21
-	ai_run, 16, NULL, //mxd. Was 11
-	ai_run, 31, actor_footstep_loud, //mxd. Was 21
+	ai_run, 16, actor_footstep_heavy_loud, //mxd. Was 11
+	ai_run, 31, NULL, //mxd. Was 21
 	ai_run, 37, NULL, //mxd. Was 25
-	ai_run, 27, NULL, //mxd. Was 18
-	ai_run, 28, actor_footstep_loud //mxd. Was 19
+	ai_run, 27, actor_footstep_heavy_loud, //mxd. Was 18
+	ai_run, 28, NULL //mxd. Was 19
 };
 mmove_t berserk_move_run1 = {FRAME_run1, FRAME_run6, berserk_frames_run1, NULL};
 
@@ -189,9 +189,9 @@ mframe_t berserk_frames_attack_spike [] =
 		//ai_charge, 0, NULL, //mxd. Attack faster, dammit!
 		//ai_charge, 0, NULL,
 		ai_charge, 0, berserk_swing,
+		ai_charge, 0, NULL, //mxd. berserk_attack_spike was here. That's a bit too early
+		ai_charge, 0, NULL,
 		ai_charge, 0, berserk_attack_spike,
-		ai_charge, 0, NULL,
-		ai_charge, 0, NULL,
 		ai_charge, 0, NULL,
 		ai_charge, 0, NULL
 };
@@ -215,8 +215,8 @@ mframe_t berserk_frames_attack_club [] =
 	ai_charge, 0, berserk_swing,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
 	ai_charge, 0, berserk_attack_club,
+	ai_charge, 0, NULL, //mxd. berserk_attack_club was here. That's a bit too late
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL

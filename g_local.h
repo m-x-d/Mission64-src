@@ -1210,8 +1210,12 @@ void actor_salute (edict_t *actor);
 void actor_stand (edict_t *actor);
 void actor_walk (edict_t *actor);
 void actor_walk_back (edict_t *actor);
-void actor_footstep(edict_t *actor); //mxd
-void actor_footstep_loud(edict_t *actor); //mxd
+void actor_footstep_light (edict_t *actor); //mxd
+void actor_footstep_medium (edict_t *actor); //mxd
+void actor_footstep_heavy (edict_t *actor); //mxd
+void actor_footstep_light_loud (edict_t *actor); //mxd
+void actor_footstep_medium_loud (edict_t *actor); //mxd
+void actor_footstep_heavy_loud (edict_t *actor); //mxd
 extern mmove_t actor_move_crouch;
 extern mmove_t actor_move_crouchwalk;
 extern mmove_t actor_move_crouchwalk_back;
