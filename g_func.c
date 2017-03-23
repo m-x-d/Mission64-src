@@ -743,6 +743,13 @@ void plat_Accelerate (moveinfo_t *moveinfo)
 			distance = p1_distance + p2_distance;
 			moveinfo->current_speed = moveinfo->move_speed;
 			moveinfo->next_speed = moveinfo->move_speed - moveinfo->decel * (p2_distance / distance);
+
+			//mxd. In some cases (for example, decel 500 accel 500 speed 100) the above can evaluate to a very small number, essentrially locking the plat
+			if(moveinfo->next_speed < 0.00001)
+			{
+				moveinfo->next_speed = distance * 0.5;
+			}
+
 			return;
 		}
 
@@ -822,7 +829,7 @@ void plat_hit_top (edict_t *ent)
 	ent->moveinfo.state = STATE_TOP;
 
 	ent->think = plat_go_down;
-	ent->nextthink = level.time + 3;
+	ent->nextthink = level.time + (ent->wait ? ent->wait : 3); //mxd. Added wait key
 }
 
 void plat_hit_bottom (edict_t *ent)
@@ -911,9 +918,41 @@ void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_
 
 	ent = ent->enemy;	// now point at the plat, not the trigger
 	if (ent->moveinfo.state == STATE_BOTTOM)
-		plat_go_up (ent);
+	{
+		//mxd. Waaaait a minute!
+		if (ent->wait > 0)
+		{
+			if(ent->nextthink < level.time)
+			{
+				ent->nextthink = level.time + ent->wait;
+				ent->think = plat_go_up;
+			}
+			return;
+		}
+		
+		plat_go_up(ent);
+	}
 	else if (ent->moveinfo.state == STATE_TOP)
-		ent->nextthink = level.time + 1;	// the player is still on the plat, so delay going down
+	{
+		//mxd. Waaaait a minute!
+		if (ent->wait > 0)
+		{
+			if (ent->nextthink < level.time)
+			{
+				ent->nextthink = level.time + ent->wait;
+				ent->think = plat_go_down;
+			}
+
+			return;
+		}
+
+		ent->nextthink = level.time + 1; // the player is still on the plat, so delay going down
+	}
+	else
+	{
+		//mxd
+		ent->delay = 0;
+	}
 }
 
 void plat_spawn_inside_trigger (edict_t *ent)
@@ -2108,6 +2147,43 @@ void SP_func_door (edict_t *ent)
 		ent->think = Think_SpawnDoorTrigger;
 }
 
+//mxd
+void func_door_dh_init(edict_t *ent)
+{
+	edict_t		*new_origin;
+
+	new_origin = G_Find(NULL, FOFS(targetname), ent->pathtarget);
+	if (new_origin)
+	{
+		VectorCopy(new_origin->s.origin, ent->s.origin);
+		gi.linkentity(ent);
+	}
+	else
+	{
+		gi.dprintf("Door '%s' has non-existing pathtarget '%s'!\n", ent->targetname, ent->pathtarget);
+	}
+
+	SP_func_door(ent);
+}
+
+//mxd. Same as SP_func_door_rot_dh, but for regular doors
+void SP_func_door_dh(edict_t *ent)
+{
+	// There are MANY checks for "func_door" in the code...
+	ent->classname = "func_door";
+	
+	if (!ent->pathtarget)
+	{
+		gi.dprintf("Door '%s' has no pathtarget!\n", ent->targetname);
+		SP_func_door(ent);
+		return;
+	}
+
+	// Wait a few frames so that we're sure pathtarget has been parsed.
+	ent->think = func_door_dh_init;
+	ent->nextthink = level.time + 2 * FRAMETIME;
+	gi.linkentity(ent);
+}
 
 /*QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS
 TOGGLE causes the door to wait in both the start and end states for a trigger event.

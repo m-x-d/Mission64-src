@@ -1392,6 +1392,7 @@
 {"func_door_rot_dh_init", (byte *)func_door_rot_dh_init},
 {"SP_func_door_rotating", (byte *)SP_func_door_rotating},
 {"SP_func_door", (byte *)SP_func_door},
+{"SP_func_door_dh", (byte *)SP_func_door_dh}, //mxd
 {"door_touch", (byte *)door_touch},
 {"door_killed", (byte *)door_killed},
 {"door_destroyed", (byte *)door_destroyed},

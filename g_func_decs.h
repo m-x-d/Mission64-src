@@ -1391,6 +1391,7 @@ extern void SP_func_door_rot_dh ( edict_t * ent ) ;
 extern void func_door_rot_dh_init ( edict_t * ent ) ;
 extern void SP_func_door_rotating ( edict_t * ent ) ;
 extern void SP_func_door ( edict_t * ent ) ;
+extern void SP_func_door_dh ( edict_t * ent ) ; //mxd
 extern void door_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void door_killed ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void door_destroyed ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
