@@ -312,7 +312,7 @@ is loaded.
 */
 void InitGame (void)
 {
-	gi.dprintf ("==== InitGame (Mission64) ====\n");
+	gi.dprintf ("\n====== InitGame (Mission64) ======\n");
 	gi.dprintf ("by MaxED\n\n");
 
 	// Knightmare- init lithium cvars

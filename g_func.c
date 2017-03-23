@@ -2155,7 +2155,21 @@ void func_door_dh_init(edict_t *ent)
 	new_origin = G_Find(NULL, FOFS(targetname), ent->pathtarget);
 	if (new_origin)
 	{
-		VectorCopy(new_origin->s.origin, ent->s.origin);
+		// Gross hacks...
+		st.lip = ent->oldmovetype;
+		
+		// Unless the Origin brush is used, s.origin will be 0 0 0...
+		if (VectorLength(ent->s.origin))
+		{
+			VectorCopy(new_origin->s.origin, ent->s.origin);
+		}
+		else
+		{
+			vec3_t diff;
+			VectorSubtract(new_origin->s.origin, ent->move_origin, diff);
+			VectorCopy(diff, ent->s.origin);
+		}
+		
 		gi.linkentity(ent);
 	}
 	else
@@ -2167,6 +2181,7 @@ void func_door_dh_init(edict_t *ent)
 }
 
 //mxd. Same as SP_func_door_rot_dh, but for regular doors
+// Needs either Origin brush or "move_origin" property set to brush center...
 void SP_func_door_dh(edict_t *ent)
 {
 	// There are MANY checks for "func_door" in the code...
@@ -2178,6 +2193,9 @@ void SP_func_door_dh(edict_t *ent)
 		SP_func_door(ent);
 		return;
 	}
+
+	// Gross hacks, because st will be reset before func_door_dh_init is called...
+	ent->oldmovetype = st.lip;
 
 	// Wait a few frames so that we're sure pathtarget has been parsed.
 	ent->think = func_door_dh_init;
