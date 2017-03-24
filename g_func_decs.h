@@ -1170,6 +1170,8 @@ extern void viper_die ( edict_t * self , edict_t * inflictor , edict_t * attacke
 extern void SP_misc_deadsoldier ( edict_t * ent ) ;
 extern void misc_deadsoldier_flieson ( edict_t * self ) ;
 extern void misc_deadsoldier_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
+extern void SP_misc_deadparasite( edict_t * ent ) ; //mxd
+extern void misc_deadparasite_die( edict_t * self, edict_t * inflictor, edict_t * attacker, int damage, vec3_t point ) ; //mxd
 extern void SP_misc_banner ( edict_t * ent ) ;
 extern void misc_banner_think ( edict_t * ent ) ;
 extern void SP_monster_commander_body ( edict_t * self ) ;

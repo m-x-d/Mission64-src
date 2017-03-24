@@ -101,6 +101,7 @@ void SP_misc_gib_leg (edict_t *self);
 void SP_misc_gib_head (edict_t *self);
 void SP_misc_insane (edict_t *self);
 void SP_misc_deadsoldier (edict_t *self);
+void SP_misc_deadparasite (edict_t *self); //mxd
 void SP_misc_viper (edict_t *self);
 void SP_misc_viper_bomb (edict_t *self);
 void SP_misc_bigviper (edict_t *self);
@@ -321,6 +322,7 @@ spawn_t	spawns[] = {
 	{"misc_gib_head", SP_misc_gib_head},
 	{"misc_insane", SP_misc_insane},
 	{"misc_deadsoldier", SP_misc_deadsoldier},
+	{"misc_deadparasite", SP_misc_deadparasite}, //mxd
 	{"misc_viper", SP_misc_viper},
 	{"misc_viper_bomb", SP_misc_viper_bomb},
 	{"misc_bigviper", SP_misc_bigviper},

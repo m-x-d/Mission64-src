@@ -2362,6 +2362,59 @@ void SP_misc_deadsoldier (edict_t *ent)
 	gi.linkentity (ent);
 }
 
+//mxd. Dead parasite
+void misc_deadparasite_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+{
+	if (self->health > -80)	return;
+
+	// Lazarus
+	self->s.effects &= ~EF_FLIES;
+	self->s.sound = 0;
+
+	gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
+	
+	int	n;
+	for (n = 0; n < 2; n++)
+		ThrowGib(self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
+	for (n = 0; n < 4; n++)
+		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+	ThrowHead(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+}
+
+void SP_misc_deadparasite(edict_t *ent)
+{
+	if (deathmatch->value)
+	{	// auto-remove for deathmatch
+		G_FreeEdict(ent);
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	ent->s.modelindex = gi.modelindex("models/monsters/parasite/tris.md2");
+	ent->s.skinnum = 1; // Pain skin
+	ent->s.frame = 26; // Dead frame
+
+	// Lazarus
+	if (ent->spawnflags & 64)
+	{
+		// postpone turning on flies till we figure out whether dude is submerged
+		ent->think = misc_deadsoldier_flieson;
+		ent->nextthink = level.time + FRAMETIME;
+	}
+
+	VectorSet(ent->mins, -16, -16, -0);
+	VectorSet(ent->maxs, 16, 16, 16);
+	ent->deadflag = DEAD_DEAD;
+	ent->takedamage = DAMAGE_YES;
+	ent->svflags |= SVF_MONSTER | SVF_DEADMONSTER;
+	ent->die = misc_deadparasite_die;
+	ent->monsterinfo.aiflags |= AI_GOOD_GUY;
+
+	ent->common_name = "Dead Parasite";
+	gi.linkentity(ent);
+}
+
 /*QUAKED misc_viper (1 .5 0) (-16 -16 0) (16 16 32)
 This is the Viper for the flyby bombing.
 It is trigger_spawned, so you must have something use it for it to show up.

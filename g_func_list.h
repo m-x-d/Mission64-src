@@ -1171,6 +1171,8 @@
 {"SP_misc_deadsoldier", (byte *)SP_misc_deadsoldier},
 {"misc_deadsoldier_flieson", (byte *)misc_deadsoldier_flieson},
 {"misc_deadsoldier_die", (byte *)misc_deadsoldier_die},
+{ "SP_misc_deadparasite", (byte *)SP_misc_deadparasite }, //mxd
+{ "misc_deadparasite_die", (byte *)misc_deadparasite_die }, //mxd
 {"SP_misc_banner", (byte *)SP_misc_banner},
 {"misc_banner_think", (byte *)misc_banner_think},
 {"SP_monster_commander_body", (byte *)SP_monster_commander_body},
