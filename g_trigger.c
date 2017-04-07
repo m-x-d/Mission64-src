@@ -226,6 +226,14 @@ void SP_trigger_relay (edict_t *self)
 // end DWH
 
 	self->use = trigger_relay_use;
+
+	//mxd. Auto-trigger flag
+	if(self->spawnflags & 1)
+	{
+		self->think = trigger_relay_use;
+		self->nextthink = level.time + 1.0f + self->wait;
+		self->activator = self;
+	}
 }
 
 
