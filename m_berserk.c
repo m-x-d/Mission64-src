@@ -110,12 +110,12 @@ mframe_t berserk_frames_walk [] =
 	ai_walk, 6.3, NULL,
 	ai_walk, 4.9, NULL,
 	ai_walk, 6.7, NULL,
-	ai_walk, 6.0, actor_footstep_heavy, //mxd. Footsteps
+	ai_walk, 6.0, actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_walk, 8.2, NULL,
 	ai_walk, 7.2, NULL,
 	ai_walk, 6.1, NULL,
 	ai_walk, 4.9, NULL,
-	ai_walk, 4.7, actor_footstep_heavy, //mxd. Footsteps
+	ai_walk, 4.7, actor_footstep_heavy_loud, //mxd. Footsteps
 	ai_walk, 4.7, NULL,
 	ai_walk, 4.8, NULL
 };

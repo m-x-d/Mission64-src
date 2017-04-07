@@ -222,7 +222,7 @@ void actor_footstep_medium(edict_t *self)
 //mxd
 void actor_footstep_heavy(edict_t *self)
 {
-	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)), footstep_volume_loud, footstep_attenuation - footstep_attenuation_mod * 2.0f, 0);
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)), footstep_volume, footstep_attenuation - footstep_attenuation_mod * 2.0f, 0);
 }
 
 //mxd
@@ -240,7 +240,7 @@ void actor_footstep_medium_loud(edict_t *self)
 //mxd
 void actor_footstep_heavy_loud(edict_t *self)
 {
-	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)) , footstep_volume, footstep_attenuation_loud - footstep_attenuation_mod * 2.0f, 0);
+	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)) , footstep_volume_loud, footstep_attenuation_loud - footstep_attenuation_mod * 2.0f, 0);
 }
 
 mframe_t actor_frames_walk_back [] =

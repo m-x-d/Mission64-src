@@ -449,7 +449,7 @@ void gunner_duck_down (edict_t *self)
 			GunnerGrenade (self);
 	}
 
-	self->maxs[2] -= 32;
+	self->maxs[2] -= 20; //mxd. Was 32
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.pausetime = level.time + 1;
 	gi.linkentity (self);
@@ -466,7 +466,7 @@ void gunner_duck_hold (edict_t *self)
 void gunner_duck_up (edict_t *self)
 {
 	self->monsterinfo.aiflags &= ~AI_DUCKED;
-	self->maxs[2] += 32;
+	self->maxs[2] += 20; //mxd. Was 32
 	self->takedamage = DAMAGE_AIM;
 	gi.linkentity (self);
 }

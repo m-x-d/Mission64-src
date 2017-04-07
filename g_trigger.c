@@ -399,7 +399,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (! (self->spawnflags & 1))
 		{
-			safe_centerprintf(activator, "%i more to go...", self->count);
+			safe_centerprintf(activator, "^3%i more to go...", self->count); //mxd. Text colouring
 			gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
 		}
 		return;
@@ -407,7 +407,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	
 	if (! (self->spawnflags & 1))
 	{
-		safe_centerprintf(activator, "Sequence completed!");
+		safe_centerprintf(activator, "^3Sequence completed!"); //mxd. Text colouring
 		gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
 	}
 	self->activator = activator;

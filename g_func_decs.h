@@ -96,17 +96,13 @@ extern void Weapon_HyperBlaster_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Weapon_Blaster ( edict_t * ent ) ;
 extern void Weapon_Blaster_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Blaster_Fire ( edict_t * ent , vec3_t g_offset , int damage , qboolean hyper , int effect , int color ) ;
-//extern void Weapon_HomingMissileLauncher ( edict_t * ent ) ; //mxd. No HML ples
-//extern void Weapon_HomingMissileLauncher_Fire ( edict_t * ent , qboolean altfire ) ;
 extern void Weapon_RocketLauncher ( edict_t * ent ) ;
 extern void Weapon_RocketLauncher_Fire ( edict_t * ent , qboolean altfire ) ;
 extern edict_t * rocket_target ( edict_t * self , vec3_t start , vec3_t forward ) ;
 extern void Weapon_GrenadeLauncher ( edict_t * ent ) ;
 extern void weapon_grenadelauncher_fire ( edict_t * ent , qboolean altfire ) ;
-//extern void Weapon_Grenade ( edict_t * ent ) ; //mxd. Don't use grenades as a weapon
-//extern void weapon_grenade_fire ( edict_t * ent , qboolean held ) ; //mxd
-extern void Weapon_Generic ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND, char *PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ; //mxd. Select sounds
-extern void Weapon_Generic2 ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND , char *PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
+extern void Weapon_Generic ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND , char * PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
+extern void Weapon_Generic2 ( edict_t * ent , int FRAME_ACTIVATE_LAST , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_DEACTIVATE_LAST , int FRAME_SELECT_SOUND , char * PICKUP_SOUND , int * pause_frames , int * fire_frames , void ( * fire ) ( edict_t * ent , qboolean altfire ) ) ;
 extern void Drop_Weapon ( edict_t * ent , gitem_t * item ) ;
 extern void Use_Weapon ( edict_t * ent , gitem_t * in_item ) ;
 extern void Think_Weapon ( edict_t * ent ) ;
@@ -680,6 +676,12 @@ extern void actor_ideal_range ( edict_t * self ) ;
 extern void actor_run_back ( edict_t * self ) ;
 extern void actor_run ( edict_t * self ) ;
 extern void actor_walk_back ( edict_t * self ) ;
+extern void actor_footstep_heavy_loud ( edict_t * self ) ;
+extern void actor_footstep_medium_loud ( edict_t * self ) ;
+extern void actor_footstep_light_loud ( edict_t * self ) ;
+extern void actor_footstep_heavy ( edict_t * self ) ;
+extern void actor_footstep_medium ( edict_t * self ) ;
+extern void actor_footstep_light ( edict_t * self ) ;
 extern void actor_walk ( edict_t * self ) ;
 extern void actor_stand ( edict_t * self ) ;
 extern void InitLithiumVars ( void ) ;
@@ -1094,6 +1096,7 @@ extern void M_droptofloor ( edict_t * ent ) ;
 extern void M_WorldEffects ( edict_t * ent ) ;
 extern void M_CatagorizePosition ( edict_t * ent ) ;
 extern void M_CheckGround ( edict_t * ent ) ;
+extern void AdjustAccuracy ( edict_t * self , vec3_t target ) ;
 extern void AttackFinished ( edict_t * self , float time ) ;
 extern void M_FlyCheck ( edict_t * self ) ;
 extern void M_FliesOn ( edict_t * self ) ;
@@ -1167,11 +1170,11 @@ extern void SP_misc_viper_origin ( edict_t * ent ) ;
 extern void SP_misc_viper ( edict_t * ent ) ;
 extern void misc_viper_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void viper_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
+extern void SP_misc_deadparasite ( edict_t * ent ) ;
+extern void misc_deadparasite_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void SP_misc_deadsoldier ( edict_t * ent ) ;
 extern void misc_deadsoldier_flieson ( edict_t * self ) ;
 extern void misc_deadsoldier_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
-extern void SP_misc_deadparasite( edict_t * ent ) ; //mxd
-extern void misc_deadparasite_die( edict_t * self, edict_t * inflictor, edict_t * attacker, int damage, vec3_t point ) ; //mxd
 extern void SP_misc_banner ( edict_t * ent ) ;
 extern void misc_banner_think ( edict_t * ent ) ;
 extern void SP_monster_commander_body ( edict_t * self ) ;
@@ -1312,6 +1315,7 @@ extern qboolean Pickup_Ammo ( edict_t * ent , edict_t * other ) ;
 extern void SetAmmoPickupValues ( void ) ;
 extern qboolean Add_Ammo ( edict_t * ent , gitem_t * item , int count ) ;
 extern qboolean Pickup_Key ( edict_t * ent , edict_t * other ) ;
+extern void Use_Invisibility ( edict_t * ent , gitem_t * item ) ;
 extern void Use_Silencer ( edict_t * ent , gitem_t * item ) ;
 extern void Use_Invulnerability ( edict_t * ent , gitem_t * item ) ;
 extern void Use_Envirosuit ( edict_t * ent , gitem_t * item ) ;
@@ -1392,8 +1396,9 @@ extern void SP_func_water ( edict_t * self ) ;
 extern void SP_func_door_rot_dh ( edict_t * ent ) ;
 extern void func_door_rot_dh_init ( edict_t * ent ) ;
 extern void SP_func_door_rotating ( edict_t * ent ) ;
+extern void SP_func_door_dh ( edict_t * ent ) ;
+extern void func_door_dh_init ( edict_t * ent ) ;
 extern void SP_func_door ( edict_t * ent ) ;
-extern void SP_func_door_dh ( edict_t * ent ) ; //mxd
 extern void door_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void door_killed ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void door_destroyed ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;

@@ -157,7 +157,7 @@ __inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list 
 #define CLIENT_THIRDPERSON_CVAR "cg_thirdperson"
 //#define CLIENT_THIRDPERSON_CVAR "cl_3dcam"
 
-//#define SAVEGAME_USE_FUNCTION_TABLE //mxd. Otherwise game saving breaks on levels, which use target_animation, because it uses a custom mmove func...
+#define SAVEGAME_USE_FUNCTION_TABLE //mxd. This breaks game saving on levels, which use target_animation, because it uses a custom mmove func...
 #define SAVEGAME_DLLNAME "Lazarus Quake II mod with CTF"
 #define SAVEGAME_VERSION 1
 

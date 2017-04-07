@@ -370,8 +370,8 @@ void HelpComputer (edict_t *ent)
 			//mxd. Always draw using white text color, also repositioned/removed some stuff
 			"xv 32 yv 28 picn help64 "			// background
 			"xv 202 yv 31 string2 \"^7%s\" "		// skill 
-			"xv 4 yv 60 cstring2 \"^7%s\" "		// level name
-			"xv 4 yv 87 cstring2 \"^7%s\" "		// help 1
+			"xv 8 yv 60 cstring2 \"^7%s\" "		// level name
+			"xv 8 yv 87 cstring2 \"^7%s\" "		// help 1
 			"xv 59 yv 148 string2 \"^7%i/%i\" " // kills
 			"xv 135 yv 148 string2 \"^7%i/%i\" " // goals
 			"xv 211 yv 148 string2 \"^7%i/%i\" ", // secrets

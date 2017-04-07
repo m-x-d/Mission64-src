@@ -287,6 +287,9 @@ void use_target_goal (edict_t *ent, edict_t *other, edict_t *activator)
 	if (level.found_goals == level.total_goals)
 		gi.configstring (CS_CDTRACK, "0");
 
+	//mxd. Skip showing message?
+	if(ent->spawnflags & 2) ent->message = NULL;
+
 	G_UseTargets (ent, activator);
 	G_FreeEdict (ent);
 }
@@ -3928,6 +3931,7 @@ void target_command_use (edict_t *self, edict_t *activator, edict_t *other)
 	gi.unicast (self, true);
 }
 
+//mxd. INFO: this seems to get eaten when other events are triggered at the same tick!
 void SP_target_command (edict_t *self)
 {
 	if(!self->message)
