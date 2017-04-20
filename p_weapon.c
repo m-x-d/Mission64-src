@@ -1529,7 +1529,8 @@ void Chaingun_Fire (edict_t *ent, qboolean altfire)
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
-	gi.WriteByte ((MZ_CHAINGUN1 + shots - 1) | is_silenced);
+	//gi.WriteByte ((MZ_CHAINGUN1 + shots - 1) | is_silenced);
+	gi.WriteByte(MZ_CHAINGUN1 | is_silenced); //mxd. Don't play up to 3 firing sounds at once. Q2 N64 doesn't do that
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
