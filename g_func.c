@@ -3054,24 +3054,27 @@ void train_resume (edict_t *self)
 	vec3_t		adjusted_pathpoint;
 	vec3_t		corner_offset = {1,1,1};
 
-	ent = self->target_ent;
+	if (self->target_ent) //mxd. Because of changes in SP_func_train / SP_model_train we can arrive here without a target...
+	{
+		ent = self->target_ent;
+		//Knightmare- calc the real target for the train's mins,
+		//since that is 1 unit below the corner of the bmodel in all 3 dimensions
+		if (adjust_train_corners->value)
+			VectorSubtract(ent->s.origin, corner_offset, adjusted_pathpoint);
+		else
+			VectorCopy(ent->s.origin, adjusted_pathpoint);
 
-	//Knightmare- calc the real target for the train's mins,
-	//since that is 1 unit below the corner of the bmodel in all 3 dimensions
-	if (adjust_train_corners->value)
-		VectorSubtract(ent->s.origin, corner_offset, adjusted_pathpoint);
-	else
-		VectorCopy(ent->s.origin, adjusted_pathpoint);
+		if (self->spawnflags & TRAIN_ORIGIN)	// Knightmare- func_train_origin support
+			VectorCopy(ent->s.origin, dest);
+		else
+			VectorSubtract(adjusted_pathpoint, self->mins, dest); //was ent->s.origin
+		self->moveinfo.state = STATE_TOP;
+		VectorCopy(self->s.origin, self->moveinfo.start_origin);
+		VectorCopy(dest, self->moveinfo.end_origin);
+		Move_Calc(self, dest, train_wait);
+		self->spawnflags |= TRAIN_START_ON;
+	}
 
-	if (self->spawnflags & TRAIN_ORIGIN)	// Knightmare- func_train_origin support
-		VectorCopy (ent->s.origin, dest);
-	else
-		VectorSubtract (adjusted_pathpoint, self->mins, dest); //was ent->s.origin
-	self->moveinfo.state = STATE_TOP;
-	VectorCopy (self->s.origin, self->moveinfo.start_origin);
-	VectorCopy (dest, self->moveinfo.end_origin);
-	Move_Calc (self, dest, train_wait);
-	self->spawnflags |= TRAIN_START_ON;
 	// Lazarus:
 	if(self->spawnflags & TRAIN_ROTATE_CONSTANT)
 	{
@@ -3271,6 +3274,11 @@ void SP_func_train (edict_t *self)
 		// a chance to spawn
 		self->nextthink = level.time + FRAMETIME;
 		self->think = func_train_find;
+	}
+	else if (self->spawnflags & TRAIN_ROTATE_CONSTANT) //mxd. Let's don't require pathtargets when all we want is constant rotation... 
+	{
+		self->nextthink = level.time + FRAMETIME;
+		self->think = train_resume;
 	}
 	else
 	{

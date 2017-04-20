@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 
 void func_train_find (edict_t *self);
+void train_resume(edict_t *self); //mxd
 void SP_model_spawn (edict_t *ent);
 void train_blocked (edict_t *self, edict_t *other);
 void train_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
@@ -150,6 +151,11 @@ void SP_model_train (edict_t *self)
 		// a chance to spawn
 		self->nextthink = level.time + FRAMETIME;
 		self->think = func_train_find;
+	}
+	else if (self->spawnflags & TRAIN_ROTATE_CONSTANT) //mxd. Let's don't require pathtargets when all we want is constant rotation... 
+	{
+		self->nextthink = level.time + FRAMETIME;
+		self->think = train_resume;
 	}
 	else
 	{
