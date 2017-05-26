@@ -829,7 +829,7 @@ void plat_hit_top (edict_t *ent)
 	ent->moveinfo.state = STATE_TOP;
 
 	ent->think = plat_go_down;
-	ent->nextthink = level.time + (ent->wait ? ent->wait : 3); //mxd. Added wait key
+	ent->nextthink = level.time + (ent->moveinfo.wait ? ent->moveinfo.wait : (ent->wait ? ent->wait : 3)); //mxd. Use movement reset delay if provided, or wait delay, or default delay
 }
 
 void plat_hit_bottom (edict_t *ent)
@@ -971,13 +971,14 @@ void plat_spawn_inside_trigger (edict_t *ent)
 	
 	tmin[0] = ent->mins[0] + 25;
 	tmin[1] = ent->mins[1] + 25;
-	tmin[2] = ent->mins[2];
+	//tmin[2] = ent->mins[2]; //mxd. Never used!
 
 	tmax[0] = ent->maxs[0] - 25;
 	tmax[1] = ent->maxs[1] - 25;
 	tmax[2] = ent->maxs[2] + 8;
 
-	tmin[2] = tmax[2] - (ent->pos1[2] - ent->pos2[2] + st.lip);
+	tmin[2] = tmax[2] - (ent->pos1[2] - ent->pos2[2]); //mxd. Lip is already taken into account in SP_func_plat!
+	//tmin[2] = tmax[2] - (ent->pos1[2] - ent->pos2[2] + st.lip);
 
 	if (ent->spawnflags & PLAT_LOW_TRIGGER)
 		tmax[2] = tmin[2] + 8;
@@ -1079,7 +1080,7 @@ void SP_func_plat (edict_t *ent)
 	ent->moveinfo.speed = ent->speed;
 	ent->moveinfo.accel = ent->accel;
 	ent->moveinfo.decel = ent->decel;
-	ent->moveinfo.wait = ent->wait;
+	ent->moveinfo.wait = (st.pausetime ? st.pausetime : ent->wait); //mxd. Use a separate movement reset delay if provided
 	VectorCopy (ent->pos1, ent->moveinfo.start_origin);
 	VectorCopy (ent->s.angles, ent->moveinfo.start_angles);
 	VectorCopy (ent->pos2, ent->moveinfo.end_origin);
