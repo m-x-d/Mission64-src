@@ -1601,7 +1601,7 @@ void target_earthquake_think (edict_t *self)
 
 	if (self->last_move_time < level.time)
 	{
-		gi.positioned_sound (self->s.origin, self, CHAN_AUTO, self->noise_index, 1.0, ATTN_NONE, 0);
+		gi.positioned_sound (self->s.origin, self, CHAN_AUTO, self->noise_index, self->decel, ATTN_NONE, 0);
 		self->last_move_time = level.time + 0.5;
 	}
 
@@ -1618,12 +1618,24 @@ void target_earthquake_think (edict_t *self)
 		if ((e->groundentity->flags & FL_TRACKTRAIN) && (e->groundentity->moveinfo.state))
 			continue;
 		e->groundentity = NULL;
-		e->velocity[0] += crandom()* 150;
-		e->velocity[1] += crandom()* 150;
+
+		//mxd. "Shake viewport" flag
+		if (self->spawnflags & 2)
+		{
+			e->client->kick_angles[0] += crandom() * self->speed;
+			e->client->kick_angles[1] += crandom() * self->accel;
+		}
+		// Original behaviour
+		else
+		{
+			e->velocity[0] += crandom() * self->accel; // was * 150
+			e->velocity[1] += crandom() * self->accel; // was * 150
+		}
+
 		e->velocity[2] = self->speed * (100.0 / e->mass);
 	}
 
-	if (level.time < self->timestamp)
+	if (level.time < self->timestamp || (self->spawnflags & 1)) //mxd. Added "Infinite duration" flag
 		self->nextthink = level.time + FRAMETIME;
 }
 
@@ -1640,11 +1652,28 @@ void SP_target_earthquake (edict_t *self)
 	if (!self->targetname)
 		gi.dprintf("untargeted %s at %s\n", self->classname, vtos(self->s.origin));
 
-	if (!self->count)
+	if (self->spawnflags & 1) //mxd. "Infinite duration" flag...
+		self->count = 999999; // That's 277,7775 hours
+	else if (!self->count)
 		self->count = 5;
 
 	if (!self->speed)
 		self->speed = 200;
+
+	//mxd. Hijack accel as horizontal velocity modifier...
+	if (!self->accel)
+		self->accel = 150;
+
+	//mxd. Hijack deccel as quake sound volume...
+	if (!self->decel)
+		self->decel = 1;
+
+	//mxd. "Shake viewport" flag
+	if (self->spawnflags & 2)
+	{
+		self->speed /= 100.0; // Much smaller values required
+		self->accel /= 100.0;
+	}
 
 	self->svflags |= SVF_NOCLIENT;
 	self->think = target_earthquake_think;
