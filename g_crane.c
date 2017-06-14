@@ -660,7 +660,8 @@ void G_FindCraneParts()
 		// we set hook speaker spawnflag to require hook to be
 		// moving to play
 		if(hook->speaker)
-			hook->speaker->spawnflags = 1 - (control->spawnflags & 1);
+			hook->speaker->spawnflags = 4; //mxd. Play sound when movin on Z axis
+			//hook->speaker->spawnflags = 1 - (control->spawnflags & 1);
 			
 		// Get offset from hook origin to hoist origin, so we can
 		// correct timing problems
@@ -922,6 +923,43 @@ void crane_control_action(edict_t *control, edict_t *activator, vec3_t point)
 		}
 	}
 
+	//mxd. Gross hacks: change control scheme from
+	// [beam back] [hoist right] [hook raise] [grab   ]
+	// [beam fwd ] [hoist left ] [hook lower] [release]
+	// to
+	// [hook lower ] [beam back] [hook raise ] [grab   ]
+	// [hoist left ] [beam fwd ] [hoist right] [release]
+	//
+	// [c1r0]        [c0r0]      [c2r1]        [c3r1]
+	// [c1r1]        [c0r1]      [c2r0]        [c3r0]
+
+	if(column == 0)
+	{
+		// [hoist right] -> [beam fwd]
+		// [hoist left] -> [beam back]
+		column = 1;
+		row = 1 - row;
+	}
+	else if (column == 1)
+	{
+		if(!row) // [beam back] -> [hook lower]
+		{
+			column = 2;
+		}
+		else // [beam fwd] -> [hoist left]
+		{
+			column = 0;
+		}
+	}
+	else if(column == 2)
+	{
+		// [hook lower] -> [hoist right]
+		if(!row)
+		{
+			column = 0;
+		}
+	}
+
 	switch(column)
 	{
 	case 0:
@@ -1176,6 +1214,17 @@ void crane_control_action(edict_t *control, edict_t *activator, vec3_t point)
 		//==================
 		// hook up/down
 		//==================
+
+		//mxd. First re-parent associated speaker, if any
+		if (hook->speaker && control == hook->crane_onboard_control)
+		{
+			hook->speaker->owner = control;
+			VectorAdd(control->absmin, control->absmax, hook->speaker->s.origin);
+			VectorScale(hook->speaker->s.origin, 0.5, hook->speaker->s.origin);
+			VectorSubtract(hook->speaker->s.origin, control->s.origin, hook->speaker->offset);
+			control->noise_index = hook->noise_index;
+		}
+
 		hook->crane_dir = dir = 2;
 		if(row)
 		{
@@ -1349,8 +1398,8 @@ void crane_control_action(edict_t *control, edict_t *activator, vec3_t point)
 void Use_Crane_Control (edict_t *ent, edict_t *other, edict_t *activator)
 { 
 	ent->spawnflags ^= 1;
-	if(ent->crane_hook->speaker)
-		ent->crane_hook->speaker->spawnflags = 1 - (ent->spawnflags & 1);
+	//if(ent->crane_hook->speaker) //mxd
+		//ent->crane_hook->speaker->spawnflags = 1 - (ent->spawnflags & 1);
 }
 
 void SP_crane_control (edict_t *self)
@@ -1411,7 +1460,8 @@ void SP_crane_hook (edict_t *self)
 		speaker->owner       = self;
 		speaker->think       = Moving_Speaker_Think;
 		speaker->nextthink   = level.time + 2*FRAMETIME;
-		speaker->spawnflags  = 0;       // plays constantly
+		//speaker->spawnflags  = 0;       // plays constantly
+		speaker->spawnflags  = 7;         //mxd. Owner must be moving to play
 		self->speaker        = speaker;
 		VectorAdd(self->absmin,self->absmax,speaker->s.origin);
 		VectorScale(speaker->s.origin,0.5,speaker->s.origin);
