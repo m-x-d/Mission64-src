@@ -644,8 +644,8 @@ void monster_triggered_spawn_use (edict_t *self, edict_t *other, edict_t *activa
 	if (activator->client && !(self->monsterinfo.aiflags & AI_GOOD_GUY))
 		self->enemy = activator;
 	// Lazarus: Add 'em up
-	if(!(self->monsterinfo.aiflags & AI_GOOD_GUY))
-		level.total_monsters++;
+	//if(!(self->monsterinfo.aiflags & AI_GOOD_GUY)) //mxd. Already counted in monster_start
+		//level.total_monsters++;
 	self->use = monster_use;
 }
 
@@ -746,7 +746,7 @@ qboolean monster_start (edict_t *self)
 		self->spawnflags |= SF_MONSTER_SIGHT;
 
 	// Lazarus: Don't add trigger spawned monsters until they are actually spawned
-	if (!(self->monsterinfo.aiflags & AI_GOOD_GUY) && !(self->spawnflags & SF_MONSTER_TRIGGER_SPAWN))
+	//if (!(self->monsterinfo.aiflags & AI_GOOD_GUY) && !(self->spawnflags & SF_MONSTER_TRIGGER_SPAWN)) //mxd. Count them regardless of SF_MONSTER_TRIGGER_SPAWN / AI_GOOD_GUY flags, like in N64 version.
 		level.total_monsters++;
 
 	self->nextthink = level.time + FRAMETIME;
