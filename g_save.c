@@ -326,7 +326,7 @@ void InitGame (void)
 	sv_rollspeed = gi.cvar ("sv_rollspeed", "200", 0);
 	sv_rollangle = gi.cvar ("sv_rollangle", "2", 0);
 	sv_maxvelocity = gi.cvar ("sv_maxvelocity", "2000", 0);
-	sv_gravity = gi.cvar ("sv_gravity", "800", 0);
+	sv_gravity = gi.cvar_forceset ("sv_gravity", "800"); //mxd. gi.cvar -> gi.cvar_forceset, because sice we are now saving gravity we want this to be a reliable default...
 
 	sv_stopspeed = gi.cvar ("sv_stopspeed", "100", 0);		// PGM - was #define in g_phys.c
 	sv_step_fraction = gi.cvar ("sv_step_fraction", "0.90", 0);	// Knightmare- this was a define in p_view.c
@@ -945,6 +945,9 @@ void WriteGame (char *filename, qboolean autosave)
 	fwrite (&i, sizeof(i), 1, f);
 #endif
 
+	//mxd. Save current gravity...
+	fwrite(&sv_gravity->integer, sizeof(sv_gravity->integer), 1, f);
+
 	game.autosaved = autosave;
 	fwrite (&game, sizeof(game), 1, f);
 	game.autosaved = false;
@@ -996,6 +999,10 @@ void ReadGame (char *filename)
 		gi.error ("ReadGame: savegame %s is wrong version (%i, should be %i)\n", filename, i, SAVEGAME_VERSION);
 	}
 #endif // SAVEGAME_USE_FUNCTION_TABLE
+
+	//mxd. Read gravity...
+	fread(&i, sizeof(i), 1, f);
+	gi.cvar_set("sv_gravity", va("%i", i));
 
 	g_edicts =  gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;

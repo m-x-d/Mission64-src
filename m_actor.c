@@ -201,11 +201,11 @@ void actor_walk (edict_t *self)
 }
 
 //mxd
-static float footstep_volume = 0.5;
-static float footstep_volume_loud = 1.0;
+static float footstep_volume = 0.4f;
+static float footstep_volume_loud = 0.7f;
 static float footstep_attenuation = 3.1f;
 static float footstep_attenuation_loud = 2.85f;
-static float footstep_attenuation_mod = 0.5f;
+static float footstep_attenuation_mod = 0.3f;
 
 //mxd
 void actor_footstep_light(edict_t *self)

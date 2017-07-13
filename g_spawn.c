@@ -1651,9 +1651,8 @@ void SP_worldspawn (edict_t *ent)
 	gi.imageindex ("help");
 	gi.imageindex ("field_3");
 
-	if (!st.gravity)
-		gi.cvar_set("sv_gravity", "800");
-	else
+	//mxd. Only when custom gravity wasn't already loaded from the savefile.
+	if (sv_gravity->integer == 800 && st.gravity)
 		gi.cvar_set("sv_gravity", st.gravity);
 
 	snd_fry = gi.soundindex ("player/fry.wav");	// standing in lava / slime

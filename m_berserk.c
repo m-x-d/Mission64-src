@@ -151,15 +151,17 @@ void()	berserk_runb12	=[	$r_att12 ,	berserk_runb7	] {ai_run(19);};
 */
 
 
-mframe_t berserk_frames_run1 [] =
+int berserk_frames_run_distances[] = { 21, 11, 21, 25, 18, 19 }; //mxd. Vanilla run distances
+float berserk_frames_run_distances_multipliers[] = { 1.0, 1.25, 1.5, 1.6 }; //mxd. Distance multipliers per skill
+
+mframe_t berserk_frames_run1[] =
 {
-	//mxd. Run 1.5 faster!
-	ai_run, 31, NULL, //mxd. Was 21
-	ai_run, 16, actor_footstep_heavy_loud, //mxd. Was 11
-	ai_run, 31, NULL, //mxd. Was 21
-	ai_run, 37, NULL, //mxd. Was 25
-	ai_run, 27, actor_footstep_heavy_loud, //mxd. Was 18
-	ai_run, 28, NULL //mxd. Was 19
+	ai_run, 21, NULL,
+	ai_run, 11, actor_footstep_heavy_loud,
+	ai_run, 21, NULL,
+	ai_run, 25, NULL,
+	ai_run, 18, actor_footstep_heavy_loud,
+	ai_run, 19, NULL
 };
 mmove_t berserk_move_run1 = {FRAME_run1, FRAME_run6, berserk_frames_run1, NULL};
 
@@ -521,6 +523,14 @@ void SP_monster_berserk (edict_t *self)
 	if(!self->monsterinfo.flies)
 		self->monsterinfo.flies = 0.20;
 	self->common_name = "Berserker";
+
+	//mxd. Adjust run speed based on skill
+	int i; float m;
+	m = berserk_frames_run_distances_multipliers[max(0, min(3, skill->integer))];
+	for (i = 0; i < 6; i++)
+	{
+		berserk_frames_run1[i].dist = berserk_frames_run_distances[i] * m;
+	}
 
 	gi.linkentity (self);
 
