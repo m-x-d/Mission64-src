@@ -54,7 +54,10 @@ void soldier_idle (edict_t *self)
 void soldier_cock (edict_t *self)
 {
 	if (self->s.frame == FRAME_stand322)
-		gi.sound (self, CHAN_WEAPON, sound_cock, 1, ATTN_IDLE, 0);
+	{
+		if (!(self->spawnflags & SF_MONSTER_AMBUSH)) //mxd. Ambush should be silent
+			gi.sound(self, CHAN_WEAPON, sound_cock, 1, ATTN_IDLE, 0);
+	}
 	else
 		gi.sound (self, CHAN_WEAPON, sound_cock, 1, ATTN_NORM, 0);
 }
