@@ -1307,8 +1307,8 @@ void SV_Physics_Pusher (edict_t *ent)
 			}
 		}
 	}
-	if (pushed_p > &pushed[MAX_EDICTS])
-		gi.error (ERR_FATAL, "pushed_p > &pushed[MAX_EDICTS], memory corrupted");
+	if (pushed_p > &pushed[MAX_EDICTS-1]) //mxd. https://github.com/yquake2/xatrix/commit/5d8b2ae7013a4fc067914c6b7133ca1ca89571a4
+		gi.error (ERR_FATAL, "pushed_p > &pushed[MAX_EDICTS-1], memory corrupted");
 
 	if (part && !part->attracted)
 	{

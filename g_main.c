@@ -512,6 +512,9 @@ void ExitLevel (void)
 			ent->health = ent->client->pers.max_health;
 	}
 
+	//mxd. https://github.com/yquake2/xatrix/commit/291d9852ee54284127b046807f6dac9418e19dc6
+	gibsthisframe = 0;
+	lastgibframe = 0;
 }
 
 /*

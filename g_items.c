@@ -257,7 +257,7 @@ void DoRespawn (edict_t *ent)
 			for (count = 0, ent = master; ent; ent = ent->chain, count++)
 				;
 
-			choice = rand() % count;
+			choice = count ? rand() % count : 0; //mxd. https://github.com/yquake2/yquake2/commit/36a41f9746237b4aff681e05f28fa4853064ca9d
 
 			for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
 				;

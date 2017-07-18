@@ -1190,7 +1190,7 @@ qboolean ai_checkattack (edict_t *self, float dist)
 		if (self->monsterinfo.aiflags & AI_COMBAT_POINT)
 			return false;
 
-		if (self->monsterinfo.aiflags & AI_SOUND_TARGET)
+		if (!visible(self, self->goalentity) && self->monsterinfo.aiflags & AI_SOUND_TARGET) //mxd. https://github.com/yquake2/xatrix/commit/20cdbfe1c03b94e6349134094d1859ec37bf14d1
 		{
 			if ((level.time - self->enemy->teleport_time) > 5.0)
 			{

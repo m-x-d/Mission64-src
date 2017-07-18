@@ -343,8 +343,9 @@ float	anglemod(float a)
 	return a;
 }
 
-	int		i;
-	vec3_t	corners[2];
+	//mxd. https://github.com/yquake2/xatrix/commit/85c0dcb9544755b4cc3042e798ed75c8eb376990 	
+	//int		i;
+	//vec3_t	corners[2];
 
 
 // this is the slow, general version

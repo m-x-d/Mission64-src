@@ -649,6 +649,10 @@ extern	int fuel_index;
 extern	int	rl_index;
 //extern	int	hml_index;
 
+//mxd. https://github.com/yquake2/xatrix/commit/291d9852ee54284127b046807f6dac9418e19dc6
+extern int gibsthisframe;
+extern int lastgibframe;
+
 // means of death
 #define MOD_UNKNOWN			0
 #define MOD_BLASTER			1
