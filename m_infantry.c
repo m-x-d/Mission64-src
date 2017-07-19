@@ -337,6 +337,24 @@ void infantry_dead (edict_t *self)
 	}
 }
 
+//mxd. Skip longer death animations when touched by player
+void infantry_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	if ( !(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0 ) return;
+
+	// Advance animation past firing frames
+	if (self->s.frame > FRAME_death101 && self->s.frame < FRAME_death120 - 5) // stand a bit then fall animation
+		self->monsterinfo.nextframe = FRAME_death120 - 5;
+	else if (self->s.frame > FRAME_death201 && self->s.frame < FRAME_death225 - 6) // "last stand firing" animation
+		self->monsterinfo.nextframe = FRAME_death225 - 4;
+	else
+		return;
+
+	// Play kick sound
+	gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+	if(other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+}
+
 mframe_t infantry_frames_death1 [] =
 {
 	ai_move, -4, NULL,
@@ -436,11 +454,13 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	n = rand() % 3;
 	if (n == 0)
 	{
+		self->touch = infantry_touch; //mxd
 		self->monsterinfo.currentmove = &infantry_move_death1;
 		gi.sound (self, CHAN_VOICE, sound_die2, 1, ATTN_NORM, 0);
 	}
 	else if (n == 1)
 	{
+		self->touch = infantry_touch; //mxd
 		self->monsterinfo.currentmove = &infantry_move_death2;
 		gi.sound (self, CHAN_VOICE, sound_die1, 1, ATTN_NORM, 0);
 	}

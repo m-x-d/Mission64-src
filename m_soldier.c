@@ -1213,7 +1213,9 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		return;
 	}
 
-	n = rand() % 5;
+	//mxd. Skip "last stand" attack (soldier_move_death1) on Easy
+	n = (skill->integer < 1 ? (rand() % 4) + 1 : rand() % 5);
+	//n = rand() % 5;
 	if (n == 0)
 		self->monsterinfo.currentmove = &soldier_move_death1;
 	else if (n == 1)
