@@ -169,6 +169,8 @@ mframe_t flyer_frames_walk [] =
 };
 mmove_t	flyer_move_walk = {FRAME_stand01, FRAME_stand45, flyer_frames_walk, NULL};
 
+int flyer_frames_run_distances_per_skill[] = { 10, 15, 20, 25 }; //mxd. Run distances per skill
+
 mframe_t flyer_frames_run [] =
 {
 	ai_run, 10, NULL,
@@ -654,6 +656,14 @@ void SP_monster_flyer (edict_t *self)
 		self->monsterinfo.power_armor_power = self->powerarmor;
 	}
 	self->common_name = "Flyer";
+
+	//mxd. Adjust run speed based on skill
+	int i, s;
+	s = flyer_frames_run_distances_per_skill[max(0, min(3, skill->integer))];
+	for (i = 0; i < 45; i++)
+	{
+		flyer_frames_run[i].dist = s;
+	}
 
 	gi.linkentity (self);
 
