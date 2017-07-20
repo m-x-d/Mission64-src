@@ -906,9 +906,9 @@ void soldier_dead (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
-	//self->svflags |= SVF_DEADMONSTER; //mxd. Moved to soldier_die
+	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
-	//gi.linkentity (self);
+	gi.linkentity (self);
 	M_FlyCheck (self);
 
 	// Lazarus monster fade
@@ -916,6 +916,43 @@ void soldier_dead (edict_t *self)
 	{
 		self->think=FadeDieSink;
 		self->nextthink=level.time+corpse_fadetime->value;
+	}
+}
+
+//mxd
+int death_anim_ranges[][2] = 
+{ 
+	{ FRAME_death101, FRAME_death136 - 6 },
+	{ FRAME_death201, FRAME_death235 - 5 },
+	{ FRAME_death301, FRAME_death345 - 5 },
+	{ FRAME_death401, FRAME_death453 - 3 },
+	{ FRAME_death501, FRAME_death524 - 4 },
+};
+
+// mxd. Skip longer death animations when touched by player
+void soldier_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	if (!(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0) return;
+
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		if (self->s.frame >= death_anim_ranges[i][0] && self->s.frame < death_anim_ranges[i][1])
+		{
+			// Skip animation
+			self->monsterinfo.nextframe = death_anim_ranges[i][1];
+
+			// Play kick sound
+			gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+			if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+
+			// Stop being solid
+			self->svflags |= SVF_DEADMONSTER;
+			gi.linkentity(self);
+
+			// Done
+			break;
+		}
 	}
 }
 
@@ -1173,17 +1210,13 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 {
 	int		n;
 
-	//mxd. Stop being solid now
-	self->svflags |= SVF_DEADMONSTER;
-	gi.linkentity(self);
-
 	self->s.skinnum |= 1;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
 // check for gib
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB) )
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 3; n++)
+		for (n= 0; n < 5; n++) //mxd. 3 -> 5
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
@@ -1205,6 +1238,9 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		gi.sound (self, CHAN_VOICE, sound_death, 1, ATTN_NORM, 0);
 	else // (self->s.skinnum == 5)
 		gi.sound (self, CHAN_VOICE, sound_death_ss, 1, ATTN_NORM, 0);
+
+	//mxd. Death animation cancellation.
+	self->touch = soldier_touch;
 
 	if (fabs((self->s.origin[2] + self->viewheight) - point[2]) <= 4)
 	{

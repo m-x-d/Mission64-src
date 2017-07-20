@@ -813,6 +813,22 @@ void tank_dead (edict_t *self)
 	}
 }
 
+//mxd. Skip death animation when touched by player
+void tank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	if (!(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0) return;
+
+	if (self->s.frame >= FRAME_death101 && self->s.frame < FRAME_death132 - 7)
+	{
+		// Skip animation
+		self->monsterinfo.nextframe = FRAME_death132 - 7;
+
+		// Play kick sound
+		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+		if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+	}
+}
+
 mframe_t tank_frames_death1 [] =
 {
 	ai_move, -7,  NULL,
@@ -883,6 +899,7 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
+	self->touch = tank_touch; //mxd
 	self->monsterinfo.currentmove = &tank_move_death;
 	
 }

@@ -330,6 +330,52 @@ void chick_dead (edict_t *self)
 	}
 }
 
+//mxd. Skip longer death animation when touched by player
+void chick_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	if (!(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0) return;
+
+	if (self->s.frame >= FRAME_death201 && self->s.frame < FRAME_death223 - 3)
+	{
+		// Skip animation
+		self->monsterinfo.nextframe = FRAME_death223 - 3;
+
+		// Play kick sound
+		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+		if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+	}
+}
+
+//mxd. Occasionally misfire rocket while dying
+void chick_misfire(edict_t *self)
+{
+	qboolean do_misfire, do_click;
+
+	do_misfire = random() < 0.07;
+	do_click = do_misfire || random() > 0.4;
+
+	if(do_click)
+	{
+		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/noammo.wav"), 1, ATTN_NORM, 0);
+	}
+
+	if (do_misfire)
+	{
+		vec3_t	forward, right, start, dir;
+		int	rocketSpeed;
+
+		VectorSet(dir, 0, 0, -1);
+		AngleVectors(self->s.angles, forward, right, NULL);
+		G_ProjectSource(self->s.origin, monster_flash_offset[MZ2_CHICK_ROCKET_1], forward, right, start);
+		rocketSpeed = 200; //500 + (100 * skill->value);
+
+		// Make sure we are gibbed on first firing
+		if(self->s.frame == FRAME_death223 - 4) self->gib_health = -1;
+
+		monster_fire_rocket(self, start, dir, 50, rocketSpeed, MZ2_CHICK_ROCKET_1, NULL);
+	}
+}
+
 mframe_t chick_frames_death2 [] =
 {
 	ai_move, -6, NULL,
@@ -340,17 +386,17 @@ mframe_t chick_frames_death2 [] =
 	ai_move, -1,  NULL,
 	ai_move, -2,  NULL,
 	ai_move, 1,  NULL,
-	ai_move, 10, NULL,
+	ai_move, 10, chick_misfire, //mxd
 	ai_move, 2,  NULL,
-	ai_move, 3,  NULL,
+	ai_move, 3,  chick_misfire,
 	ai_move, 1,  NULL,
-	ai_move, 2, NULL,
+	ai_move, 2, chick_misfire,
 	ai_move, 0,  NULL,
+	ai_move, 3,  chick_misfire,
 	ai_move, 3,  NULL,
-	ai_move, 3,  NULL,
-	ai_move, 1,  NULL,
+	ai_move, 1,  chick_misfire,
 	ai_move, -3,  NULL,
-	ai_move, -5, NULL,
+	ai_move, -5, chick_misfire, //mxd
 	ai_move, 4, NULL,
 	ai_move, 15, NULL,
 	ai_move, 14, NULL,
@@ -386,9 +432,9 @@ void chick_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
+		for (n= 0; n < 3; n++) //mxd. 2 -> 3
 			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
+		for (n= 0; n < 6; n++) //mxd. 4 -> 6
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
@@ -410,6 +456,7 @@ void chick_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 	}
 	else
 	{
+		self->touch = chick_touch; //mxd
 		self->monsterinfo.currentmove = &chick_move_death2;
 		gi.sound (self, CHAN_VOICE, sound_death2, 1, ATTN_NORM, 0);
 	}
@@ -421,7 +468,7 @@ void chick_duck_down (edict_t *self)
 	if (self->monsterinfo.aiflags & AI_DUCKED)
 		return;
 	self->monsterinfo.aiflags |= AI_DUCKED;
-	self->maxs[2] -= 32;
+	self->maxs[2] -= 24; //mxd. 32 -> 24
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.pausetime = level.time + 1;
 	gi.linkentity (self);
@@ -438,7 +485,7 @@ void chick_duck_hold (edict_t *self)
 void chick_duck_up (edict_t *self)
 {
 	self->monsterinfo.aiflags &= ~AI_DUCKED;
-	self->maxs[2] += 32;
+	self->maxs[2] += 24; //mxd. 32 -> 24
 	self->takedamage = DAMAGE_AIM;
 	gi.linkentity (self);
 }

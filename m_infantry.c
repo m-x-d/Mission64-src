@@ -343,9 +343,9 @@ void infantry_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	if ( !(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0 ) return;
 
 	// Advance animation past firing frames
-	if (self->s.frame > FRAME_death101 && self->s.frame < FRAME_death120 - 5) // stand a bit then fall animation
+	if (self->s.frame >= FRAME_death101 && self->s.frame < FRAME_death120 - 5) // stand a bit then fall animation
 		self->monsterinfo.nextframe = FRAME_death120 - 5;
-	else if (self->s.frame > FRAME_death201 && self->s.frame < FRAME_death225 - 6) // "last stand firing" animation
+	else if (self->s.frame >= FRAME_death201 && self->s.frame < FRAME_death225 - 6) // "last stand firing" animation
 		self->monsterinfo.nextframe = FRAME_death225 - 4;
 	else
 		return;
@@ -435,9 +435,9 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
+		for (n= 0; n < 4; n++) //mxd. 2 -> 4
 			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
+		for (n= 0; n < 6; n++) //mxd. 4 -> 6
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
@@ -451,7 +451,9 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
-	n = rand() % 3;
+	//mxd. Skip "last stand" attack (infantry_move_death2) on Easy
+	n = (skill->integer < 1 ? ((rand() % 2) ? 2 : 0) : rand() % 3);
+	//n = rand() % 3;
 	if (n == 0)
 	{
 		self->touch = infantry_touch; //mxd
