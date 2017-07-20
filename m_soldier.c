@@ -944,7 +944,13 @@ void soldier_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 			// Play kick sound
 			gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
-			if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+			if (other->client)
+			{
+				PlayerNoise(other, other->s.origin, PNOISE_SELF);
+
+				// Push player's view up a bit
+				other->client->kick_angles[0] -= 6 + random() * 4;
+			}
 
 			// Stop being solid
 			self->svflags |= SVF_DEADMONSTER;

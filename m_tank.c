@@ -826,6 +826,19 @@ void tank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 		// Play kick sound
 		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
 		if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+
+		// Push player back a bit
+		if (other->client)
+		{
+			vec3_t dir;
+
+			VectorSubtract(other->s.origin, self->s.origin, dir);
+			VectorNormalize(dir);
+			VectorMA(other->velocity, 380, dir, other->velocity);
+
+			// Also push the view up a bit
+			other->client->kick_angles[0] -= 8 + random() * 6;
+		}
 	}
 }
 

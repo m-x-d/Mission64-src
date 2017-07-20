@@ -343,16 +343,34 @@ void infantry_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	if ( !(other->client || (other->flags & FL_ROBOT) || (other->svflags & SVF_MONSTER)) || other->health <= 0 ) return;
 
 	// Advance animation past firing frames
+	int nextframe;
 	if (self->s.frame >= FRAME_death101 && self->s.frame < FRAME_death120 - 5) // stand a bit then fall animation
-		self->monsterinfo.nextframe = FRAME_death120 - 5;
+		nextframe = FRAME_death120 - 5;
 	else if (self->s.frame >= FRAME_death201 && self->s.frame < FRAME_death225 - 6) // "last stand firing" animation
-		self->monsterinfo.nextframe = FRAME_death225 - 4;
-	else
-		return;
+		nextframe = FRAME_death225 - 4;
 
-	// Play kick sound
-	gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
-	if(other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+	if (nextframe) 
+	{
+		// Skip animation
+		self->monsterinfo.nextframe = nextframe;
+		
+		// Play kick sound
+		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+		if (other->client) PlayerNoise(other, other->s.origin, PNOISE_SELF);
+
+		// Push player back a bit
+		if (other->client)
+		{
+			vec3_t dir;
+
+			VectorSubtract(other->s.origin, self->s.origin, dir);
+			VectorNormalize(dir);
+			VectorMA(other->velocity, 340, dir, other->velocity);
+
+			// Also push the view up a bit
+			other->client->kick_angles[0] -= 7 + random() * 5;
+		}
+	}
 }
 
 mframe_t infantry_frames_death1 [] =
