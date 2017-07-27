@@ -595,7 +595,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				else
 				{
 					message = "was shredded by the";
-					message = "'s chain-cannons";
+					message2 = "'s chain-cannons"; //mxd. Should be message2, I think...
 				}
 			}
 			// Makron
@@ -604,7 +604,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				if (mod == MOD_BLASTER)
 				{
 					message = "was melted by the";
-					message = "'s hyperblaster";
+					message2 = "'s hyperblaster"; //mxd. Should be message2, I think...
 				}
 				else if (mod == MOD_RAILGUN)
 					message = "was railed by the";
@@ -812,9 +812,10 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		if (ctf->value)
 		{
 			// if at start and same team, clear
-			if (ctf->value && meansOfDeath == MOD_TELEFRAG &&
+			if (meansOfDeath == MOD_TELEFRAG &&
 				self->client->resp.ctf_state < 2 &&
-				self->client->resp.ctf_team == attacker->client->resp.ctf_team) {
+				self->client->resp.ctf_team == attacker->client->resp.ctf_team)
+			{
 				attacker->client->resp.score--;
 				self->client->resp.ctf_state = 0;
 			}

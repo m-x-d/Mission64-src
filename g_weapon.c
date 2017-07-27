@@ -1179,7 +1179,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 		rocket->nextthink = level.time + FRAMETIME;
 		rocket->think = homing_think;
 		rocket->starttime = level.time + 0.3; // play homing sound on 3rd frame
-		rocket->endtime   = level.time + 8000/speed;
+		rocket->endtime   = level.time + 8000.0/speed; //mxd. 8000 -> 8000.0
 
 		if (self->client)
 		{
@@ -1191,7 +1191,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	else
 	{
 		rocket->classname = "rocket";
-		rocket->nextthink = level.time + 8000/speed;
+		rocket->nextthink = level.time + 8000.0/speed; //mxd. 8000 -> 8000.0
 		rocket->think = G_FreeEdict;
 		Rocket_Evade (rocket, dir, speed);
 	}
@@ -1522,7 +1522,7 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 	bfg->s.modelindex = gi.modelindex ("sprites/s_bfg1.sp2");
 	bfg->owner = self;
 	bfg->touch = bfg_touch;
-	bfg->nextthink = level.time + 8000/speed;
+	bfg->nextthink = level.time + 8000.0/speed; //mxd. 8000 -> 8000.0
 	bfg->think = G_FreeEdict;
 	bfg->radius_dmg = damage;
 	bfg->dmg_radius = damage_radius;

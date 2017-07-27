@@ -1237,10 +1237,13 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	dropped->s.effects = item->world_model_flags;
 	dropped->s.renderfx = RF_GLOW | RF_IR_VISIBLE;
 	dropped->s.angles[1] = ent->s.angles[1];	// Knightmare- preserve yaw from dropping entity
-	if (rand() > 0.5)							// ranomize it a bit
+	/*if (rand() > 0.5)							// ranomize it a bit
 		dropped->s.angles[1] += rand()*45;
 	else
-		dropped->s.angles[1] -= rand()*45;
+		dropped->s.angles[1] -= rand()*45;*/
+
+	//mxd. Actually ranomize it a bit (and not in 0 .. 32767 range like rand() does)
+	dropped->s.angles[1] += crandom() * 45;
 
 //	VectorSet (dropped->mins, -15, -15, -15);
 //	VectorSet (dropped->maxs, 15, 15, 15);

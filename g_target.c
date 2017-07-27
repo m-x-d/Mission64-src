@@ -2644,7 +2644,7 @@ void target_attractor_think_single (edict_t *self)
 	int		i;
 	int		num_targets = 0;
 	
-	if(!self->spawnflags & ATTRACTOR_ON) return;
+	if(!(self->spawnflags & ATTRACTOR_ON)) return; //mxd. V564 The '&' operator is applied to bool type value.
 
 	previous_target = self->target_ent;
 	target      = NULL;
@@ -2835,7 +2835,7 @@ void target_attractor_think(edict_t *self)
 	int		ent_start;
 	int		num_targets = 0;
 
-	if(!self->spawnflags & ATTRACTOR_ON) return;
+	if(!(self->spawnflags & ATTRACTOR_ON)) return; //mxd. V564 The '&' operator is applied to bool type value.
 
 	if(self->moveinfo.speed != self->speed) {
 		if(self->speed > 0)
@@ -2848,7 +2848,7 @@ void target_attractor_think(edict_t *self)
 	ent_start = 1;
 	while(true)
 	{
-		if(self->spawnflags & (ATTRACTOR_PLAYER || ATTRACTOR_MONSTER))
+		if(self->spawnflags & (ATTRACTOR_PLAYER | ATTRACTOR_MONSTER)) //mxd. ATTRACTOR_PLAYER || ATTRACTOR_MONSTER --> ATTRACTOR_PLAYER | ATTRACTOR_MONSTER
 		{
 			target = NULL;
 			for(i=ent_start, ent=&g_edicts[ent_start];i<globals.num_edicts && !target; i++, ent++)
