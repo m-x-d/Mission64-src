@@ -105,6 +105,32 @@ void VelocityForDamage (int damage, vec3_t v)
 		VectorScale (v, 1.2, v);
 }
 
+//mxd
+void VelocityForDamageDirectional(int damage, vec3_t dir, vec3_t v)
+{
+	v[0] = 100.0 * random();
+	v[1] = 100.0 * random();
+	v[2] = 200.0 + 100.0 * crandom();
+
+	int i;
+	for (i = 0; i < 3; i++)
+	{
+		if(fabs(dir[i]) < 0.1f)
+		{
+			v[i] *= 0.1f;
+		}
+		else
+		{
+			v[i] *= (dir[i] > 0 ? 1 : -1) * max(1.5f, fabs(dir[i]));
+		}
+	}
+
+	if (damage < 50)
+		VectorScale(v, 0.7, v);
+	else
+		VectorScale(v, 1.2, v);
+}
+
 void ClipGibVelocity (edict_t *ent)
 {
 	if (ent->velocity[0] < -300)
@@ -151,8 +177,8 @@ void gib_fade (edict_t *self)
 void gib_fade2 (edict_t *self)
 {
 	self->s.alpha -= 0.05F;
-	self->s.alpha = max(self->s.alpha, 1/255);
-	if (self->s.alpha <= 1/255)
+	//self->s.alpha = max(self->s.alpha, 1/255);
+	if (self->s.alpha <= 0.0f) //mxd. Is there much difference between comparing to 0,003 and to 0, given the step is 0.05?..
 	{
 		G_FreeEdict (self);
 		return;
@@ -197,9 +223,31 @@ void gib_think (edict_t *self)
 	}
 }
 
+//mxd. Expects "plane" to exist
+void gib_align_to_plane(edict_t *self, cplane_t *plane)
+{
+	if (plane->type == 2) // Horizontal plane
+	{
+		self->s.angles[PITCH] = 0;
+		self->s.angles[ROLL] = 90;
+	}
+	else
+	{
+		vec3_t	normal_angles, right;
+		
+		vectoangles(plane->normal, normal_angles);
+		AngleVectors(normal_angles, NULL, right, NULL);
+		vectoangles(right, self->s.angles);
+		self->s.angles[ROLL] += 90;
+	}
+
+	// Stop rotating
+	VectorClear(self->avelocity);
+}
+
 void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	vec3_t	normal_angles, right;
+	/*vec3_t	normal_angles, right;
 
 	if (!self->groundentity)
 		return;
@@ -220,6 +268,33 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 			self->think = gib_think;
 			self->nextthink = level.time + FRAMETIME;
 		}
+	}*/
+
+	//mxd
+	if (!plane) return;
+
+	gi.sound(self, CHAN_VOICE, gi.soundindex("misc/fhit3.wav"), 0.3, ATTN_NORM, 0);
+
+	// Align to touched surface if we are going to stop...
+	if (VectorLength(self->velocity) < 200)
+	{
+		gib_align_to_plane(self, plane);
+		self->touch = NULL;
+	}
+}
+
+//mxd
+void gib_metal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	if (!plane) return;
+
+	gi.sound(self, CHAN_VOICE, gi.soundindex("chick/Chkfall1.wav"), 0.3, ATTN_NORM, 0);
+
+	// Align to touched surface if we are going to stop...
+	if (VectorLength(self->velocity) < 200)
+	{
+		gib_align_to_plane(self, plane);
+		self->touch = NULL;
 	}
 }
 
@@ -228,7 +303,7 @@ void gib_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, 
 	G_FreeEdict (self);
 }
 
-void ThrowGib (edict_t *self, char *gibname, int damage, int type)
+edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. void -> edict_t
 {
 	edict_t *gib;
 	vec3_t	vd;
@@ -247,11 +322,12 @@ void ThrowGib (edict_t *self, char *gibname, int damage, int type)
 	}
 	gibsthisframe++;
 	if (gibsthisframe > sv_maxgibs->value)
-		return;
+		return NULL;
 
 	gib = G_Spawn();
 
 	gib->classname = "gib";
+	gib->class_id = ENTITY_GIB; //mxd
 	//gib->classname = gi.TagMalloc (4,TAG_LEVEL);
 	//strcpy(gib->classname,"gib");
 
@@ -309,6 +385,7 @@ void ThrowGib (edict_t *self, char *gibname, int damage, int type)
 	else
 	{
 		gib->movetype = MOVETYPE_BOUNCE;
+		gib->touch = gib_metal_touch; //mxd
 		vscale = 1.0;
 	}
 
@@ -325,6 +402,51 @@ void ThrowGib (edict_t *self, char *gibname, int damage, int type)
 	gib->s.renderfx |= RF_IR_VISIBLE;
 
 	gi.linkentity (gib);
+
+	return gib; //mxd
+}
+
+//mxd
+edict_t* ThrowGibEx(edict_t *self, char *gibname, int damage, int type, vec3_t position, vec3_t direction, vec3_t velocity_scale, vec3_t angular_velocity_scale)
+{
+	edict_t *gib;
+	vec3_t	vd;
+
+	// Do the regular stuff...
+	gib = ThrowGib(self, gibname, damage, type);
+	if (!gib) return NULL;
+
+	// Adjust velocity
+	if(direction)
+	{
+		VelocityForDamageDirectional(damage, direction, vd);
+		VectorMA(self->velocity, (type == GIB_ORGANIC ? 0.5f : 1.0f), vd, gib->velocity);
+		ClipGibVelocity(gib);
+	}
+
+	// Adjust position
+	if(position)
+	{
+		VectorCopy(position, gib->s.origin);
+	}
+
+	// Adjust velocity
+	if(velocity_scale)
+	{
+		gib->velocity[0] *= velocity_scale[0];
+		gib->velocity[1] *= velocity_scale[1];
+		gib->velocity[2] *= velocity_scale[2];
+	}
+
+	// Adjust angular velocity
+	if(angular_velocity_scale)
+	{
+		gib->avelocity[0] *= angular_velocity_scale[0];
+		gib->avelocity[1] *= angular_velocity_scale[1];
+		gib->avelocity[2] *= angular_velocity_scale[2];
+	}
+
+	return gib;
 }
 
 // NOTE: SP_gib is ONLY intended to be used for gibs that change maps
@@ -360,7 +482,10 @@ void SP_gib (edict_t *gib)
 	gib->die = gib_die;
 	if (gib->style == GIB_ORGANIC)
 		gib->touch = gib_touch;
+	else
+		gib->touch = gib_metal_touch; //mxd
 	gib->think = gib_delayed_start;
+	gib->class_id = ENTITY_GIB; //mxd
 	gib->nextthink = level.time + FRAMETIME;
 	gi.linkentity (gib);
 }
@@ -396,6 +521,7 @@ void ThrowHead (edict_t *self, char *gibname, int damage, int type)
 	self->s.modelindex2 = 0;
 	gi.setmodel (self, modelname);
 
+	self->class_id = ENTITY_GIBHEAD; //mxd
 	self->solid = SOLID_NOT;
 	if(self->blood_type == 1)
 	{
@@ -427,6 +553,7 @@ void ThrowHead (edict_t *self, char *gibname, int damage, int type)
 	else
 	{
 		self->movetype = MOVETYPE_BOUNCE;
+		self->touch = gib_metal_touch; //mxd
 		vscale = 1.0;
 	}
 
@@ -469,7 +596,10 @@ void SP_gibhead (edict_t *gib)
 
 	if (gib->style == GIB_ORGANIC)
 		gib->touch = gib_touch;
+	else
+		gib->touch = gib_metal_touch; //mxd
 
+	gib->class_id = ENTITY_GIBHEAD; //mxd
 	gib->think = gib_delayed_start;
 	gib->nextthink = level.time + FRAMETIME;
 	gi.linkentity (gib);
@@ -1877,7 +2007,7 @@ void barrel_explode (edict_t *self)
 		ThrowDebris (self, "models/objects/barrel_gibs/gib3.md2",  spd, org, 0, 0);
 
 		// a bunch of little chunks
-		spd = 2 * self->dmg / 200;
+		spd = 2.0f * self->dmg / 200.0f; //mxd. Changed ints to floats
 		for (i = 0; i < 8; i++)
 		{
 			org[0] = self->s.origin[0] + crandom() * size[0];
@@ -1919,7 +2049,7 @@ void barrel_explode (edict_t *self)
 		ThrowDebris (self, "models/objects/debris3/tris.md2", spd, org, 0, 0);
 
 		// a bunch of little chunks
-		spd = 2 * self->dmg / 200;
+		spd = 2.0f * self->dmg / 200.0f; //mxd. Changed ints to floats
 		org[0] = self->s.origin[0] + crandom() * size[0];
 		org[1] = self->s.origin[1] + crandom() * size[1];
 		org[2] = self->s.origin[2] + crandom() * size[2];

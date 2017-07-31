@@ -1041,7 +1041,8 @@ void EndDMLevel (void);
 //
 void ThrowHead (edict_t *self, char *gibname, int damage, int type);
 void ThrowClientHead (edict_t *self, int damage);
-void ThrowGib (edict_t *self, char *gibname, int damage, int type);
+edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type); //mxd. void -> edict_t
+edict_t* ThrowGibEx (edict_t *self, char *gibname, int damage, int type, vec3_t position, vec3_t direction, vec3_t velocity_scale, vec3_t angular_velocity_scale); //mxd
 void BecomeExplosion1(edict_t *self);
 void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 void barrel_explode (edict_t *self);
@@ -1089,6 +1090,9 @@ void M_CheckGround (edict_t *ent);
 qboolean M_SetDeath (edict_t *ent,mmove_t **moves);
 int  PatchMonsterModel (char *model);
 void AdjustAccuracy(edict_t * self, vec3_t target); //mxd
+void PositionToWorld(edict_t *self, vec3_t localpos, vec3_t result); //mxd
+void NormalToWorld(edict_t *self, vec3_t localnormal, vec3_t result); //mxd
+void M_SpawnEffect(edict_t *self, int effect, vec3_t localpos, vec3_t localnormal); //mxd
 //
 // g_patchplayermodels.c
 //

@@ -2647,7 +2647,7 @@ void train_yaw (edict_t *self);
 void train_spline (edict_t *self);
 void train_children_think(edict_t *self)
 {
-	if (!self || self->enemy) return;
+	if (!self || !self->enemy) return; //mxd. self->enemy -> !self->enemy
 
 	if(self->enemy->spawnflags & TRAIN_ROTATE)
 	{

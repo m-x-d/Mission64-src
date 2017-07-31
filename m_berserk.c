@@ -406,6 +406,17 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		for (n= 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+
+		//mxd. Throw some MOAR custom gibs
+		int power;
+		power = damage / 2;
+		ThrowGib(self, "models/objects/gibs/berserk/arm_left.md2", power, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/berserk/arm_left_u.md2", power, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/berserk/arm_right.md2", power, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/berserk/arm_right_u.md2", power, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/berserk/leg_left.md2", power, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/berserk/leg_right.md2", power, GIB_METALLIC);
+
 		self->deadflag = DEAD_DEAD;
 		return;
 	}

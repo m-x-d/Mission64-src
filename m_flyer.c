@@ -582,6 +582,7 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 		ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
 	for (n= 0; n < 4; n++) //mxd. 2 -> 4
 		ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+	ThrowGib(self, "models/objects/gibs/skull/tris.md2", damage, GIB_ORGANIC); //mxd
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	BecomeExplosion1(self);
 }

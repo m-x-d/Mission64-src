@@ -1145,7 +1145,7 @@ void Cmd_WeapPrev_f (edict_t *ent)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
 			continue;
-		if (it->classname == "weapon_null")
+		if (!strcmp(it->classname, "weapon_null"))
 			continue; //mxd. Don't switch to "No Weapon" ples
 		
 		//mxd. Don't display "No ammo for unrelated weapon" messages
@@ -1188,7 +1188,7 @@ void Cmd_WeapNext_f (edict_t *ent)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
 			continue;
-		if (it->classname == "weapon_null")
+		if (!strcmp(it->classname, "weapon_null"))
 			continue; //mxd. Don't switch to "No Weapon" ples
 		
 		//mxd. Don't display "No ammo for unrelated weapon" messages

@@ -141,6 +141,78 @@ void infantry_fidget (edict_t *self)
 		gi.sound (self, CHAN_VOICE, sound_idle, 1, ATTN_IDLE, 0);
 }
 
+//mxd. 54 frames.
+vec3_t infantry_bleed_positions[][2] =
+{
+	// x, y, z, nx, ny, nz
+	{ -4.722, 0.083, 23.434, -0.208, 0.368, 0.906 }, // Frame 125
+	{ -4.913, -1.692, 23.322, -0.253, 0.334, 0.908 }, // Frame 126
+	{ -5.188, -3.52, 23.049, -0.14, 0.086, 0.986 }, // Frame 127
+	{ -6.274, 0.656, 22.046, -0.218, 0.387, 0.896 }, // Frame 128
+	{ -5.094, 4.887, 20.514, 0.145, 0.285, 0.947 }, // Frame 129
+	{ -5.205, 4.745, 20.984, 0.14, 0.274, 0.951 }, // Frame 130
+	{ -5.87, 4.172, 21.038, -0.299, 0.278, 0.913 }, // Frame 131
+	{ -6.267, 3.602, 21.166, -0.183, 0.533, 0.826 }, // Frame 132
+	{ -5.983, 2.93, 21.291, -0.024, 0.513, 0.858 }, // Frame 133
+	{ -3.787, 3.072, 22.175, 0.195, 0.194, 0.961 }, // Frame 134
+	{ 0.203, 2.497, 20.875, 0.614, 0.327, 0.718 }, // Frame 135
+	{ 3.265, 1.72, 17.998, 0.899, 0.368, 0.24 }, // Frame 136
+	{ 7.761, 1.572, 13.992, 0.894, 0.437, 0.1 }, // Frame 137
+	{ 8.185, 0.733, 14.951, 0.69, 0.55, 0.47 }, // Frame 138
+	{ 8.625, 1.1, 16.022, 0.52, 0.518, 0.679 }, // Frame 139
+	{ 1.449, 6.383, 9.446, -0.156, 0.09, 0.984 }, // Frame 140
+	{ 13.601, 1.04, -1.854, 0.85, 0.145, 0.506 }, // Frame 141
+	{ 15.255, 5.221, -19.717, 0.974, 0.006, 0.226 }, // Frame 142
+	{ 17.518, 5.759, -20.409, 0.979, 0.189, -0.079 }, // Frame 143
+	{ 20.485, 6.008, -20.05, 0.953, 0.283, -0.108 }, // Frame 144
+	{ -9.446, 0.029, 21.451, 0, 1, 0 }, // Frame 145
+	{ -5.265, 1.806, 19.379, -0.057, 0.359, 0.932 }, // Frame 146
+	{ -0.467, 3.214, 16.207, 0.717, 0.342, 0.608 }, // Frame 147
+	{ 3.926, 3.268, 11.674, 0.909, 0.389, 0.146 }, // Frame 148
+	{ 5.667, 1.71, 9.608, 0.909, 0.414, 0.041 }, // Frame 149
+	{ 7.333, -0.761, 7.69, 0.918, 0.393, -0.052 }, // Frame 150
+	{ 7.628, -3.145, 8.68, 0.893, 0.45, 0.017 }, // Frame 151
+	{ 2.914, -6.246, 12.103, 0.779, 0.627, 0 }, // Frame 152
+	{ -3.354, -8.956, 15.062, 0, 1, 0 }, // Frame 153
+	{ -4.606, -8.184, 15.43, 0.816, 0.408, 0.408 }, // Frame 154
+	{ -4.15, -7.312, 15.623, 0, 0, 0 }, // Frame 155
+	{ -3.478, -6.4, 15.839, 0, 1, 0 }, // Frame 156
+	{ -2.367, -5.596, 16.07, 0, 0, 0 }, // Frame 157
+	{ -3.162, -4.647, 16.36, 0, 1, 0 }, // Frame 158
+	{ -3.082, -3.797, 16.352, 0, 1, 0 }, // Frame 159
+	{ -1.484, -2.545, 16.325, 0, 0, 0 }, // Frame 160
+	{ -1.702, -1.324, 16.188, 1, 0, 0 }, // Frame 161
+	{ -1.972, -2.4, 15.842, 0.74, 0.244, 0.627 }, // Frame 162
+	{ -3.623, -3.048, 15.4, 0, 0, 1 }, // Frame 163
+	{ -6.679, -2.962, 15.39, 0, 0, 0 }, // Frame 164
+	{ -12.206, -2.921, 11.42, -1, 0, 0 }, // Frame 165
+	{ -17.999, -3.464, -0.368, 0, 0, 0 }, // Frame 166
+	{ -15.849, -3.857, -12.581, 0, 0, 0 }, // Frame 167
+	{ -19.962, -3.142, -12.381, 0, 0, 0 }, // Frame 168
+	{ -20.71, -2.108, -12.249, 0, 0, 0 }, // Frame 169
+	{ 0.612, 0.702, 25.392, 0.363, 0.352, 0.863 }, // Frame 170
+	{ -8.682, 1.569, 19.231, -0.253, 0.308, 0.917 }, // Frame 171
+	{ -8.089, 2.514, -7.319, -0.766, 0.275, 0.581 }, // Frame 172
+	{ -8.429, 2.702, -15.403, -0.95, 0.291, -0.11 }, // Frame 173
+	{ -3.807, 2.269, -23.078, -0.621, 0.3, -0.724 }, // Frame 174
+	{ -3.807, 2.269, -23.078, -0.621, 0.3, -0.724 }, // Frame 175
+	{ 21.655, 3.993, -13.767, 0.843, 0.239, 0.482 }, // Frame 176
+	{ 22.671, 3.691, -19.448, 0.952, 0.216, 0.216 }, // Frame 177
+	{ 22.783, 3.691, -19.453, 0.951, 0.218, 0.219 }, // Frame 178
+};
+
+
+//mxd. Spawn some blood using precalculated positions...
+void infantry_bleed(edict_t *self)
+{
+	if (random() > 0.7f) return;
+
+	int i;
+	i = self->s.frame - FRAME_death101;
+
+	M_SpawnEffect(self, (random() > 0.8f ? TE_MOREBLOOD : TE_BLOOD), infantry_bleed_positions[i][0], infantry_bleed_positions[i][1]);
+}
+
 mframe_t infantry_frames_walk [] =
 {
 	ai_walk, 5,  NULL,
@@ -304,6 +376,9 @@ void InfantryMachineGun (edict_t *self)
 
 		VectorSubtract (self->s.angles, aimangles[flash_number-MZ2_INFANTRY_MACHINEGUN_2], vec);
 		AngleVectors (vec, forward, NULL, NULL);
+
+		//mxd. Also BLEED!
+		infantry_bleed(self);
 	}
 
 	monster_fire_bullet (self, start, forward, 3, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
@@ -348,6 +423,8 @@ void infantry_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 		nextframe = FRAME_death120 - 5;
 	else if (self->s.frame >= FRAME_death201 && self->s.frame < FRAME_death225 - 6) // "last stand firing" animation
 		nextframe = FRAME_death225 - 4;
+	else
+		nextframe = 0;
 
 	if (nextframe) 
 	{
@@ -375,42 +452,42 @@ void infantry_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 
 mframe_t infantry_frames_death1 [] =
 {
-	ai_move, -4, NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, -1, NULL,
-	ai_move, -4, NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, -1, NULL,
-	ai_move, 3,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, -2, NULL,
-	ai_move, 2,  NULL,
-	ai_move, 2,  NULL,
-	ai_move, 9,  NULL,
-	ai_move, 9,  NULL,
-	ai_move, 5,  NULL,
-	ai_move, -3, NULL,
-	ai_move, -3, NULL
+	ai_move, -4, infantry_bleed, //mxd. NULL -> infantry_bleed
+	ai_move, 0,  infantry_bleed,
+	ai_move, 0,  infantry_bleed,
+	ai_move, -1, infantry_bleed,
+	ai_move, -4, infantry_bleed,
+	ai_move, 0,  infantry_bleed,
+	ai_move, 0,  infantry_bleed,
+	ai_move, 0,  infantry_bleed,
+	ai_move, -1, infantry_bleed,
+	ai_move, 3,  infantry_bleed,
+	ai_move, 1,  infantry_bleed,
+	ai_move, 1,  infantry_bleed,
+	ai_move, -2, infantry_bleed,
+	ai_move, 2,  infantry_bleed,
+	ai_move, 2,  infantry_bleed,
+	ai_move, 9,  infantry_bleed,
+	ai_move, 9,  infantry_bleed,
+	ai_move, 5,  infantry_bleed,
+	ai_move, -3, infantry_bleed,
+	ai_move, -3, infantry_bleed
 };
 mmove_t infantry_move_death1 = {FRAME_death101, FRAME_death120, infantry_frames_death1, infantry_dead};
 
 // Off with his head
 mframe_t infantry_frames_death2 [] =
 {
-	ai_move, 0,   NULL,
-	ai_move, 1,   NULL,
-	ai_move, 5,   NULL,
-	ai_move, -1,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 1,   NULL,
-	ai_move, 1,   NULL,
-	ai_move, 4,   NULL,
-	ai_move, 3,   NULL,
-	ai_move, 0,   NULL,
+	ai_move, 0,   infantry_bleed, //mxd. NULL -> infantry_bleed
+	ai_move, 1,   infantry_bleed,
+	ai_move, 5,   infantry_bleed,
+	ai_move, -1,  infantry_bleed,
+	ai_move, 0,   infantry_bleed,
+	ai_move, 1,   infantry_bleed,
+	ai_move, 1,   infantry_bleed,
+	ai_move, 4,   infantry_bleed,
+	ai_move, 3,   infantry_bleed,
+	ai_move, 0,   infantry_bleed,
 	ai_move, -2,  InfantryMachineGun,
 	ai_move, -2,  InfantryMachineGun,
 	ai_move, -3,  InfantryMachineGun,
@@ -423,9 +500,9 @@ mframe_t infantry_frames_death2 [] =
 	ai_move, -10, InfantryMachineGun,
 	ai_move, -7,  InfantryMachineGun,
 	ai_move, -8,  InfantryMachineGun,
-	ai_move, -6,  NULL,
-	ai_move, 4,   NULL,
-	ai_move, 0,   NULL
+	ai_move, -6,  infantry_bleed,
+	ai_move, 4,   infantry_bleed,
+	ai_move, 0,   infantry_bleed
 };
 mmove_t infantry_move_death2 = {FRAME_death201, FRAME_death225, infantry_frames_death2, infantry_dead};
 
@@ -443,6 +520,13 @@ mframe_t infantry_frames_death3 [] =
 };
 mmove_t infantry_move_death3 = {FRAME_death301, FRAME_death309, infantry_frames_death3, infantry_dead};
 
+//mxd
+qboolean is_headless(edict_t *self)
+{
+	if (self->s.frame >= FRAME_death101 && self->s.frame <= FRAME_death120) return true;
+	if (self->s.frame >= FRAME_death201 && self->s.frame <= FRAME_death225) return true;
+	return false;
+}
 
 void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
@@ -457,7 +541,7 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
 		for (n= 0; n < 6; n++) //mxd. 4 -> 6
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+		if(!is_headless(self)) ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC); //mxd. Don't throw 2 heads...
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
@@ -469,6 +553,11 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
+	//mxd. Calculate head position
+	vec3_t head_pos;
+	VectorSet(head_pos, 0, 0, self->maxs[2] - 8);
+	VectorAdd(head_pos, self->s.origin, head_pos);
+
 	//mxd. Skip "last stand" attack (infantry_move_death2) on Easy
 	n = (skill->integer < 1 ? ((rand() % 2) ? 2 : 0) : rand() % 3);
 	//n = rand() % 3;
@@ -477,12 +566,18 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 		self->touch = infantry_touch; //mxd
 		self->monsterinfo.currentmove = &infantry_move_death1;
 		gi.sound (self, CHAN_VOICE, sound_die2, 1, ATTN_NORM, 0);
+		
+		//mxd. Throw head now
+		ThrowGibEx(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC, head_pos, NULL, NULL, NULL);
 	}
 	else if (n == 1)
 	{
 		self->touch = infantry_touch; //mxd
 		self->monsterinfo.currentmove = &infantry_move_death2;
 		gi.sound (self, CHAN_VOICE, sound_die1, 1, ATTN_NORM, 0);
+
+		//mxd. Throw head now
+		ThrowGibEx(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC, head_pos, NULL, NULL, NULL);
 	}
 	else
 	{

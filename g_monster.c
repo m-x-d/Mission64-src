@@ -572,6 +572,45 @@ void deadmonster_think (edict_t *self)
 	M_SetEffects (self);
 }
 
+//mxd. Translates position to world space...
+void PositionToWorld(edict_t *self, vec3_t localpos, vec3_t result)
+{
+	vec3_t forward, right;
+	AngleVectors(self->s.angles, forward, right, NULL);
+	G_ProjectSource(self->s.origin, localpos, forward, right, result);
+}
+
+//mxd. Rotates normal to match model angles...
+void NormalToWorld(edict_t *self, vec3_t localnormal, vec3_t result)
+{
+	vec3_t angles, axis[3];
+
+	VectorCopy(self->s.angles, angles);
+	angles[1] *= -1; // I have no clue why this is needed...
+	AnglesToAxis(angles, axis);
+	VectorRotate(localnormal, axis, result);
+}
+
+//mxd. Only target_effect_sparks-compatible effects are actually supported...
+void M_SpawnEffect(edict_t *self, int effect, vec3_t localpos, vec3_t localnormal)
+{
+	vec3_t pos, normal;
+
+	// Translate spawn position to world space...
+	PositionToWorld(self, localpos, pos);
+
+	// Rotate normal to match model angles...
+	NormalToWorld(self, localnormal, normal);
+
+	// Spawn blood
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(effect);
+	gi.WritePosition(pos);
+	if (effect != TE_CHAINFIST_SMOKE)
+		gi.WriteDir(normal);
+	gi.multicast(pos, MULTICAST_PVS);
+}
+
 
 /*
 ================

@@ -626,7 +626,7 @@ void floater_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
 	for (n= 0; n < 2; n++)
 		ThrowGib (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
-	ThrowHead(self, "models/objects/gibs/skull/tris.md2", damage, GIB_ORGANIC); //mxd
+	ThrowGib(self, "models/objects/gibs/skull/tris.md2", damage, GIB_ORGANIC); //mxd
 	gi.sound (self, CHAN_VOICE, sound_death1, 1, ATTN_NORM, 0);
 	BecomeExplosion1(self);
 }

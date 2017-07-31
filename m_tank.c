@@ -48,6 +48,55 @@ static int	sound_strike;
 // misc
 //
 
+//mxd. 32 frames.
+vec3_t tank_bleed_positions[][2] =
+{
+	// x, y, z, nx, ny, nz
+	{ -13.737, 7.487, 48.963, -0.449, 0.639, 0.624 }, // Frame 222
+	{ -15.639, 15.196, 45.571, -0.584, 0.386, 0.714 }, // Frame 223
+	{ -13.459, 12.627, 45.747, -0.518, 0.533, 0.668 }, // Frame 224
+	{ -10.057, 2.937, 47.546, -0.164, 0.872, 0.461 }, // Frame 225
+	{ 2.708, -5.499, 44.988, 0.428, 0.903, 0.038 }, // Frame 226
+	{ 13.522, -1.689, 35.976, 0.747, 0.519, -0.417 }, // Frame 227
+	{ 17.731, 7.344, 26.636, 0.71, 0.146, -0.689 }, // Frame 228
+	{ 17.232, 9.804, 22.892, 0.622, 0.033, -0.782 }, // Frame 229
+	{ 17.313, 6.365, 22.869, 0.635, 0.033, -0.772 }, // Frame 230
+	{ 18.881, 1.307, 23.725, 0.645, 0.117, -0.755 }, // Frame 231
+	{ 19.305, -4.529, 25.098, 0.66, 0.222, -0.718 }, // Frame 232
+	{ 18.449, -9.627, 27.366, 0.687, 0.313, -0.655 }, // Frame 233
+	{ 17.306, -12.755, 29.438, 0.712, 0.383, -0.589 }, // Frame 234
+	{ 18.267, -12.446, 32.967, 0.781, 0.393, -0.486 }, // Frame 235
+	{ 17.266, -10.264, 36.858, 0.871, 0.386, -0.305 }, // Frame 236
+	{ 15.903, -6.849, 40.285, 0.939, 0.327, -0.103 }, // Frame 237
+	{ 17.235, -3.527, 41.589, 0.958, 0.284, 0.047 }, // Frame 238
+	{ 16.594, -1.348, 41.833, 0.956, 0.268, 0.119 }, // Frame 239
+	{ 16.768, -2.128, 40.479, 0.944, 0.311, 0.113 }, // Frame 240
+	{ 15.904, -4.529, 38.288, 0.914, 0.398, 0.082 }, // Frame 241
+	{ 14.544, -7.942, 36.242, 0.846, 0.533, 0.013 }, // Frame 242
+	{ 11.965, -10.223, 34.781, 0.76, 0.65, -0.018 }, // Frame 243
+	{ 8.244, -8.428, 36.305, 0.607, 0.792, -0.062 }, // Frame 244
+	{ 5.821, -6.051, 39.136, 0.494, 0.868, -0.056 }, // Frame 245
+	{ 1.121, -7.033, 41.131, 0.491, 0.867, 0.085 }, // Frame 246
+	{ -5.768, -8.668, 39.862, 0.43, 0.857, 0.284 }, // Frame 247
+	{ -12.451, -10.375, 33.847, 0.247, 0.863, 0.44 }, // Frame 248
+	{ -20.484, -10.657, 0.734, 0.102, 0.923, 0.37 }, // Frame 249
+	{ -19.72, -10.455, 0.579, 0.099, 0.921, 0.376 }, // Frame 250
+	{ -19.438, -10.401, 0.579, 0.105, 0.923, 0.371 }, // Frame 251
+	{ -19.662, -10.46, 0.579, 0.107, 0.924, 0.368 }, // Frame 252
+	{ -19.702, -10.369, -2.158, 0.097, 0.922, 0.376 }, // Frame 253
+};
+
+//mxd. Spawn some blood using precalculated positions...
+void tank_bleed(edict_t *self)
+{
+	if (random() > 0.7f) return;
+
+	int i;
+	i = self->s.frame - FRAME_death101;
+
+	M_SpawnEffect(self, (random() > 0.7f ? TE_MOREBLOOD : TE_BLOOD), tank_bleed_positions[i][0], tank_bleed_positions[i][1]);
+}
+
 void tank_sight (edict_t *self, edict_t *other)
 {
 	gi.sound (self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
@@ -59,9 +108,42 @@ void tank_footstep (edict_t *self)
 	gi.sound (self, CHAN_BODY, sound_step, 1, ATTN_NORM, 0);
 }
 
+vec3_t tank_impact_positions[] =
+{
+	-23.9, -11.75, -15,
+	-11.6, -10.66, -15,
+	-22.19, 27.43, -15,
+	-35.87, 1.38, -15,
+	-48.17, 19.33, -15,
+	-2.71, 34.87, -15,
+	2.07, 18.02, -15,
+	0.02, -10, -15,
+};
+
+//mxd
+void tank_impact(edict_t *self)
+{
+	// Spawn some impact smoke
+	int i;
+	vec3_t normal;
+
+	VectorSet(normal, 0, 0, 1);
+
+	for (i = 0; i < 8; i++)
+	{
+		M_SpawnEffect(self, TE_CHAINFIST_SMOKE, tank_impact_positions[i], normal);
+	}
+	
+	// Also BLEED!
+	tank_bleed(self);
+}
+
 void tank_thud (edict_t *self)
 {
 	gi.sound (self, CHAN_BODY, sound_thud, 1, ATTN_NORM, 0);
+
+	//mxd. Also BLEED!
+	tank_bleed(self);
 }
 
 void tank_windup (edict_t *self)
@@ -844,38 +926,38 @@ void tank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 
 mframe_t tank_frames_death1 [] =
 {
-	ai_move, -7,  NULL,
-	ai_move, -2,  NULL,
-	ai_move, -2,  NULL,
-	ai_move, 1,   NULL,
-	ai_move, 3,   NULL,
-	ai_move, 6,   NULL,
-	ai_move, 1,   NULL,
-	ai_move, 1,   NULL,
-	ai_move, 2,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, -2,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, -3,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, -4,  NULL,
-	ai_move, -6,  NULL,
-	ai_move, -4,  NULL,
-	ai_move, -5,  NULL,
-	ai_move, -7,  NULL,
+	ai_move, -7,  tank_bleed, //mxd. Added tank_bleed
+	ai_move, -2,  tank_bleed,
+	ai_move, -2,  tank_bleed,
+	ai_move, 1,   tank_bleed,
+	ai_move, 3,   tank_bleed,
+	ai_move, 6,   tank_bleed,
+	ai_move, 1,   tank_bleed,
+	ai_move, 1,   tank_bleed,
+	ai_move, 2,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, -2,  tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, -3,  tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, -4,  tank_bleed,
+	ai_move, -6,  tank_bleed,
+	ai_move, -4,  tank_bleed,
+	ai_move, -5,  tank_bleed,
+	ai_move, -7,  tank_bleed,
 	ai_move, -15, tank_thud,
-	ai_move, -5,  NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL
+	ai_move, -5,  tank_impact, //mxd. Impact SFX
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed,
+	ai_move, 0,   tank_bleed
 };
 mmove_t	tank_move_death = {FRAME_death101, FRAME_death132, tank_frames_death1, tank_dead};
 
@@ -892,14 +974,34 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{	// Knightmare- more gibs
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 16; n++)
+		for (n= 0; n < 8; n++) //mxd. 16 -> 8
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 16; n++)
+		for (n= 0; n < 12; n++) //mxd. 16 -> 12
 			ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
-		for (n= 0; n < 8; n++)
+		for (n= 0; n < 6; n++) //mxd. 8 -> 6
 			ThrowGib (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
 		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
+
+		//mxd. Throw some MOAR custom gibs
+		ThrowHead(self, "models/objects/gibs/tank/head.md2", damage, GIB_ORGANIC);
+		ThrowGib(self, "models/objects/gibs/tank/arm_right.md2", damage, GIB_METALLIC);
+		ThrowGib(self, "models/objects/gibs/tank/rl_mount.md2", damage, GIB_METALLIC);
+
+		edict_t* leg;
+		vec3_t pos, vs, avs;
+		VectorSet(vs, 0.3, 0.3, 0.3);
+		VectorSet(avs, 0.0, 0.0, 0.0);
+
+		VectorSet(pos, 0, self->mins[1] + 18, self->mins[2] + 24);
+		VectorAdd(pos, self->s.origin, pos);
+		leg = ThrowGibEx(self, "models/objects/gibs/tank/leg_left.md2", damage, GIB_METALLIC, pos, NULL, vs, avs);
+		if(leg) VectorCopy(self->s.angles, leg->s.angles);
+		VectorSet(pos, 0, self->maxs[1] - 18, self->mins[2] + 24);
+		VectorAdd(pos, self->s.origin, pos);
+		leg = ThrowGibEx(self, "models/objects/gibs/tank/leg_right.md2", damage, GIB_METALLIC, pos, NULL, vs, avs);
+		if (leg) VectorCopy(self->s.angles, leg->s.angles);
+
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
@@ -914,7 +1016,31 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 
 	self->touch = tank_touch; //mxd
 	self->monsterinfo.currentmove = &tank_move_death;
-	
+
+	//mxd. Eject the arm
+	vec3_t pos, localpos, normal, localnormal;
+
+	VectorCopy(tank_bleed_positions[0][0], localpos);
+	VectorCopy(tank_bleed_positions[0][1], localnormal);
+	localnormal[0] += crandom() * 0.1f;
+
+	// Add some velocity...
+	localnormal[0] *= 3.0f;
+	localnormal[1] *= 3.0f;
+
+	// Translate spawn position to world space...
+	PositionToWorld(self, localpos, pos);
+
+	// Rotate normal to match model angles...
+	NormalToWorld(self, localnormal, normal);
+
+	ThrowGibEx(self, "models/objects/gibs/tank/arm_left.md2", damage, GIB_METALLIC, pos, normal, NULL, NULL);
+
+	//mxd. Spawn a small explosion...
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_EXPLOSION1);
+	gi.WritePosition(pos);
+	gi.multicast(pos, MULTICAST_PVS);
 }
 
 
