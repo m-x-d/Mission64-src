@@ -648,9 +648,14 @@ void Grenade_Evade (edict_t *monster)
 	}
 
 	//mxd. Align to touched surface if we are going to stop...
-	if (VectorCompare(ent->velocity, vec3_origin))
+	qboolean stopped = VectorCompare(ent->velocity, vec3_origin);
+	if (stopped)
 	{
 		AlignToPlane(ent, plane, 0);
+
+		// Offset slightly, so it doesn't look stuck in the ground
+		if(plane && plane->type == PLANE_Z)
+			ent->s.origin[2] += 2;
 	}
 
 	if (!other->takedamage)
@@ -666,6 +671,15 @@ void Grenade_Evade (edict_t *monster)
 		{
 			gi.sound (ent, CHAN_VOICE, gi.soundindex ("weapons/grenlb1b.wav"), 1, ATTN_NORM, 0);
 		}
+
+		//mxd. Spawn some impact dust...
+		if (!stopped)
+		{
+			vec3_t normal = { 0, 0, 0 };
+			if (plane) VectorCopy(plane->normal, normal);
+			M_SpawnEffect(ent, TE_SHOTGUN, vec3_origin, normal);
+		}
+
 		return;
 	}
 
@@ -730,7 +744,7 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade->s.effects |= EF_GRENADE;
 	VectorClear (grenade->mins);
 	VectorClear (grenade->maxs);
-	grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
+	grenade->s.modelindex = gi.modelindex(self->client ? "models/objects/grenade/tris.md2" : "models/objects/grenade3/tris.md2"); //mxd. Different model for monster grenades...
 	grenade->owner = self;
 	if (contact)
 		grenade->touch = ContactGrenade_Touch;
