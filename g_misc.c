@@ -131,6 +131,33 @@ void VelocityForDamageDirectional(int damage, vec3_t dir, vec3_t v)
 		VectorScale(v, 1.2, v);
 }
 
+//mxd. Tries to align given object to given plane
+void AlignToPlane(edict_t *self, cplane_t *plane, int extraroll)
+{
+	if (!plane) return;
+	
+	if (plane->type == PLANE_Z) // Horizontal plane
+	{
+		self->s.angles[PITCH] = 0;
+		self->s.angles[ROLL] = extraroll;
+
+		// Stop rotating
+		VectorClear(self->avelocity);
+	}
+	else if (plane->type == PLANE_ANYZ) // Nearly horizontal plane
+	{
+		vec3_t	normal_angles, right;
+
+		vectoangles(plane->normal, normal_angles);
+		AngleVectors(normal_angles, NULL, right, NULL);
+		vectoangles(right, self->s.angles);
+		self->s.angles[ROLL] += extraroll;
+
+		// Stop rotating
+		VectorClear(self->avelocity);
+	}
+}
+
 void ClipGibVelocity (edict_t *ent)
 {
 	if (ent->velocity[0] < -300)
@@ -223,28 +250,6 @@ void gib_think (edict_t *self)
 	}
 }
 
-//mxd. Expects "plane" to exist
-void gib_align_to_plane(edict_t *self, cplane_t *plane)
-{
-	if (plane->type == 2) // Horizontal plane
-	{
-		self->s.angles[PITCH] = 0;
-		self->s.angles[ROLL] = 90;
-	}
-	else
-	{
-		vec3_t	normal_angles, right;
-		
-		vectoangles(plane->normal, normal_angles);
-		AngleVectors(normal_angles, NULL, right, NULL);
-		vectoangles(right, self->s.angles);
-		self->s.angles[ROLL] += 90;
-	}
-
-	// Stop rotating
-	VectorClear(self->avelocity);
-}
-
 void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	/*vec3_t	normal_angles, right;
@@ -276,9 +281,9 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	gi.sound(self, CHAN_VOICE, gi.soundindex("misc/fhit3.wav"), 0.3, ATTN_NORM, 0);
 
 	// Align to touched surface if we are going to stop...
-	if (VectorLength(self->velocity) < 200)
+	if (VectorCompare(self->velocity, vec3_origin))
 	{
-		gib_align_to_plane(self, plane);
+		AlignToPlane(self, plane, 90);
 		self->touch = NULL;
 	}
 }
@@ -291,9 +296,9 @@ void gib_metal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t 
 	gi.sound(self, CHAN_VOICE, gi.soundindex("chick/Chkfall1.wav"), 0.3, ATTN_NORM, 0);
 
 	// Align to touched surface if we are going to stop...
-	if (VectorLength(self->velocity) < 200)
+	if (VectorCompare(self->velocity, vec3_origin))
 	{
-		gib_align_to_plane(self, plane);
+		AlignToPlane(self, plane, 90);
 		self->touch = NULL;
 	}
 }

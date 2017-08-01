@@ -647,6 +647,12 @@ void Grenade_Evade (edict_t *monster)
 		return;
 	}
 
+	//mxd. Align to touched surface if we are going to stop...
+	if (VectorCompare(ent->velocity, vec3_origin))
+	{
+		AlignToPlane(ent, plane, 0);
+	}
+
 	if (!other->takedamage)
 	{
 		if (ent->spawnflags & 1)
@@ -735,6 +741,7 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "grenade";
+	grenade->class_id = ENTITY_GRENADE; //mxd
 
 	Grenade_Add_To_Chain (grenade);
 
@@ -782,6 +789,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "hgrenade";
+	grenade->class_id = ENTITY_GRENADE; //mxd
 	if (held)
 		grenade->spawnflags = 3;
 	else
@@ -819,6 +827,7 @@ void SP_grenade (edict_t *grenade)
 {
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
 	grenade->touch = Grenade_Touch;
+	grenade->class_id = ENTITY_GRENADE; //mxd
 
 	// For SP, freeze grenade until player spawns in
 	if(game.maxclients == 1)

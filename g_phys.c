@@ -1543,8 +1543,9 @@ void SV_Physics_Toss (edict_t *ent)
 			}
 		}
 
-//		if (ent->touch)
-//			ent->touch (ent, trace.ent, &trace.plane, trace.surface);
+		//mxd. Was commented out. Re-enabled for gibs and grenades, so we can align them to plane when they stop moving...
+		if (ent->touch && (ent->class_id == ENTITY_GIB || ent->class_id == ENTITY_GIBHEAD || ent->class_id == ENTITY_GRENADE))
+			ent->touch (ent, trace.ent, &trace.plane, trace.surface);
 	}
 
 	// Lazarus: MOVETYPE_RAIN doesn't cause splash noises when touching water

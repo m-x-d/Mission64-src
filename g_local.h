@@ -1089,6 +1089,7 @@ void M_FliesOn (edict_t *self);
 void M_CheckGround (edict_t *ent);
 qboolean M_SetDeath (edict_t *ent,mmove_t **moves);
 int  PatchMonsterModel (char *model);
+void AlignToPlane(edict_t *self, cplane_t *plane, int extraroll); //mxd
 void AdjustAccuracy(edict_t * self, vec3_t target); //mxd
 void PositionToWorld(edict_t *self, vec3_t localpos, vec3_t result); //mxd
 void NormalToWorld(edict_t *self, vec3_t localnormal, vec3_t result); //mxd

@@ -673,6 +673,17 @@ typedef struct cplane_s
 #define CPLANE_PAD0				18
 #define CPLANE_PAD1				19
 
+//mxd. Plane types, from q2tools
+// 0-2 are axial planes
+#define	PLANE_X			0
+#define	PLANE_Y			1
+#define	PLANE_Z			2
+
+// 3-5 are non-axial planes snapped to the nearest
+#define	PLANE_ANYX		3
+#define	PLANE_ANYY		4
+#define	PLANE_ANYZ		5
+
 typedef struct cmodel_s
 {
 	vec3_t		mins, maxs;
