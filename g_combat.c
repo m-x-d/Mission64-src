@@ -379,8 +379,6 @@ void DefendMyFriend (edict_t *self, edict_t *enemy)
 
 void CallMyFriends (edict_t *targ, edict_t *attacker)
 {
-	edict_t	*teammate;
-
 	if(!targ || !attacker)
 		return;
 
@@ -417,7 +415,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker)
 					// Either target is not a monster, or attacker is not a monster, or
 					// they're both monsters but one is AI_GOOD_GUY and the other is not,
 					// or we've turned the game into a free-for-all with a target_monsterbattle
-					teammate = G_Find(NULL,FOFS(dmgteam),targ->dmgteam);
+					edict_t *teammate = G_Find(NULL,FOFS(dmgteam),targ->dmgteam);
 					while(teammate)
 					{
 						if(teammate != targ)
@@ -426,20 +424,21 @@ void CallMyFriends (edict_t *targ, edict_t *attacker)
 							{
 								if(teammate->health > 0 && (teammate->enemy != attacker) && !(teammate->monsterinfo.aiflags & AI_CHASE_THING))
 								{
-									if(!teammate->enemy || !teammate->enemy->dmgteam || !attacker->dmgteam )
+									if(!teammate->enemy || !teammate->enemy->dmgteam || !attacker->dmgteam || strcmp(teammate->enemy->dmgteam, attacker->dmgteam))
 									{
 										// If either 1) this teammate doesn't currently have an enemy,
 										//        or 2) the teammate's enemy is not a member of a dmgteam
 										//        or 3) the attacker is not a member of a dmgteam
+										//        or 4) attacker is a member of a team different than the current enemy   //mxd
 										// then set the attacker as the enemy of this teammate
 										DefendMyFriend(teammate,attacker);
 									}
-									else if(strcmp(teammate->enemy->dmgteam,attacker->dmgteam))
-									{
-										// attacker is a member of a team different than the
-										// current enemy
-										DefendMyFriend(teammate,attacker);
-									}
+								}
+
+								//mxd. If teammate is Flyer, make it go CRAZY (25% chance on medium, 50% on hard)
+								if (teammate->health > 0 && skill->integer > 0 && teammate->class_id == ENTITY_MONSTER_FLYER && random() < (skill->value * 0.25f))
+								{
+									flyer_become_kamikaze(teammate);
 								}
 							}
 							else if(!(teammate->svflags & SVF_DEADMONSTER))
@@ -451,12 +450,12 @@ void CallMyFriends (edict_t *targ, edict_t *attacker)
 			}
 		}
 	}
+
 	if( targ->client && (attacker->svflags & SVF_MONSTER) )
 	{
 		// target is player; attacker is monster... alert "good guys", if any
 //		trace_t	tr;
-		edict_t	*teammate = NULL;
-		teammate = G_Find(NULL,FOFS(dmgteam),"player");
+		edict_t	*teammate = G_Find(NULL,FOFS(dmgteam),"player");
 		while(teammate)
 		{
 			if((teammate->health > 0) && !(teammate->monsterinfo.aiflags & AI_CHASE_THING) && (teammate != attacker))
@@ -479,6 +478,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker)
 			teammate = G_Find(teammate,FOFS(dmgteam),"player");
 		}
 	}
+
 	// If player attacks a GOODGUY, turn GOODGUY stuff off
 	if (attacker->client && (targ->svflags & SVF_MONSTER) && (targ->spawnflags & SF_MONSTER_GOODGUY))
 	{

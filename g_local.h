@@ -1235,6 +1235,10 @@ extern mmove_t actor_move_stand;
 extern mmove_t actor_move_walk;
 extern mmove_t	actor_move_walk_back;
 //
+// m_flyer.c //mxd
+//
+void flyer_become_kamikaze(edict_t *actor);
+//
 // m_medic.c
 //
 #define	MEDIC_MIN_DISTANCE	32

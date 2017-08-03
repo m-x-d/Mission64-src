@@ -33,6 +33,9 @@ qboolean	enemy_vis;
 qboolean	enemy_infront;
 int			enemy_range;
 float		enemy_yaw;
+
+#define	MAX_SIDESTEP	8.0 //mxd
+
 /*
 =================
 AI_SetSightClient
@@ -303,7 +306,23 @@ void ai_charge (edict_t *self, float dist)
 	self->ideal_yaw = vectoyaw(v);
 	M_ChangeYaw (self);
 	if (dist)
-		M_walkmove (self, self->s.angles[YAW], dist);
+	{
+		//mxd. Circle-strafe support
+		if (self->monsterinfo.attack_state == AS_SLIDING)
+		{
+			float ofs = (self->monsterinfo.lefty ? 90.0f : -90.0f);
+
+			if (M_walkmove(self, self->ideal_yaw + ofs, dist))
+				return;
+
+			self->monsterinfo.lefty = 1 - self->monsterinfo.lefty;
+			M_walkmove(self, self->ideal_yaw - ofs, dist);
+		}
+		else
+		{
+			M_walkmove(self, self->s.angles[YAW], dist);
+		}
+	}
 }
 
 
@@ -1139,7 +1158,9 @@ void ai_run_missile(edict_t *self)
 	{
 		if (self->monsterinfo.attack)
 			self->monsterinfo.attack (self);
-		self->monsterinfo.attack_state = AS_STRAIGHT;
+
+		if ((self->monsterinfo.attack_state == AS_MISSILE) || (self->monsterinfo.attack_state == AS_BLIND)) //mxd
+			self->monsterinfo.attack_state = AS_STRAIGHT;
 	}
 };
 
@@ -1162,6 +1183,10 @@ void ai_run_slide(edict_t *self, float distance)
 		ofs = 90;
 	else
 		ofs = -90;
+
+	//mxd. Clamp maximum sideways move for non-flyers to make them look less jerky
+	if (!self->flags & FL_FLY)
+		distance = min(distance, MAX_SIDESTEP);
 	
 	if (M_walkmove (self, self->ideal_yaw + ofs, distance))
 		return;
