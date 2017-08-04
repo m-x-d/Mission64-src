@@ -468,7 +468,7 @@ extern void gladiator_sight ( edict_t * self , edict_t * other ) ;
 extern void gladiator_idle ( edict_t * self ) ;
 extern void SP_monster_flyer ( edict_t * self ) ;
 extern void flyer_become_kamikaze ( edict_t * self ) ;
-extern int flyer_blocked ( edict_t * self , float dist ) ;
+extern qboolean flyer_blocked ( edict_t * self , float dist ) ;
 extern void flyer_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void flyer_pain ( edict_t * self , edict_t * other , float kick , int damage ) ;
 extern void flyer_check_melee ( edict_t * self ) ;
@@ -1673,7 +1673,7 @@ extern void T_RadiusDamage ( edict_t * inflictor , edict_t * attacker , float da
 extern void T_Damage ( edict_t * in_targ , edict_t * inflictor , edict_t * in_attacker , vec3_t dir , vec3_t point , vec3_t normal , int damage , int knockback , int dflags , int mod ) ;
 extern qboolean CheckTeamDamage ( edict_t * targ , edict_t * attacker ) ;
 extern void M_ReactToDamage ( edict_t * targ , edict_t * attacker ) ;
-extern void CallMyFriends ( edict_t * targ , edict_t * attacker ) ;
+extern void CallMyFriends ( edict_t * targ , edict_t * attacker , int damage ) ;
 extern void DefendMyFriend ( edict_t * self , edict_t * enemy ) ;
 extern int BloodType ( int index ) ;
 extern void SpawnDamage ( int type , vec3_t origin , vec3_t normal ) ;

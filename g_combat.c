@@ -377,7 +377,7 @@ void DefendMyFriend (edict_t *self, edict_t *enemy)
 	FoundTarget (self);
 }
 
-void CallMyFriends (edict_t *targ, edict_t *attacker)
+void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "damage" param
 {
 	if(!targ || !attacker)
 		return;
@@ -435,8 +435,10 @@ void CallMyFriends (edict_t *targ, edict_t *attacker)
 									}
 								}
 
-								//mxd. If teammate is Flyer, make it go CRAZY (25% chance on medium, 50% on hard)
-								if (teammate->health > 0 && skill->integer > 0 && teammate->class_id == ENTITY_MONSTER_FLYER && random() < (skill->value * 0.25f))
+								//mxd. If teammate is Flyer, make it go CRAZY if targ is going to be killed by incoming damage
+								// (25% chance on medium, 50% on hard)
+								if (teammate->health > 0 && skill->integer > 0 && teammate->class_id == ENTITY_MONSTER_FLYER && 
+									targ->health - damage < 1 && random() < (skill->value * 0.25f))
 								{
 									flyer_become_kamikaze(teammate);
 								}
@@ -1028,7 +1030,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 	if (take)
 	{
 		// Lazarus: dmgteam stuff
-		CallMyFriends(targ,attacker);
+		CallMyFriends(targ,attacker,take);
 
 		// Lazarus: Sparks rather than blood for NOGIB dead monsters
 		if ((targ->svflags & SVF_MONSTER) && (targ->spawnflags & SF_MONSTER_NOGIB) && (targ->health <= 0))

@@ -725,11 +725,8 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 }
 
 //mxd. Kamikaze code .. blow up if blocked
-int flyer_blocked(edict_t *self, float dist)
+qboolean flyer_blocked(edict_t *self, float dist)
 {
-	vec3_t origin;
-
-	// kamikaze = 100, normal = 50
 	if (self->class_id == ENTITY_MONSTER_FLYER_KAMIKAZE)
 	{
 		flyer_kamikaze_check(self);
@@ -737,6 +734,8 @@ int flyer_blocked(edict_t *self, float dist)
 		// if the above didn't blow us up (i.e. I got blocked by the player)
 		if (self->inuse)
 		{
+			vec3_t origin;
+
 			VectorMA(self->s.origin, -0.02, self->velocity, origin);
 			gi.WriteByte(svc_temp_entity);
 			gi.WriteByte(TE_ROCKET_EXPLOSION);
