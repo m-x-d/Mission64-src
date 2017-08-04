@@ -41,6 +41,8 @@ static int	sound_pain2;
 static int	sound_slash;
 static int	sound_sproing;
 static int	sound_die;
+static int	sound_suicide_init; //mxd
+static int	sound_suicide_beep; //mxd
 
 
 void flyer_check_melee(edict_t *self);
@@ -53,6 +55,7 @@ void flyer_nextmove (edict_t *self);
 //mxd. ROGUE - kamikaze stuff
 void flyer_kamikaze(edict_t *self);
 void flyer_kamikaze_check(edict_t *self);
+void flyer_kamikaze_effect(edict_t *self);
 void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 
 void flyer_sight (edict_t *self, edict_t *other)
@@ -236,6 +239,18 @@ mframe_t flyer_frames_kamizake[] =
 };
 mmove_t flyer_move_kamikaze = { FRAME_rollr02, FRAME_rollr06, flyer_frames_kamizake, flyer_kamikaze };
 
+//mxd
+mframe_t flyer_frames_kamikaze_start[] =
+{
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, flyer_kamikaze_effect,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL
+};
+mmove_t flyer_move_kamikaze_start = { FRAME_defens01, FRAME_defens06, flyer_frames_kamikaze_start, flyer_kamikaze };
+
 void flyer_run (edict_t *self)
 {
 	if(self->class_id == ENTITY_MONSTER_FLYER_KAMIKAZE) //mxd
@@ -276,6 +291,15 @@ void flyer_kamikaze_explode(edict_t *self)
 	flyer_die(self, NULL, NULL, 0, dir);
 }
 
+//mxd
+void flyer_kamikaze_effect(edict_t *self)
+{
+	gi.sound(self, CHAN_BODY, sound_suicide_init, 1, ATTN_NORM, 0);
+
+	vec3_t dir = { crandom(), crandom(), crandom() };
+	M_SpawnEffect(self, TE_BLASTER, vec3_origin, dir);
+}
+
 void flyer_kamikaze(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flyer_move_kamikaze;
@@ -294,9 +318,13 @@ void flyer_kamikaze_check(edict_t *self)
 	}
 
 	self->goalentity = self->enemy;
+	self->s.effects |= EF_ROCKET;
 
-	if (realrange(self, self->enemy) < 90)
+	float dist = realrange(self, self->enemy);
+	if (dist < 90)
 		flyer_kamikaze_explode(self);
+	else if(dist < 128 || (level.framenum % 2 == 0)) //mxd. Play beep sound
+		gi.sound(self, CHAN_VOICE, sound_suicide_beep, 1, ATTN_NORM, 0);
 }
 // ROGUE - kamikaze stuff end
 
@@ -732,8 +760,9 @@ void flyer_become_kamikaze(edict_t *self)
 {
 	self->common_name = "Angry Videogame Flyer"; // Le puns
 	self->mass = 100; // Why is that needed?..
-	self->s.effects |= EF_ROCKET;
 	self->class_id = ENTITY_MONSTER_FLYER_KAMIKAZE;
+	self->monsterinfo.attack_state = AS_STRAIGHT; // No strafing here
+	self->monsterinfo.currentmove = &flyer_move_kamikaze_start; // Abort currect attack
 }
 	
 
@@ -761,6 +790,8 @@ void SP_monster_flyer (edict_t *self)
 	sound_slash = gi.soundindex ("flyer/flyatck2.wav");
 	sound_sproing = gi.soundindex ("flyer/flyatck1.wav");
 	sound_die = gi.soundindex ("flyer/flydeth1.wav");
+	sound_suicide_init = gi.soundindex("flyer/suicide_init.wav"); //mxd
+	sound_suicide_beep = gi.soundindex("flyer/suicide_beep.wav"); //mxd
 
 	gi.soundindex ("flyer/flyatck3.wav");
 

@@ -178,6 +178,7 @@ extern mmove_t flyer_move_rollleft ;
 extern mmove_t flyer_move_rollright ;
 extern mmove_t flyer_move_stop ;
 extern mmove_t flyer_move_start ;
+extern mmove_t flyer_move_kamikaze_start ;
 extern mmove_t flyer_move_kamikaze ;
 extern mmove_t flyer_move_run ;
 extern mmove_t flyer_move_walk ;

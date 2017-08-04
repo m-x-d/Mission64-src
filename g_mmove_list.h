@@ -178,6 +178,7 @@
 {"flyer_move_rollright", &flyer_move_rollright},
 {"flyer_move_stop", &flyer_move_stop},
 {"flyer_move_start", &flyer_move_start},
+{"flyer_move_kamikaze_start", &flyer_move_kamikaze_start},
 {"flyer_move_kamikaze", &flyer_move_kamikaze},
 {"flyer_move_run", &flyer_move_run},
 {"flyer_move_walk", &flyer_move_walk},

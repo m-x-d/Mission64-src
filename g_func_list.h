@@ -486,6 +486,7 @@
 {"flyer_stop", (byte *)flyer_stop},
 {"flyer_kamikaze_check", (byte *)flyer_kamikaze_check},
 {"flyer_kamikaze", (byte *)flyer_kamikaze},
+{"flyer_kamikaze_effect", (byte *)flyer_kamikaze_effect},
 {"flyer_kamikaze_explode", (byte *)flyer_kamikaze_explode},
 {"flyer_stand", (byte *)flyer_stand},
 {"flyer_walk", (byte *)flyer_walk},

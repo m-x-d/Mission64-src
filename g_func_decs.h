@@ -486,6 +486,7 @@ extern void flyer_start ( edict_t * self ) ;
 extern void flyer_stop ( edict_t * self ) ;
 extern void flyer_kamikaze_check ( edict_t * self ) ;
 extern void flyer_kamikaze ( edict_t * self ) ;
+extern void flyer_kamikaze_effect ( edict_t * self ) ;
 extern void flyer_kamikaze_explode ( edict_t * self ) ;
 extern void flyer_stand ( edict_t * self ) ;
 extern void flyer_walk ( edict_t * self ) ;
