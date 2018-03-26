@@ -565,19 +565,14 @@ M_ChangeYaw
 */
 void M_ChangeYaw (edict_t *ent)
 {
-	float	ideal;
-	float	current;
-	float	move;
-	float	speed;
-
-	current = anglemod(ent->s.angles[YAW]);
-	ideal = ent->ideal_yaw;
+	float current = anglemod(ent->s.angles[YAW]);
+	float ideal = ent->ideal_yaw;
 
 	if (current == ideal)
 		return;
 
-	move = ideal - current;
-	speed = ent->yaw_speed;
+	float move = ideal - current;
+	float speed = ent->yaw_speed;
 	if (ideal > current)
 	{
 		if (move >= 180)
@@ -615,28 +610,47 @@ facing it.
 qboolean SV_StepDirection (edict_t *ent, float yaw, float dist)
 {
 	vec3_t		move, oldorigin;
-	float		delta;
 
 	ent->ideal_yaw = yaw;
 	M_ChangeYaw (ent);
 	
-	yaw = yaw*M_PI*2 / 360;
-	move[0] = cos(yaw)*dist;
-	move[1] = sin(yaw)*dist;
+	yaw = yaw * M_PI * 2 / 360;
+	move[0] = cos(yaw) * dist;
+	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
 	VectorCopy (ent->s.origin, oldorigin);
 	if (SV_movestep (ent, move, false))
 	{
-		delta = ent->s.angles[YAW] - ent->ideal_yaw;
+		float delta = ent->s.angles[YAW] - ent->ideal_yaw;
 		if (delta > 45 && delta < 315)
-		{		// not turned far enough, so don't take the step
+		{ // not turned far enough, so don't take the step
 			VectorCopy (oldorigin, ent->s.origin);
 		}
+
 		gi.linkentity (ent);
 		G_TouchTriggers (ent);
 		return true;
 	}
+
+	//mxd. Try once more with shorter distance...
+	dist /= 2;
+	move[0] = cos(yaw) * dist;
+	move[1] = sin(yaw) * dist;
+
+	if (SV_movestep(ent, move, false))
+	{
+		float delta = ent->s.angles[YAW] - ent->ideal_yaw;
+		if (delta > 45 && delta < 315)
+		{ // not turned far enough, so don't take the step
+			VectorCopy(oldorigin, ent->s.origin);
+		}
+
+		gi.linkentity(ent);
+		G_TouchTriggers(ent);
+		return true;
+	}
+
 	gi.linkentity (ent);
 	G_TouchTriggers (ent);
 	return false;
@@ -664,22 +678,20 @@ SV_NewChaseDir
 #define	DI_NODIR	-1
 void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 {
-	float	deltax,deltay;
-	float	d[3];
-	float	tdir, olddir, turnaround;
+	float d[3];
+	float tdir, olddir;
 
 	//FIXME: how did we get here with no enemy
-	if (!enemy)
-		return;
+	if (!enemy) return;
 
 	if(actor->flags & FL_ROBOT)
 		olddir = anglemod( (int)(actor->ideal_yaw+0.5) );
 	else
 		olddir = anglemod( (int)(actor->ideal_yaw/45)*45 );
-	turnaround = anglemod(olddir - 180);
 
-	deltax = enemy->s.origin[0] - actor->s.origin[0];
-	deltay = enemy->s.origin[1] - actor->s.origin[1];
+	const float turnaround = anglemod(olddir - 180);
+	const float deltax = enemy->s.origin[0] - actor->s.origin[0];
+	const float deltay = enemy->s.origin[1] - actor->s.origin[1];
 
 	if(actor->flags & FL_ROBOT)
 	{
@@ -687,15 +699,16 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 	}
 	else
 	{
-		if (deltax>10)
+		if (deltax > 10)
 			d[1]= 0;
-		else if (deltax<-10)
+		else if (deltax < -10)
 			d[1]= 180;
 		else
 			d[1]= DI_NODIR;
-		if (deltay<-10)
+
+		if (deltay < -10)
 			d[2]= 270;
-		else if (deltay>10)
+		else if (deltay > 10)
 			d[2]= 90;
 		else
 			d[2]= DI_NODIR;
@@ -712,7 +725,12 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 				tdir = d[2] == 90 ? 45 : 315;
 			else
 				tdir = d[2] == 90 ? 135 : 215;
+
+			//mxd. More direction variations...
+			if((rand() & 3) == 1) tdir += 15;
+			else if((rand() & 3) == 1) tdir -= 15;
 		}
+
 		if (tdir != turnaround && SV_StepDirection(actor, tdir, dist))
 			return;
 	}
@@ -725,47 +743,47 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 			SV_FixCheckBottom (actor);
 	}
 
-// try other directions
-	if ( ((rand()&3) & 1) ||  abs(deltay)>abs(deltax))
+	// try other directions
+	int chance = (actor->class_id == ENTITY_MONSTER_BERSERK ? 3 : 1); //mxd. 25% for Berserk, 50% for everyone else...
+	if ((rand() & chance) == 1 || abs(deltay) > abs(deltax))
 	{
 		tdir=d[1];
 		d[1]=d[2];
 		d[2]=tdir;
 	}
-	if (d[1]!=DI_NODIR && d[1]!=turnaround 
-	&& SV_StepDirection(actor, d[1], dist))
-			return;
 
-	if (d[2]!=DI_NODIR && d[2]!=turnaround
-	&& SV_StepDirection(actor, d[2], dist))
-			return;
+	if (d[1] != DI_NODIR && d[1] != turnaround && SV_StepDirection(actor, d[1], dist))
+		return;
 
-	if (actor->inuse && (actor->health > 0) && actor->monsterinfo.blocked) {
+	if (d[2] != DI_NODIR && d[2] != turnaround && SV_StepDirection(actor, d[2], dist))
+		return;
+
+	if (actor->inuse && (actor->health > 0) && actor->monsterinfo.blocked)
+	{
 		if (actor->monsterinfo.blocked(actor, dist))
 			return;
 	}
 
 
 /* there is no direct path to the player, so pick another direction */
-
-	if (olddir!=DI_NODIR && SV_StepDirection(actor, olddir, dist))
-			return;
+	if (olddir != DI_NODIR && SV_StepDirection(actor, olddir, dist))
+		return;
 
 	if (rand()&1) 	/*randomly determine direction of search*/
 	{
-		for (tdir=0 ; tdir<=315 ; tdir += 45)
-			if (tdir!=turnaround && SV_StepDirection(actor, tdir, dist) )
-					return;
+		for (tdir = 0; tdir <= 345; tdir += 15)
+			if (tdir != turnaround && SV_StepDirection(actor, tdir, dist))
+				return;
 	}
 	else
 	{
-		for (tdir=315 ; tdir >=0 ; tdir -= 45)
-			if (tdir!=turnaround && SV_StepDirection(actor, tdir, dist) )
-					return;
+		for (tdir=345; tdir >= 0; tdir -= 15)
+			if (tdir!=turnaround && SV_StepDirection(actor, tdir, dist))
+				return;
 	}
 
-	if (turnaround != DI_NODIR && SV_StepDirection(actor, turnaround, dist) )
-			return;
+	if (turnaround != DI_NODIR && SV_StepDirection(actor, turnaround, dist))
+		return;
 
 	actor->ideal_yaw = olddir;		// can't move
 
@@ -804,9 +822,7 @@ M_MoveToGoal
 */
 void M_MoveToGoal (edict_t *ent, float dist)
 {
-	edict_t		*goal;
-	
-	goal = ent->goalentity;
+	edict_t *goal = ent->goalentity;
 
 	if (!ent->groundentity && !(ent->flags & (FL_FLY|FL_SWIM)))
 		return;
@@ -814,10 +830,10 @@ void M_MoveToGoal (edict_t *ent, float dist)
 	// Lazarus range checks
 	if (!(ent->monsterinfo.aiflags & (AI_CHASE_THING | AI_CHICKEN)))
 	{
-		if (ent->enemy && (ent->monsterinfo.min_range > 0) && ((goal==ent->enemy) || !goal) ) {
-			float dist;
-			dist = realrange(ent,ent->enemy);
-			if(dist < ent->monsterinfo.min_range)
+		if (ent->enemy && (ent->monsterinfo.min_range > 0) && ((goal == ent->enemy) || !goal) )
+		{
+			float dst = realrange(ent, ent->enemy);
+			if(dst < ent->monsterinfo.min_range)
 			{
 				ent->monsterinfo.aiflags |= (AI_STAND_GROUND | AI_RANGE_PAUSE);
 				ent->monsterinfo.rangetime = level.time + 0.5;
@@ -825,18 +841,19 @@ void M_MoveToGoal (edict_t *ent, float dist)
 				return;
 			}
 		}
-		if ((ent->enemy) && (level.time > ent->monsterinfo.rangetime + 0.5) && ((goal==ent->enemy) || !goal) )
+
+		if ((ent->enemy) && (level.time > ent->monsterinfo.rangetime + 0.5) && ((goal == ent->enemy) || !goal) )
 		{
-			float dist;
-			dist = realrange(ent,ent->enemy);
-			if((dist < ent->monsterinfo.ideal_range[0]) && (rand() & 3))
+			float dst = realrange(ent, ent->enemy);
+			if((dst < ent->monsterinfo.ideal_range[0]) && (rand() & 3))
 			{
 				ent->monsterinfo.aiflags |= (AI_STAND_GROUND | AI_RANGE_PAUSE);
 				ent->monsterinfo.rangetime = level.time + 1.0;
 				ent->monsterinfo.stand(ent);
 				return;
 			}
-			if((dist < ent->monsterinfo.ideal_range[1]) && (dist > ent->monsterinfo.ideal_range[0]) && (rand() & 1))
+
+			if((dst < ent->monsterinfo.ideal_range[1]) && (dst > ent->monsterinfo.ideal_range[0]) && (rand() & 1))
 			{
 				ent->monsterinfo.aiflags |= (AI_STAND_GROUND | AI_RANGE_PAUSE);
 				ent->monsterinfo.rangetime = level.time + 0.2;
@@ -849,18 +866,17 @@ void M_MoveToGoal (edict_t *ent, float dist)
 	if( (ent->monsterinfo.aiflags & AI_FOLLOW_LEADER) &&
 		(ent->movetarget) &&
 		(ent->movetarget->inuse) &&
-		(ent->movetarget->health > 0) ) {
-
+		(ent->movetarget->health > 0) )
+	{
 		if(ent->enemy)
 			ent->monsterinfo.currentmove = &actor_move_run;
 		else
 		{
-			float	R;
-
-			R = realrange(ent,ent->movetarget);
+			float R = realrange(ent, ent->movetarget);
 			if(R > ACTOR_FOLLOW_RUN_RANGE)
 				ent->monsterinfo.currentmove = &actor_move_run;
-			else if(R < ACTOR_FOLLOW_STAND_RANGE && ent->movetarget->client) {
+			else if(R < ACTOR_FOLLOW_STAND_RANGE && ent->movetarget->client)
+			{
 				ent->monsterinfo.pausetime = level.time + 0.5;
 				ent->monsterinfo.currentmove = &actor_move_stand;
 				return;
@@ -873,14 +889,13 @@ void M_MoveToGoal (edict_t *ent, float dist)
 //	If the next step hits the enemy, return immediately. Don't do this for
 //	AI_CHASE_THING, since we want monster to actually touch or pass through
 //	"thing"
-	if (ent->enemy && !(ent->monsterinfo.aiflags & AI_CHASE_THING) && SV_CloseEnough (ent, ent->enemy, dist) )
+	if(ent->enemy && !(ent->monsterinfo.aiflags & AI_CHASE_THING) && SV_CloseEnough (ent, ent->enemy, dist) )
 		return;
 
 // bump around...
-	if ( (rand()&3)==1 || !SV_StepDirection (ent, ent->ideal_yaw, dist))
+	if((rand() & 3) == 1 || !SV_StepDirection (ent, ent->ideal_yaw, dist))
 	{
-		if (ent->inuse)
-			SV_NewChaseDir (ent, goal, dist);
+		if(ent->inuse) SV_NewChaseDir (ent, goal, dist);
 	}
 }
 
@@ -894,13 +909,13 @@ qboolean M_walkmove (edict_t *ent, float yaw, float dist)
 {
 	vec3_t	move;
 	
-	if (!ent->groundentity && !(ent->flags & (FL_FLY|FL_SWIM)))
+	if(!ent->groundentity && !(ent->flags & (FL_FLY|FL_SWIM)))
 		return false;
 
-	yaw = yaw*M_PI*2 / 360;
+	yaw = yaw * M_PI * 2 / 360;
 	
-	move[0] = cos(yaw)*dist;
-	move[1] = sin(yaw)*dist;
+	move[0] = cos(yaw) * dist;
+	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
 	return SV_movestep(ent, move, true);

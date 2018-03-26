@@ -34,8 +34,6 @@ qboolean	enemy_infront;
 int			enemy_range;
 float		enemy_yaw;
 
-#define	MAX_SIDESTEP	8.0 //mxd
-
 /*
 =================
 AI_SetSightClient
@@ -155,10 +153,8 @@ void ai_stand (edict_t *self, float dist)
 	{
 		if (self->enemy && self->enemy->inuse)
 		{
-			float	length;
-
 			VectorSubtract (self->enemy->s.origin, self->s.origin, v);
-			length = VectorLength(v);
+			float length = VectorLength(v);
 			self->ideal_yaw = vectoyaw(v);
 
 			if((level.time >= self->monsterinfo.rangetime) && (self->monsterinfo.aiflags & AI_RANGE_PAUSE))
@@ -546,7 +542,6 @@ void HuntTarget (edict_t *self)
 
 void FoundTarget (edict_t *self)
 {
-	edict_t	*goodguy;
 	vec3_t	v;
 //	trace_t	tr;
 
@@ -568,8 +563,7 @@ void FoundTarget (edict_t *self)
 		level.sight_entity_framenum = level.framenum;
 		level.sight_entity->light_level = 128;
 
-		goodguy = NULL;
-		goodguy = G_Find(NULL,FOFS(dmgteam),"player");
+		edict_t *goodguy = G_Find(NULL,FOFS(dmgteam),"player");
 		while(goodguy)
 		{
 			if(goodguy->health > 0)
@@ -650,11 +644,8 @@ slower noticing monsters.
 */
 qboolean FindTarget (edict_t *self)
 {
-	edict_t		*client=NULL;
-	qboolean	heardit;
+	edict_t		*client;
 	edict_t		*reflection;
-	edict_t		*self_reflection;
-	int			r;
 
 	if(self->monsterinfo.aiflags & (AI_CHASE_THING | AI_HINT_TEST))
 		return false;
@@ -672,15 +663,12 @@ qboolean FindTarget (edict_t *self)
 		{
 			if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
 			{
-				int		i;
-				edict_t	*e;
 				edict_t	*best=NULL;
-				vec_t	dist, best_dist;
 
-				best_dist = self->monsterinfo.max_range;
-				for(i=game.maxclients+1; i<globals.num_edicts; i++)
+				vec_t best_dist = self->monsterinfo.max_range;
+				for(int i = game.maxclients+1; i<globals.num_edicts; i++)
 				{
-					e = &g_edicts[i];
+					edict_t *e = &g_edicts[i];
 					if(!e->inuse)
 						continue;
 					if(!(e->svflags & SVF_MONSTER))
@@ -700,7 +688,8 @@ qboolean FindTarget (edict_t *self)
 					}
 					else if (e->health <= 0)
 						continue;
-					dist = realrange(self,e);
+
+					vec_t dist = realrange(self,e);
 					if(dist < best_dist)
 					{
 						best_dist = dist;
@@ -716,18 +705,15 @@ qboolean FindTarget (edict_t *self)
 			}
 			return false;
 		}
-		else if (level.time < self->monsterinfo.pausetime )
+
+		if (level.time < self->monsterinfo.pausetime)
 			return false;
-		else
-		{
-			if (!visible (self, self->enemy))
-				return false;
-			else
-			{
-				FoundTarget(self);
-				return true;
-			}
-		}
+
+		if (!visible(self, self->enemy))
+			return false;
+
+		FoundTarget(self);
+		return true;
 	}
 
 	// if we're going to a combat point, just proceed
@@ -741,7 +727,7 @@ qboolean FindTarget (edict_t *self)
 // revised behavior so they will wake up if they "see" a player make a noise
 // but not weapon impact/explosion noises
 
-	heardit = false;
+	qboolean heardit = false;
 	if ((level.sight_entity_framenum >= (level.framenum - 1)) && !(self->spawnflags & SF_MONSTER_SIGHT) )
 	{
 		client = level.sight_entity;
@@ -814,13 +800,12 @@ qboolean FindTarget (edict_t *self)
 		return false;
 
 	reflection = NULL;
-	self_reflection = NULL;
+	edict_t *self_reflection = NULL;
 	if (level.num_reflectors)
 	{
-		int		i;
 		edict_t *ref;
 
-		for(i=0; i<6 && !reflection; i++)
+		for(int i = 0; i<6 && !reflection; i++)
 		{
 			ref = client->reflection[i];
 			if(ref && visible(self,ref) && infront(self,ref))
@@ -833,7 +818,7 @@ qboolean FindTarget (edict_t *self)
 
 	if (!heardit)
 	{
-		r = range (self, client);
+		int r = range (self, client);
 
 		if (r == RANGE_FAR)
 			return false;
@@ -885,6 +870,7 @@ qboolean FindTarget (edict_t *self)
 			self->monsterinfo.pausetime = 0;
 			self->monsterinfo.aiflags &= ~AI_STAND_GROUND;
 			self->monsterinfo.run(self);
+
 			return false;
 		}
 
@@ -1010,9 +996,7 @@ FacingIdeal
 */
 qboolean FacingIdeal(edict_t *self)
 {
-	float	delta;
-
-	delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
+	float delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 	if (delta > 45 && delta < 315)
 		return false;
 	return true;
@@ -1025,7 +1009,6 @@ qboolean M_CheckAttack (edict_t *self)
 {
 	vec3_t	spot1, spot2;
 	float	chance;
-	trace_t	tr;
 
 	// Lazarus: Paranoia check
 	if (!self->enemy)
@@ -1038,7 +1021,7 @@ qboolean M_CheckAttack (edict_t *self)
 		spot1[2] += self->viewheight;
 		VectorCopy (self->enemy->s.origin, spot2);
 		spot2[2] += self->enemy->viewheight;
-		tr = gi.trace (spot1, NULL, NULL, spot2, self, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_SLIME|CONTENTS_LAVA|CONTENTS_WINDOW);
+		trace_t tr = gi.trace (spot1, NULL, NULL, spot2, self, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_SLIME|CONTENTS_LAVA|CONTENTS_WINDOW);
 
 		// do we have a clear shot?
 		if (tr.ent != self->enemy)
@@ -1060,6 +1043,7 @@ qboolean M_CheckAttack (edict_t *self)
 			self->monsterinfo.attack_state = AS_MELEE;
 		else
 			self->monsterinfo.attack_state = AS_MISSILE;
+
 		return true;
 	}
 	
@@ -1078,6 +1062,7 @@ qboolean M_CheckAttack (edict_t *self)
 		// no waiting for reflections - shoot 'em NOW
 		chance = 2.0;
 	}
+
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		chance = 0.4;
@@ -1174,20 +1159,11 @@ Strafe sideways, but stay at aproximately the same range
 */
 void ai_run_slide(edict_t *self, float distance)
 {
-	float	ofs;
-	
 	self->ideal_yaw = enemy_yaw;
 	M_ChangeYaw (self);
 
-	if (self->monsterinfo.lefty)
-		ofs = 90;
-	else
-		ofs = -90;
+	float ofs = (self->monsterinfo.lefty ? 90 : -90);
 
-	//mxd. Clamp maximum sideways move for non-flyers to make them look less jerky
-	if (!self->flags & FL_FLY)
-		distance = min(distance, MAX_SIDESTEP);
-	
 	if (M_walkmove (self, self->ideal_yaw + ofs, distance))
 		return;
 		

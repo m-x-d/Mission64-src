@@ -1119,9 +1119,7 @@ STOP mean it will stop moving instead of pushing entities
 #define ROTATING_ACCEL	0x2000
 void rotating_accel (edict_t *self)
 {
-	float	current_speed;
-
-	current_speed = VectorLength (self->avelocity);
+	float current_speed = VectorLength (self->avelocity);
 	if(current_speed >= (self->speed - self->accel))		// done
 	{
 		VectorScale (self->movedir, self->speed, self->avelocity);
@@ -1138,9 +1136,7 @@ void rotating_accel (edict_t *self)
 
 void rotating_decel (edict_t *self)
 {
-	float	current_speed;
-
-	current_speed = VectorLength (self->avelocity);
+	float current_speed = VectorLength (self->avelocity);
 	if(current_speed <= self->decel)		// done
 	{
 		VectorClear (self->avelocity);

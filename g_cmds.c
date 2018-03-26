@@ -1703,8 +1703,6 @@ void SetSensitivities (edict_t *ent, qboolean reset)
 	}
 	else
 	{
-		float	ratio;
-
 		//save in lazarus_crosshair
 		Com_sprintf(string, sizeof(string), "lazarus_crosshair %i\n",atoi(crosshair->string));
 		stuffcmd(ent,string);
@@ -1726,12 +1724,14 @@ void SetSensitivities (edict_t *ent, qboolean reset)
 #endif
 			ent->client->sensitivities_init = true;
 		}
+
+#ifndef KMQUAKE2_ENGINE_MOD // engine has zoom autosensitivity
+		float ratio;
 		if (ent->client->ps.fov >= ent->client->original_fov)
 			ratio = 1.;
 		else
 			ratio = ent->client->ps.fov / ent->client->original_fov;
 
-#ifndef KMQUAKE2_ENGINE_MOD // engine has zoom autosensitivity
 		gi.cvar_set ("m_pitch", va("%f", ent->client->m_pitch * ratio));
 		gi.cvar_set ("m_yaw", va("%f", ent->client->m_yaw * ratio));
 		gi.cvar_set ("joy_pitchsensitivity", va("%f", ent->client->joy_pitchsensitivity * ratio));
