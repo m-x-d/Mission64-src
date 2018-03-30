@@ -502,11 +502,10 @@ angles and bad trails.
 */
 edict_t *G_Spawn (void)
 {
-	int			i;
-	edict_t		*e;
+	int	i;
+	edict_t *e = &g_edicts[(int)maxclients->value+1];
 
-	e = &g_edicts[(int)maxclients->value+1];
-	for ( i=maxclients->value+1 ; i<globals.num_edicts ; i++, e++)
+	for (i = maxclients->value + 1; i < globals.num_edicts; i++, e++)
 	{
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
@@ -540,22 +539,24 @@ void G_FreeEdict (edict_t *ed)
 {
 	// Lazarus - if part of a movewith chain, remove from
 	// the chain and repair broken links
-	if(ed->movewith) {
-		edict_t	*e;
+	if(ed->movewith)
+	{
 		edict_t	*parent=NULL;
-		int		i;
 
-		for(i=1; i<globals.num_edicts && !parent; i++) {
-			e = g_edicts + i;
-			if(e->movewith_next == ed) parent=e;
+		for(int i = 1; i<globals.num_edicts && !parent; i++)
+		{
+			edict_t *e = g_edicts + i;
+			if(e->movewith_next == ed) parent = e;
 		}
+
 		if(parent) parent->movewith_next = ed->movewith_next;
 	}
 
 	gi.unlinkentity (ed);		// unlink from world
 
 	// Lazarus: In SP we no longer reserve slots for bodyque's
-	if (deathmatch->value || coop->value) {
+	if (deathmatch->value || coop->value)
+	{
 		if ((ed - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
 		{
 //			gi.dprintf("tried to free special edict\n");

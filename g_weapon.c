@@ -64,11 +64,9 @@ Used for all impact (hit/punch/slash) attacks
 */
 qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
 {
-	trace_t		tr;
 	vec3_t		forward, right, up;
 	vec3_t		v;
 	vec3_t		point;
-	float		range;
 	vec3_t		dir;
 
 	// Lazarus: Paranoia check
@@ -77,7 +75,7 @@ qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
 
 	//see if enemy is in range
 	VectorSubtract (self->enemy->s.origin, self->s.origin, dir);
-	range = VectorLength(dir);
+	float range = VectorLength(dir);
 	if (range > aim[0])
 		return false;
 
@@ -97,7 +95,7 @@ qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
 
 	VectorMA (self->s.origin, range, dir, point);
 
-	tr = gi.trace (self->s.origin, NULL, NULL, point, self, MASK_SHOT);
+	trace_t tr = gi.trace (self->s.origin, NULL, NULL, point, self, MASK_SHOT);
 	if (tr.fraction < 1)
 	{
 		if (!tr.ent->takedamage)

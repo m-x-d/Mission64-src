@@ -192,20 +192,22 @@ void gib_fade (edict_t *self)
 		self->s.effects &= ~EF_BLASTER;
 		self->s.renderfx &= ~RF_NOSHADOW;
 	}
+
 	if (self->s.renderfx & RF_TRANSLUCENT)
 		self->s.alpha = 0.70F;
 	else if (self->s.effects & EF_SPHERETRANS)
 		self->s.alpha = 0.30F;
 	else if (!(self->s.alpha) || self->s.alpha <= 0.0F || self->s.alpha > 1.0F)
 		self->s.alpha = 1.00F;
+
 	gib_fade2 (self);
 }
 
 void gib_fade2 (edict_t *self)
 {
-	self->s.alpha -= 0.05F;
+	self->s.alpha -= 0.2f; //mxd. Was 0.05f
 	//self->s.alpha = max(self->s.alpha, 1/255);
-	if (self->s.alpha <= 0.0f) //mxd. Is there much difference between comparing to 0,003 and to 0, given the step is 0.05?..
+	if (self->s.alpha < 0.05f) //mxd
 	{
 		G_FreeEdict (self);
 		return;
@@ -278,25 +280,53 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	//mxd
 	if (!plane) return;
 
-	gi.sound(self, CHAN_VOICE, gi.soundindex("misc/fhit3.wav"), 0.3, ATTN_NORM, 0);
-
-	// Align to touched surface if we are going to stop...
-	if (VectorCompare(self->velocity, vec3_origin))
+	//mxd. self->style is GIB_TYPE
+	int soundindex;
+	float maxlen = 300.0f;
+	float len = min(VectorLength(self->velocity), maxlen);
+	switch(self->style)
 	{
-		AlignToPlane(self, plane, 90);
-		self->touch = NULL;
+		case GIB_BULLET_SHELL:
+			soundindex = rand() % 3 + 1; // Pick a number in 1..3 range...
+			soundindex = gi.soundindex(va( (len < 0.1f ? "weapons/shells/bullet_stop%i.wav" : "weapons/shells/bullet%i.wav"), soundindex));
+			break;
+
+		case GIB_SHOTGUN_SHELL:
+			if(len < 0.1f)
+			{
+				soundindex = gi.soundindex("weapons/shells/shell_stop.wav");
+			}
+			else
+			{
+				soundindex = rand() % 2 + 1; // Pick a number in 1..3 range...
+				soundindex = gi.soundindex(va("weapons/shells/shell%i.wav", soundindex));
+			}
+			break;
+
+		case GIB_ORGANIC:
+			soundindex = gi.soundindex("misc/fhit3.wav");
+			break;
+
+		default: // GIB_METALLIC
+			soundindex = gi.soundindex("chick/Chkfall1.wav");
+			break;
 	}
-}
 
-//mxd
-void gib_metal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	if (!plane) return;
+	//mxd. Change sound volume based on velocity...
+	float volume = 0.2f;
+	qboolean isshell = (self->style == GIB_BULLET_SHELL || self->style == GIB_SHOTGUN_SHELL);
+	if(!isshell)
+	{
+		if (len == 0) 
+			volume = 0.1f;
+		else
+			volume = 0.3f * (len / maxlen);
+	}
 
-	gi.sound(self, CHAN_VOICE, gi.soundindex("chick/Chkfall1.wav"), 0.3, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, soundindex, volume, (isshell ? ATTN_STATIC : ATTN_NORM), 0);
 
-	// Align to touched surface if we are going to stop...
-	if (VectorCompare(self->velocity, vec3_origin))
+	// Align to the touched surface if we are going to stop...
+	if(len < 0.1f)
 	{
 		AlignToPlane(self, plane, 90);
 		self->touch = NULL;
@@ -310,13 +340,11 @@ void gib_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, 
 
 edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. void -> edict_t
 {
-	edict_t *gib;
 	vec3_t	vd;
 	vec3_t	origin;
 	vec3_t	size;
 	float	vscale;
 	char	modelname[256];
-	char	*p;
 
 	// Lazarus: Prevent gib showers (generally due to firing BFG in a crowd) from
 	// causing SZ_GetSpace: overflow
@@ -329,7 +357,7 @@ edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. vo
 	if (gibsthisframe > sv_maxgibs->value)
 		return NULL;
 
-	gib = G_Spawn();
+	edict_t *gib = G_Spawn();
 
 	gib->classname = "gib";
 	gib->class_id = ENTITY_GIB; //mxd
@@ -339,7 +367,7 @@ edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. vo
 	// Lazarus: mapper-definable gib class
 //	strncpy(modelname, gibname);
 	Q_strncpyz(modelname, gibname, sizeof(modelname));
-	p = strstr(modelname,"models/objects/gibs/");
+	char *p = strstr(modelname,"models/objects/gibs/");
 	if (p && self->gib_type)
 	{
 		p += 18;
@@ -359,7 +387,13 @@ edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. vo
 
 	gi.setmodel (gib, modelname);
 	gib->solid = SOLID_NOT;
-	if (self->blood_type == 1)
+	
+	qboolean is_shell = (type == GIB_BULLET_SHELL || type == GIB_SHOTGUN_SHELL); //mxd
+	if(is_shell) //mxd
+	{
+		gib->s.renderfx |= RF_NOSHADOW;
+	}
+	else if (self->blood_type == 1)
 	{
 		gib->s.effects |= EF_GREENGIB|EF_BLASTER;
 		gib->s.renderfx |= RF_NOSHADOW;
@@ -368,15 +402,18 @@ edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. vo
 		gib->s.effects |= EF_GRENADE;
 	else
 		gib->s.effects |= EF_GIB;
+
 #ifdef KMQUAKE2_ENGINE_MOD
 	//Knightmare- transparent monsters throw transparent gibs
 	if ((self->s.alpha) && self->s.alpha > 0.0F)
 		gib->s.alpha = self->s.alpha;
 #endif
+
 	gib->flags |= FL_NO_KNOCKBACK;
 	gib->svflags |= SVF_GIB; //Knightmare- gib flag
 	gib->takedamage = DAMAGE_YES;
 	gib->die = gib_die;
+	gib->touch = gib_touch;
 
 	if (type == GIB_ORGANIC)
 	{
@@ -384,25 +421,24 @@ edict_t* ThrowGib (edict_t *self, char *gibname, int damage, int type) //mxd. vo
 			gib->movetype = MOVETYPE_BOUNCE;
 		else
 			gib->movetype = MOVETYPE_TOSS;
-		gib->touch = gib_touch;
 		vscale = 0.5;
 	}
 	else
 	{
 		gib->movetype = MOVETYPE_BOUNCE;
-		gib->touch = gib_metal_touch; //mxd
 		vscale = 1.0;
 	}
 
 	VelocityForDamage (damage, vd);
 	VectorMA (self->velocity, vscale, vd, gib->velocity);
 	ClipGibVelocity (gib);
-	gib->avelocity[0] = random()*600;
-	gib->avelocity[1] = random()*600;
-	gib->avelocity[2] = random()*600;
+	gib->avelocity[0] = crandom()*600; //mxd. random() -> crandom()
+	gib->avelocity[1] = crandom()*600;
+	gib->avelocity[2] = crandom()*600;
 
 	gib->think = gib_fade; //Knightmare- gib fade, was G_FreeEdict
-	gib->nextthink = level.time + 10 + random()*10;
+	int timetofade = (is_shell ? 4 : 10); //mxd
+	gib->nextthink = level.time + timetofade + random() * timetofade;
 
 	gib->s.renderfx |= RF_IR_VISIBLE;
 
@@ -485,10 +521,7 @@ void SP_gib (edict_t *gib)
 	else
 		gi.setmodel (gib, "models/objects/gibs/sm_meat/tris.md2");
 	gib->die = gib_die;
-	if (gib->style == GIB_ORGANIC)
-		gib->touch = gib_touch;
-	else
-		gib->touch = gib_metal_touch; //mxd
+	gib->touch = gib_touch;
 	gib->think = gib_delayed_start;
 	gib->class_id = ENTITY_GIB; //mxd
 	gib->nextthink = level.time + FRAMETIME;
@@ -548,17 +581,16 @@ void ThrowHead (edict_t *self, char *gibname, int damage, int type)
 	self->die = gib_die;
 	self->dmgteam = NULL; // Prevent gibs from becoming angry if their buddies are hurt
 	self->postthink = NULL;	// Knightmare- stop lava check
+	self->touch = gib_touch;
 
 	if (type == GIB_ORGANIC)
 	{
 		self->movetype = MOVETYPE_TOSS;
-		self->touch = gib_touch;
 		vscale = 0.5;
 	}
 	else
 	{
 		self->movetype = MOVETYPE_BOUNCE;
-		self->touch = gib_metal_touch; //mxd
 		vscale = 1.0;
 	}
 
@@ -599,11 +631,7 @@ void SP_gibhead (edict_t *gib)
 	else
 		gi.setmodel (gib, "models/objects/gibs/head2/tris.md2");
 
-	if (gib->style == GIB_ORGANIC)
-		gib->touch = gib_touch;
-	else
-		gib->touch = gib_metal_touch; //mxd
-
+	gib->touch = gib_touch;
 	gib->class_id = ENTITY_GIBHEAD; //mxd
 	gib->think = gib_delayed_start;
 	gib->nextthink = level.time + FRAMETIME;
@@ -753,30 +781,35 @@ void BecomeExplosion1 (edict_t *self)
 {
 //ZOID
 	//flags are important
-	if (strcmp(self->classname, "item_flag_team1") == 0) {
+	if (strcmp(self->classname, "item_flag_team1") == 0)
+	{
 		CTFResetFlag(CTF_TEAM1); // this will free self!
-		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",
-			CTFTeamName(CTF_TEAM1));
+		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",	CTFTeamName(CTF_TEAM1));
 		return;
 	}
-	if (strcmp(self->classname, "item_flag_team2") == 0) {
+
+	if (strcmp(self->classname, "item_flag_team2") == 0)
+	{
 		CTFResetFlag(CTF_TEAM2); // this will free self!
-		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",
-			CTFTeamName(CTF_TEAM2));
+		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",	CTFTeamName(CTF_TEAM2));
 		return;
 	}
+
 	// Knightmare added
-	if (strcmp(self->classname, "item_flag_team3") == 0) {
+	if (strcmp(self->classname, "item_flag_team3") == 0)
+	{
 		CTFResetFlag(CTF_TEAM3); // this will free self!
-		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",
-			CTFTeamName(CTF_TEAM3));
+		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",	CTFTeamName(CTF_TEAM3));
 		return;
 	}
+
 	// techs are important too
-	if (self->item && (self->item->flags & IT_TECH)) {
+	if (self->item && (self->item->flags & IT_TECH))
+	{
 		CTFRespawnTech(self); // this frees self!
 		return;
 	}
+
 	// Knightmare- reset grapple
 	if ((strcmp(self->classname, "grapple") == 0) && self->owner) 
 	{
@@ -842,9 +875,7 @@ void path_corner_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	if (self->pathtarget)
 	{
-		char *savetarget;
-
-		savetarget = self->target;
+		char *savetarget = self->target;
 		self->target = self->pathtarget;
 		G_UseTargets (self, other);
 		self->target = savetarget;
@@ -857,7 +888,7 @@ void path_corner_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	// Lazarus: Distinguish between path_corner and target_actor, or target_actor
 	//          with JUMP spawnflag will result in teleport. Ack!
-	if ((next) && (next->spawnflags & 1) && !Q_stricmp(next->classname,"path_corner"))
+	if (next && (next->spawnflags & 1) && !Q_stricmp(next->classname,"path_corner"))
 	{
 		VectorCopy (next->s.origin, v);
 		v[2] += next->mins[2];
@@ -879,27 +910,23 @@ void path_corner_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface
 		other->monsterinfo.pausetime = level.time + 100000000;
 		other->monsterinfo.stand (other);
 	}
+	else if (!other->movetarget)
+	{
+		other->monsterinfo.pausetime = level.time + 100000000;
+		other->monsterinfo.stand (other);
+	}
 	else
 	{
-		
-		if (!other->movetarget)
-		{
-			other->monsterinfo.pausetime = level.time + 100000000;
-			other->monsterinfo.stand (other);
-		}
-		else
-		{
-			VectorSubtract (other->goalentity->s.origin, other->s.origin, v);
-			other->ideal_yaw = vectoyaw (v);
-		}
+		VectorSubtract (other->goalentity->s.origin, other->s.origin, v);
+		other->ideal_yaw = vectoyaw (v);
 	}
 
 	self->count--;
-	if(!self->count) {
+	if(!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 1;
 	}
-
 }
 
 void SP_path_corner (edict_t *self)
@@ -935,7 +962,8 @@ void point_combat_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		return;
 
 	self->count--;
-	if(!self->count) {
+	if(!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + self->delay + 1;
 	}
@@ -971,16 +999,13 @@ void point_combat_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	{
 		if (self->spawnflags & 2)
 		{
-			edict_t	*train;
-			train = G_PickTarget(self->pathtarget);
+			edict_t *train = G_PickTarget(self->pathtarget);
 			if(train)
 				tracktrain_drive(train,other);
 		}
 		else
 		{
-			char *savetarget;
-			
-			savetarget = self->target;
+			char *savetarget = self->target;
 			self->target = self->pathtarget;
 			if (other->enemy && other->enemy->client)
 				activator = other->enemy;
@@ -1003,6 +1028,7 @@ void SP_point_combat (edict_t *self)
 		G_FreeEdict (self);
 		return;
 	}
+
 	self->solid = SOLID_TRIGGER;
 	self->touch = point_combat_touch;
 	VectorSet (self->mins, -8, -8, -16);
@@ -1040,7 +1066,6 @@ void SP_viewthing(edict_t *ent)
 	gi.linkentity (ent);
 	ent->nextthink = level.time + 0.5;
 	ent->think = TH_viewthing;
-	return;
 }
 
 
@@ -1050,7 +1075,7 @@ Used as a positional target for spotlights, etc.
 void SP_info_null (edict_t *self)
 {
 	G_FreeEdict (self);
-};
+}
 
 
 /*QUAKED info_notnull (0 0.5 0) (-4 -4 -4) (4 4 4)
@@ -1060,7 +1085,7 @@ void SP_info_notnull (edict_t *self)
 {
 	VectorCopy (self->s.origin, self->absmin);
 	VectorCopy (self->s.origin, self->absmax);
-};
+}
 
 
 /*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
@@ -1086,7 +1111,8 @@ Default _cone value is 10 (used to set size of light for spotlights)
 		self->spawnflags |= START_OFF;
 
 		self->count--;
-		if(!self->count) {
+		if(!self->count)
+		{
 			self->think = G_FreeEdict;
 			self->nextthink = level.time + 1;
 		}
@@ -1142,7 +1168,8 @@ void func_wall_use (edict_t *self, edict_t *other, edict_t *activator)
 		self->svflags |= SVF_NOCLIENT;
 
 		self->count--;
-		if(!self->count) {
+		if(!self->count)
+		{
 			self->think = G_FreeEdict;
 			self->nextthink = level.time + 1;
 			return;
@@ -1163,6 +1190,7 @@ void SP_func_wall (edict_t *self)
 
 	if (self->spawnflags & 8)
 		self->s.effects |= EF_ANIM_ALL;
+	
 	if (self->spawnflags & 16)
 		self->s.effects |= EF_ANIM_ALLFAST;
 
@@ -1212,12 +1240,9 @@ This is solid bmodel that will fall if it's support it removed.
 void func_object_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	// only squash thing we fall on top of
-	if (!plane)
-		return;
-	if (plane->normal[2] < 1.0)
-		return;
-	if (other->takedamage == DAMAGE_NO)
-		return;
+	if (!plane) return;
+	if (plane->normal[2] < 1.0) return;
+	if (other->takedamage == DAMAGE_NO) return;
 	T_Damage (other, self, self, vec3_origin, self->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 }
 
@@ -1267,6 +1292,7 @@ void SP_func_object (edict_t *self)
 
 	if (self->spawnflags & 2)
 		self->s.effects |= EF_ANIM_ALL;
+
 	if (self->spawnflags & 4)
 		self->s.effects |= EF_ANIM_ALLFAST;
 
@@ -1311,7 +1337,6 @@ void func_explosive_explode (edict_t *self)
 	vec3_t	chunkorigin;
 	vec3_t	size;
 	int		count;
-	int		mass;
 
 	// bmodel origins are (0 0 0), we need to adjust that here
 	VectorScale (self->size, 0.5, size);
@@ -1336,9 +1361,8 @@ void func_explosive_explode (edict_t *self)
 	// start chunks towards the center
 	VectorScale (size, 0.5, size);
 
-	mass = self->mass;
-	if (!mass)
-		mass = 75;
+	int mass = self->mass;
+	if (!mass) mass = 75;
 
 	// Lazarus: Use traditional debris for gib_type=0, but non-zero gib_type gives equal 
 	// weight to all models.
@@ -1356,7 +1380,8 @@ void func_explosive_explode (edict_t *self)
 			chunkorigin[0] = origin[0] + crandom() * size[0];
 			chunkorigin[1] = origin[1] + crandom() * size[1];
 			chunkorigin[2] = origin[2] + crandom() * size[2];
-			switch(self->gib_type) {
+			switch(self->gib_type)
+			{
 			case GIB_METAL:
 				ThrowDebris (self, va("models/objects/metal_gibs/gib%i.md2",r),   2, chunkorigin, self->s.skinnum, 0); break;
 			case GIB_GLASS:
@@ -1411,7 +1436,6 @@ void func_explosive_explode (edict_t *self)
 	G_UseTargets (self, self->activator);
 
 // Respawnable func_explosive. If desired, replace these lines....
-
 	if (self->dmg)
 	{
 		if (mass >= 400)
@@ -3816,7 +3840,7 @@ void leaf_fade2(edict_t *ent)
 	if (ent->count == 1)
 	{
 		ent->s.effects |= EF_SPHERETRANS;
-		ent->nextthink=level.time+0.5;
+		ent->nextthink = level.time+0.5;
 		gi.linkentity(ent);
 	}
 	else

@@ -156,6 +156,8 @@ typedef enum
 //gib types
 #define GIB_ORGANIC				0
 #define GIB_METALLIC			1
+#define GIB_BULLET_SHELL		2 //mxd
+#define GIB_SHOTGUN_SHELL		3 //mxd
 
 //monster ai flags
 #define AI_STAND_GROUND			0x00000001
@@ -1064,6 +1066,8 @@ void PrecacheDebris (int style);
 
 void FadeSink (edict_t *ent);
 void FadeDieSink (edict_t *ent);
+void monster_eject_bullet_shell(edict_t *ent, vec3_t offset); //mxd
+void monster_eject_shotgun_shell(edict_t *ent, vec3_t offset); //mxd
 void monster_fire_bullet (edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype);
 void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype);
 void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect, int color);
@@ -1312,7 +1316,7 @@ void ClientEndServerFrame (edict_t *ent);
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent, qboolean altfire));
+void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire));
 void kick_attack (edict_t *ent);
 
 //

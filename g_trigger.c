@@ -205,7 +205,8 @@ This fixed size trigger cannot be touched, it can only be fired by other events.
 void trigger_relay_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->count--;
-	if(!self->count) {
+	if(!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + FRAMETIME;
 	}
@@ -222,7 +223,8 @@ void SP_trigger_relay (edict_t *self)
 		self->noise_index = gi.soundindex ("misc/talk.wav");
 	else if (self->sounds == 3)
 		self->noise_index = -1;
-	if(!self->count) self->count=-1;
+
+	if(!self->count) self->count = -1;
 // end DWH
 
 	self->use = trigger_relay_use;

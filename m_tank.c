@@ -460,7 +460,6 @@ void TankStrike (edict_t *self)
 
 void TankRocket (edict_t *self)
 {
-	trace_t	trace;
 	vec3_t	forward, right;
 	vec3_t	start;
 	vec3_t	dir;
@@ -521,18 +520,15 @@ void TankRocket (edict_t *self)
 	//          for Easy, which seemed backwards
 	if( (random() < (0.2 + skill->value * 0.15) ) && !(self->spawnflags & SF_MONSTER_SPECIAL))
 	{
-		float	dist;
-		float	time;
-
-		dist = VectorLength (dir);
-		time = dist/rocketSpeed;
+		float dist = VectorLength (dir);
+		float time = dist/rocketSpeed;
 		VectorMA(vec, time, self->enemy->velocity, vec);
 		VectorSubtract(vec, start, dir);
 	}
 
 	VectorNormalize(dir);
 	// paranoia, make sure we're not shooting a target right next to us
-	trace = gi.trace(start, vec3_origin, vec3_origin, vec, self, MASK_SHOT);
+	trace_t trace = gi.trace(start, vec3_origin, vec3_origin, vec, self, MASK_SHOT);
 	if(trace.ent == self->enemy || trace.ent == world)
 	{
 		if(trace.fraction > 0.5 || (trace.ent && trace.ent->client))
@@ -547,13 +543,12 @@ void TankMachineGun (edict_t *self)
 	vec3_t	vec;
 	vec3_t	start;
 	vec3_t	forward, right;
-	int		flash_number;
 
 	// check if enemy went away
 	if (!self->enemy || !self->enemy->inuse)
 		return;
 
-	flash_number = MZ2_TANK_MACHINEGUN_1 + (self->s.frame - FRAME_attak406);
+	int flash_number = MZ2_TANK_MACHINEGUN_1 + (self->s.frame - FRAME_attak406);
 
 	AngleVectors (self->s.angles, forward, right, NULL);
 	G_ProjectSource (self->s.origin, monster_flash_offset[flash_number], forward, right, start);
@@ -580,10 +575,12 @@ void TankMachineGun (edict_t *self)
 	{
 		dir[0] = 0;
 	}
+
 	if (self->s.frame <= FRAME_attak415)
 		dir[1] = self->s.angles[1] - 8 * (self->s.frame - FRAME_attak411);
 	else
 		dir[1] = self->s.angles[1] + 8 * (self->s.frame - FRAME_attak419);
+
 	dir[2] = 0;
 
 	AngleVectors (dir, forward, NULL, NULL);

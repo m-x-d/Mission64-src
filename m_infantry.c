@@ -382,6 +382,10 @@ void InfantryMachineGun (edict_t *self)
 	}
 
 	monster_fire_bullet (self, start, forward, 3, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
+	
+	//mxd. Eject shell. // +x - forward, +y - right 
+	vec3_t shell_offset = { monster_flash_offset[flash_number][0] - 12, monster_flash_offset[flash_number][1] + 2, monster_flash_offset[flash_number][2] + 3 };
+	monster_eject_bullet_shell(self, shell_offset);
 }
 
 void infantry_sight (edict_t *self, edict_t *other)

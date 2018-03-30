@@ -61,15 +61,14 @@ void FadeDieSink (edict_t *ent)
 
 qboolean M_SetDeath(edict_t *self, mmove_t **deathmoves)
 {
-	mmove_t	*move=NULL;
-	mmove_t *dmove;
+	mmove_t	*move = NULL;
 
 	if(self->health > 0)
 		return false;
 
 	while(*deathmoves && !move)
 	{
-		dmove = *deathmoves;
+		mmove_t *dmove = *deathmoves;
 		if( (self->s.frame >= dmove->firstframe) &&
 			(self->s.frame <= dmove->lastframe)     )
 			move = dmove;
@@ -86,6 +85,70 @@ qboolean M_SetDeath(edict_t *self, mmove_t **deathmoves)
 		return true;
 	}
 	return false;
+}
+
+//
+// mxd. Monster shell casings...
+//
+
+void monster_eject_bullet_shell(edict_t *ent, vec3_t offset)
+{
+	if (deathmatch->value) return;
+
+	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/bullet/tris.md3", 0, GIB_BULLET_SHELL);
+	if (!shell) return;
+
+	// Bounding box
+	VectorSet(shell->mins, -4, -4, -2);
+	VectorSet(shell->maxs, 4, 4, 4);
+
+	vec3_t forward, right, angles;
+	VectorCopy(ent->s.angles, angles);
+	AngleVectors(angles, forward, right, NULL);
+
+	// Angles
+	shell->s.angles[YAW] = angles[YAW];
+	shell->s.angles[PITCH] = angles[PITCH];
+
+	// Position
+	G_ProjectSource(ent->s.origin, offset, forward, right, shell->s.origin);
+
+	// Velocity
+	VectorScale(forward, ((rand() & 63) - 64), shell->velocity);
+	VectorMA(shell->velocity, 60 + (rand() & 28), right, shell->velocity);
+	VectorAdd(shell->velocity, ent->velocity, shell->velocity);
+	if(ent->groundentity) VectorAdd(shell->velocity, ent->groundentity->velocity, shell->velocity);
+	shell->velocity[2] += 100 + (rand() & 31);
+}
+
+void monster_eject_shotgun_shell(edict_t *ent, vec3_t offset)
+{
+	if (deathmatch->value) return;
+
+	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/shell/tris.md3", 0, GIB_SHOTGUN_SHELL);
+	if (!shell) return;
+
+	// Bounding box
+	VectorSet(shell->mins, -4, -4, -2);
+	VectorSet(shell->maxs, 4, 4, 4);
+
+	vec3_t forward, right, angles;
+	VectorCopy(ent->s.angles, angles);
+	AngleVectors(angles, forward, right, NULL);
+
+	// Angles
+	shell->s.angles[YAW] = angles[YAW];
+	shell->s.angles[PITCH] = angles[PITCH];
+
+	// Position
+	G_ProjectSource(ent->s.origin, offset, forward, right, shell->s.origin);
+
+	// Velocity
+	VectorScale(forward, ((rand() & 31) - 32), shell->velocity);
+	VectorMA(shell->velocity, 62 + (rand() & 28), right, shell->velocity);
+	VectorAdd(shell->velocity, ent->velocity, shell->velocity);
+	if(ent->groundentity) VectorAdd(shell->velocity, ent->groundentity->velocity, shell->velocity);
+	shell->velocity[2] += 100 + (rand() & 28);
 }
 
 //

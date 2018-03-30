@@ -529,6 +529,10 @@ void soldier_fire (edict_t *self, int flash_number)
 	else if ((self->s.skinnum % 6) <= 3)
 	{
 		monster_fire_shotgun (self, start, aim, 2, 1, DEFAULT_SHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SHOTGUN_COUNT, flash_index);
+
+		//mxd. Eject shell. // +x - forward, +y - right 
+		vec3_t shell_offset = { monster_flash_offset[flash_index][0] - 12, monster_flash_offset[flash_index][1], monster_flash_offset[flash_index][2] - 1 };
+		monster_eject_shotgun_shell(self, shell_offset);
 	}
 	else
 	{
@@ -536,6 +540,10 @@ void soldier_fire (edict_t *self, int flash_number)
 			self->monsterinfo.pausetime = level.time + (3 + rand() % 8) * FRAMETIME;
 
 		monster_fire_bullet (self, start, aim, 2, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_index);
+
+		//mxd. Eject shell. // +x - forward, +y - right 
+		vec3_t shell_offset = { monster_flash_offset[flash_index][0] - 11, monster_flash_offset[flash_index][1], monster_flash_offset[flash_index][2] + 7 };
+		monster_eject_bullet_shell(self, shell_offset);
 
 		if (level.time >= self->monsterinfo.pausetime)
 			self->monsterinfo.aiflags &= ~AI_HOLD_FRAME;

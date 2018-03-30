@@ -532,8 +532,7 @@ mmoveList_t mmoveList[] = {
 
 functionList_t *GetFunctionByAddress (byte *adr)
 {
-	int i;
-	for (i=0; functionList[i].funcStr; i++)
+	for (int i = 0; functionList[i].funcStr; i++)
 	{
 		if (functionList[i].funcPtr == adr)
 			return &functionList[i];
@@ -543,8 +542,7 @@ functionList_t *GetFunctionByAddress (byte *adr)
 
 byte *FindFunctionByName (char *name)
 {
-	int i;
-	for (i=0; functionList[i].funcStr; i++)
+	for (int i = 0; functionList[i].funcStr; i++)
 	{
 		if (!strcmp(name, functionList[i].funcStr))
 			return functionList[i].funcPtr;
@@ -554,8 +552,7 @@ byte *FindFunctionByName (char *name)
 
 mmoveList_t *GetMmoveByAddress (mmove_t *adr)
 {
-	int i;
-	for (i=0; mmoveList[i].mmoveStr; i++)
+	for (int i = 0; mmoveList[i].mmoveStr; i++)
 	{
 		if (mmoveList[i].mmovePtr == adr)
 			return &mmoveList[i];
@@ -565,8 +562,7 @@ mmoveList_t *GetMmoveByAddress (mmove_t *adr)
 
 mmove_t *FindMmoveByName (char *name)
 {
-	int i;
-	for (i=0; mmoveList[i].mmoveStr; i++)
+	for (int i = 0; mmoveList[i].mmoveStr; i++)
 	{
 		if (!strcmp(name, mmoveList[i].mmoveStr))
 			return mmoveList[i].mmovePtr;

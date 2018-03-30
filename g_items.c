@@ -1989,7 +1989,7 @@ always owned, never in the world
 		5,
 		"grenades",
 		IT_AMMO, //mxd
-		NULL, //mxd
+		0, //mxd
 		NULL,
 		AMMO_GRENADES,
 /* precache */ "weapons/hgrent1a.wav weapons/hgrena1b.wav weapons/hgrenc1b.wav weapons/hgrenb1a.wav weapons/hgrenb2a.wav "

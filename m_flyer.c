@@ -285,7 +285,8 @@ void flyer_kamikaze_explode(edict_t *self)
 	if (self->enemy)
 	{
 		VectorSubtract(self->enemy->s.origin, self->s.origin, dir);
-		T_Damage(self->enemy, self, self, dir, self->s.origin, vec3_origin, 50, 50, DAMAGE_RADIUS, MOD_EXPLOSIVE);
+		//T_Damage(self->enemy, self, self, dir, self->s.origin, vec3_origin, 50, 50, DAMAGE_RADIUS, MOD_EXPLOSIVE);
+		T_RadiusDamage(self, self, 45 + 5*skill->value, NULL, 128 + 16*skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value)); //mxd. We can explode when stuck, so no direct damage to the target
 	}
 
 	flyer_die(self, NULL, NULL, 0, dir);
@@ -308,10 +309,9 @@ void flyer_kamikaze(edict_t *self)
 void flyer_kamikaze_check(edict_t *self)
 {
 	// PMM - this needed because we could have gone away before we get here (blocked code)
-	if (!self->inuse)
-		return;
+	if (!self->inuse) return;
 
-	if ((!self->enemy) || (!self->enemy->inuse))
+	if(!self->enemy || !self->enemy->inuse || VectorCompare(self->s.old_origin, self->s.origin)) //mxd. Also explode when stuck...
 	{
 		flyer_kamikaze_explode(self);
 		return;
@@ -319,9 +319,18 @@ void flyer_kamikaze_check(edict_t *self)
 
 	self->goalentity = self->enemy;
 	self->s.effects |= EF_ROCKET;
+	VectorCopy(self->s.origin, self->s.old_origin); //mxd. Store old position...
+
+	//mxd. Shrink bounding box to reduce the chance of getting STUK...
+	if(self->maxs[0] != 8)
+	{
+		VectorSet(self->mins, -8, -8, -8);
+		VectorSet(self->maxs, 8, 8, 8);
+		gi.linkentity(self);
+	}
 
 	float dist = realrange(self, self->enemy);
-	if (dist < 90)
+	if(dist < 90)
 		flyer_kamikaze_explode(self);
 	else if(dist < 128 || (level.framenum % 2 == 0)) //mxd. Play beep sound
 		gi.sound(self, CHAN_VOICE, sound_suicide_beep, 1, ATTN_NORM, 0);
@@ -676,8 +685,6 @@ void flyer_check_melee(edict_t *self)
 
 void flyer_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
-	int		n;
-
 	//mxd. Kamikazes don't feel pain
 	if (self->class_id == ENTITY_MONSTER_FLYER_KAMIKAZE)
 		return;
@@ -692,7 +699,7 @@ void flyer_pain (edict_t *self, edict_t *other, float kick, int damage)
 	if (skill->value == 3)
 		return;		// no pain anims in nightmare
 
-	n = rand() % 3;
+	int n = rand() % 3;
 	if (n == 0)
 	{
 		gi.sound (self, CHAN_VOICE, sound_pain1, 1, ATTN_NORM, 0);
@@ -710,18 +717,74 @@ void flyer_pain (edict_t *self, edict_t *other, float kick, int damage)
 	}
 }
 
+//mxd
+void flyer_spawn_gibs(edict_t *self, int damage)
+{
+	int n;
+	for (n = 0; n < 6; n++)
+		ThrowGib(self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
+	for (n = 0; n < 4; n++)
+		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+	ThrowGib(self, "models/objects/gibs/skull/tris.md2", damage, GIB_ORGANIC); //mxd
+	gi.sound(self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
+	BecomeExplosion1(self);
+}
+
+//mxd
+void fake_flyer_touch(edict_t *self, edict_t *other, cplane_t* p, csurface_t* s)
+{
+	T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
+	flyer_spawn_gibs(self, self->dmg); // Removes self, must be called last
+}
 
 void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int n;
-	// Knightmare- gibs!
-	for (n= 0; n < 6; n++) //mxd. 4 -> 6
-		ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
-	for (n= 0; n < 4; n++) //mxd. 2 -> 4
-		ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-	ThrowGib(self, "models/objects/gibs/skull/tris.md2", damage, GIB_ORGANIC); //mxd
-	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
-	BecomeExplosion1(self);
+	//mxd
+	if(self->class_id == ENTITY_MONSTER_FLYER && damage < 100)
+	{
+		int scaler = 32;
+
+		// Single shotgun pellet does little damage
+		if(inflictor->client && (inflictor->client->pers.weapon->classname == "weapon_shotgun" || inflictor->client->pers.weapon->classname == "weapon_supershotgun"))
+			scaler *= 2;
+		// Rockets and grenades, on the other hand, do way too much...
+		else if(inflictor->classname == "rocket" || inflictor->classname == "grenade") 
+			scaler *= 0.6f;
+
+		int kick = max(300, min(damage * scaler, 600)) + rand() % 63;
+
+		// I'm grenade!
+		edict_t* g = ThrowGib(self, "models/monsters/flyer/tris.md2", damage, GIB_METALLIC);
+		g->s.skinnum = self->s.skinnum;
+		g->s.effects = EF_GRENADE;
+		g->mass = 200;
+		g->health = 100000; // Otherwise we will be destroyed by our own radius damage before spawning any gibs...
+		VectorCopy(self->s.origin, g->s.origin);
+		VectorCopy(self->velocity, g->velocity);
+		VectorCopy(self->s.angles, g->s.angles);
+		VectorScale(g->avelocity, 0.5f, g->avelocity);
+		g->dmg = kick;
+		g->touch = fake_flyer_touch;
+
+		// Set clipping and size, so we can SMACK into other monsters (and player)
+		g->solid = SOLID_BBOX;
+		g->clipmask = MASK_SHOT;
+		VectorSet(g->mins, -8, -8, -8);
+		VectorSet(g->maxs, 8, 8, 8);
+		gi.linkentity(g);
+
+		// Let's launch it
+		vec3_t kick_dir; 
+		VectorSubtract(self->s.origin, attacker->s.origin, kick_dir);
+		VectorNormalize(kick_dir);
+		VectorMA(g->velocity, kick, kick_dir, g->velocity);
+
+		G_FreeEdict(self);
+	}
+	else
+	{
+		flyer_spawn_gibs(self, damage);
+	}
 }
 
 //mxd. Kamikaze code .. blow up if blocked
@@ -757,6 +820,7 @@ qboolean flyer_blocked(edict_t *self, float dist)
 //mxd
 void flyer_become_kamikaze(edict_t *self)
 {
+	self->health = min(self->health, 5 + 5*skill->value); // Allow player to one-shot the guy with any weapon, unless on Hard...
 	self->common_name = "Angry Videogame Flyer"; // Le puns
 	self->mass = 100; // Why is that needed?..
 	self->class_id = ENTITY_MONSTER_FLYER_KAMIKAZE;
@@ -812,10 +876,8 @@ void SP_monster_flyer (edict_t *self)
 	self->s.sound = gi.soundindex ("flyer/flyidle1.wav");
 
 	// Lazarus: mapper-configurable health
-	if(!self->health)
-		self->health = 50;
-	if(!self->mass)
-		self->mass = 50;
+	if(!self->health) self->health = 50;
+	if(!self->mass)   self->mass = 50;
 
 	self->pain = flyer_pain;
 	self->die = flyer_die;
@@ -834,16 +896,16 @@ void SP_monster_flyer (edict_t *self)
 		self->blood_type = 3; //sparks and blood
 
 	// Lazarus
-	if(self->powerarmor) {
+	if(self->powerarmor)
+	{
 		self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
 		self->monsterinfo.power_armor_power = self->powerarmor;
 	}
 	self->common_name = "Flyer";
 
 	//mxd. Adjust run speed based on skill
-	int i, s;
-	s = flyer_frames_run_distances_per_skill[max(0, min(3, skill->integer))];
-	for (i = 0; i < 45; i++)
+	int s = flyer_frames_run_distances_per_skill[max(0, min(3, skill->integer))];
+	for(int i = 0; i < 45; i++)
 	{
 		flyer_frames_run[i].dist = s;
 	}

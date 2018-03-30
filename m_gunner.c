@@ -506,9 +506,8 @@ void GunnerFire (edict_t *self)
 	vec3_t	forward, right;
 	vec3_t	target;
 	vec3_t	aim;
-	int		flash_number;
 
-	flash_number = MZ2_GUNNER_MACHINEGUN_1 + (self->s.frame - FRAME_attak216);
+	int flash_number = MZ2_GUNNER_MACHINEGUN_1 + (self->s.frame - FRAME_attak216);
 
 	AngleVectors (self->s.angles, forward, right, NULL);
 	G_ProjectSource (self->s.origin, monster_flash_offset[flash_number], forward, right, start);
@@ -530,6 +529,10 @@ void GunnerFire (edict_t *self)
 	VectorSubtract (target, start, aim);
 	VectorNormalize (aim);
 	monster_fire_bullet (self, start, aim, 3, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
+
+	//mxd. Eject shell. // +x - forward, +y - right 
+	vec3_t shell_offset = { monster_flash_offset[flash_number][0] - 12, monster_flash_offset[flash_number][1] + 2, monster_flash_offset[flash_number][2] + 1 };
+	monster_eject_bullet_shell(self, shell_offset);
 }
 
 void GunnerGrenade (edict_t *self)

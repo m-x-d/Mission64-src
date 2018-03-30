@@ -1827,8 +1827,6 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 	edict_t		*kill_me, *movetarget;
 	edict_t		*t;
 	vec3_t		vec;
-	float		dist, best_dist;
-	edict_t		*best_target;
 
 	if(self->pathtarget)
 		movetarget = G_PickTarget(self->pathtarget);
@@ -1850,6 +1848,7 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 				{
 					if (t->health < 0)
 						return;
+
 					if(self->movedir[2] > 0)
 					{
 						t->velocity[0] = self->movedir[0] * self->speed;
@@ -1862,19 +1861,22 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 								gi.sound (self, CHAN_VOICE, t->actor_sound_index[0], 1, ATTN_NORM, 0);
 						}
 					}
+
 					if(self->killtarget)
 					{
 						kill_me = G_Find(NULL, FOFS(targetname), self->killtarget);
 						if(kill_me)
 						{
-							best_dist = 9000.;
-							best_target = NULL;
+							float best_dist = 9000.;
+							edict_t *best_target = NULL;
+
 							if(kill_me->health > 0)
 							{
 								VectorSubtract(kill_me->s.origin,t->s.origin,vec);
 								best_dist = VectorLength(vec);
 								best_target = kill_me;
 							}
+
 							while(kill_me)
 							{
 								kill_me = G_Find(kill_me, FOFS(targetname), self->killtarget);
@@ -1885,16 +1887,18 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 								if(kill_me->health <= 0)
 									continue;
 								VectorSubtract(kill_me->s.origin,t->s.origin,vec);
-								dist = VectorLength(vec);
+								float dist = VectorLength(vec);
 								if(dist < best_dist)
 								{
 									best_dist = dist;
 									best_target = kill_me;
 								}
 							}
+
 							kill_me = best_target;
 						}
 					}
+
 					if(kill_me)
 					{
 						// Make whatever a "good guy" so the monster will try to kill it!
@@ -1917,10 +1921,12 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 						t->monsterinfo.aiflags |= AI_STAND_GROUND;
 						t->monsterinfo.stand (t);
 					}
+
 					if (self->spawnflags & 32)
 						t->monsterinfo.aiflags |= AI_BRUTAL;
 				}
 			}
+
 			if (!self->inuse)
 			{
 				gi.dprintf("entity was removed while using targets\n");
@@ -1930,29 +1936,35 @@ void use_target_anger(edict_t *self, edict_t *other, edict_t *activator)
 	}
 
 	self->count--;
-	if(!self->count) {
+	if(!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 1;
 	}
-
 }
 
 void SP_target_anger(edict_t *self)
 {
-	if(deathmatch->value) {
+	if(deathmatch->value)
+	{
 		G_FreeEdict(self);
 		return;
 	}
-	if(!self->target) {
+
+	if(!self->target)
+	{
 		gi.dprintf("target_anger with no target set at %s\n",vtos(self->s.origin));
 		G_FreeEdict(self);
 		return;
 	}
-	if(!self->killtarget && !self->pathtarget) {
+
+	if(!self->killtarget && !self->pathtarget)
+	{
 		gi.dprintf("target_anger with no killtarget or\npathtarget set at %s\n",vtos(self->s.origin));
 		G_FreeEdict(self);
 		return;
 	}
+
 	// pathtarget is incompatible with HOLD SF
 	if(self->pathtarget && (self->spawnflags & 16))
 	{
@@ -1964,6 +1976,14 @@ void SP_target_anger(edict_t *self)
 	G_SetMovedir (self->s.angles, self->movedir);
 	self->movedir[2] = st.height;
 	self->use = use_target_anger;
+
+	//mxd. Auto-trigger flag
+	if(self->spawnflags & 1)
+	{
+		self->think = use_target_anger;
+		self->nextthink = level.time + 1.0f + self->wait;
+		self->activator = self;
+	}
 }
 
 // target_monsterbattle serves the same purpose as target_anger, but 
@@ -1971,55 +1991,64 @@ void SP_target_anger(edict_t *self)
 
 void use_target_monsterbattle(edict_t *self, edict_t *other, edict_t *activator)
 {
-	edict_t *grouch, *grouchmate;
-	edict_t *target, *targetmate;
-
-	grouch = G_Find(NULL,FOFS(targetname),self->target);
-	if(!grouch) return;
-	if(!grouch->inuse) return;
-	target = G_Find(NULL,FOFS(targetname),self->killtarget);
-	if(!target) return;
-	if(!target->inuse) return;
-	if(grouch->dmgteam) {
-		grouchmate = G_Find(NULL,FOFS(dmgteam),grouch->dmgteam);
-		while(grouchmate) {
+	edict_t *grouch = G_Find(NULL,FOFS(targetname),self->target);
+	if(!grouch || !grouch->inuse) return;
+	
+	edict_t *target = G_Find(NULL,FOFS(targetname),self->killtarget);
+	if(!target || !target->inuse) return;
+	if(grouch->dmgteam)
+	{
+		edict_t *grouchmate = G_Find(NULL,FOFS(dmgteam),grouch->dmgteam);
+		while(grouchmate)
+		{
 			grouchmate->monsterinfo.aiflags |= AI_FREEFORALL;
 			grouchmate = G_Find(grouchmate,FOFS(dmgteam),grouch->dmgteam);
 		}
 	}
-	if(target->dmgteam) {
-		targetmate = G_Find(NULL,FOFS(dmgteam),target->dmgteam);
-		while(targetmate) {
+
+	if(target->dmgteam)
+	{
+		edict_t *targetmate = G_Find(NULL,FOFS(dmgteam),target->dmgteam);
+		while(targetmate)
+		{
 			targetmate->monsterinfo.aiflags |= AI_FREEFORALL;
 			targetmate = G_Find(targetmate,FOFS(dmgteam),target->dmgteam);
 		}
 	}
+
 	grouch->enemy = target;
 	grouch->monsterinfo.aiflags |= AI_TARGET_ANGER;
 	FoundTarget(grouch);
 
 	self->count--;
-	if(!self->count) {
+	if(!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 1;
 	}
 }
 void SP_target_monsterbattle(edict_t *self)
 {
-	if(deathmatch->value) {
+	if(deathmatch->value)
+	{
 		G_FreeEdict(self);
 		return;
 	}
-	if(!self->target) {
+
+	if(!self->target)
+	{
 		gi.dprintf("target_monsterbattle with no target set at %s\n",vtos(self->s.origin));
 		G_FreeEdict(self);
 		return;
 	}
-	if(!self->killtarget) {
+
+	if(!self->killtarget)
+	{
 		gi.dprintf("target_monsterbattle with no killtarget set at %s\n",vtos(self->s.origin));
 		G_FreeEdict(self);
 		return;
 	}
+
 	self->use = use_target_monsterbattle;
 }
 

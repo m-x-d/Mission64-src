@@ -75,6 +75,12 @@ void parasite_tap (edict_t *self)
 		gi.sound (self, CHAN_WEAPON, sound_tap, 1, ATTN_IDLE, 0);
 }
 
+//mxd
+void parasite_step(edict_t *self)
+{
+	gi.sound(self, CHAN_WEAPON, sound_tap, 1, ATTN_IDLE, 0);
+}
+
 void parasite_scratch (edict_t *self)
 {
 	if (!(self->spawnflags & SF_MONSTER_AMBUSH))		//CW: ambush => should be silent
@@ -177,8 +183,8 @@ mframe_t parasite_frames_run [] =
 	ai_run, 30, NULL,
 	ai_run, 30, NULL,
 	ai_run, 22, NULL,
-	ai_run, 19, NULL,
-	ai_run, 24, NULL,
+	ai_run, 19, parasite_step, //mxd
+	ai_run, 24, parasite_step, //mxd
 	ai_run, 28, NULL,
 	ai_run, 25, NULL
 };
