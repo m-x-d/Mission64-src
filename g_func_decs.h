@@ -473,7 +473,7 @@ extern void SP_monster_flyer ( edict_t * self ) ;
 extern void flyer_become_kamikaze ( edict_t * self ) ;
 extern qboolean flyer_blocked ( edict_t * self , float dist ) ;
 extern void flyer_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
-extern void fake_flyer_touch ( edict_t * self , edict_t * other , cplane_t * p , csurface_t s ) ;
+extern void fake_flyer_touch ( edict_t * self , edict_t * other , cplane_t * p , csurface_t * s ) ;
 extern void flyer_spawn_gibs ( edict_t * self , int damage ) ;
 extern void flyer_pain ( edict_t * self , edict_t * other , float kick , int damage ) ;
 extern void flyer_check_melee ( edict_t * self ) ;
@@ -738,6 +738,8 @@ extern void blaster_touch ( edict_t * self , edict_t * other , cplane_t * plane 
 extern void fire_shotgun ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int kick , int hspread , int vspread , int count , int mod ) ;
 extern void fire_bullet ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int kick , int hspread , int vspread , int mod ) ;
 extern void fire_lead ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int kick , int te_impact , int hspread , int vspread , int mod ) ;
+extern void fire_tracer ( vec3_t start , vec3_t dir , const int type ) ;
+extern void tracer_touch ( edict_t * self , edict_t * other , cplane_t * p , csurface_t * s ) ;
 extern qboolean fire_hit ( edict_t * self , vec3_t aim , int damage , int kick ) ;
 extern void check_dodge ( edict_t * self , vec3_t start , vec3_t dir , int speed ) ;
 extern void SP_func_vehicle ( edict_t * self ) ;

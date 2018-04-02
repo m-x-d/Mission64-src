@@ -130,6 +130,50 @@ qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
 
 /*
 =================
+mxd. Tracers
+=================
+*/
+
+void tracer_touch(edict_t* self, edict_t* other, cplane_t* p, csurface_t* s)
+{
+	self->solid = SOLID_NOT;
+	self->nextthink = level.time + 0.1f;
+	self->think = G_FreeEdict;
+	gi.linkentity(self);
+}
+
+void fire_tracer(vec3_t start, vec3_t dir, const int type)
+{
+	edict_t *tracer = G_Spawn();
+	int speed = 2048 + rand()%511;
+
+	VectorCopy(start, tracer->s.origin);
+	vectoangles(dir, tracer->s.angles);
+	VectorScale(dir, speed, tracer->velocity);
+	VectorClear(tracer->mins);
+	VectorClear(tracer->maxs);
+
+	tracer->movetype = MOVETYPE_FLYMISSILE;
+	tracer->clipmask = MASK_SHOT;
+	tracer->solid = SOLID_BBOX;
+	tracer->s.renderfx |= RF_NOSHADOW | RF_TRANSLUCENT;
+	tracer->classname = "tracer";
+
+	switch(type)
+	{
+		case TE_SHOTGUN: tracer->s.modelindex = gi.modelindex("models/weapons/tracers/shell/tris.md2"); break;
+		case TE_GUNSHOT: tracer->s.modelindex = gi.modelindex("models/weapons/tracers/bullet/tris.md2"); break;
+		default: gi.error("fire_tracer: unknown tracer type");
+	}
+
+	tracer->touch = tracer_touch; // With speed this high, tracer would oftentimes disappear before visually hitting anything, so delay it's disappearance a bit...
+
+	gi.linkentity(tracer);
+}
+
+
+/*
+=================
 fire_lead
 
 This is an internal support routine used for bullet/pellet based weapons.
@@ -141,8 +185,6 @@ This is an internal support routine used for bullet/pellet based weapons.
 	vec3_t		dir;
 	vec3_t		forward, right, up;
 	vec3_t		end;
-	float		r;
-	float		u;
 	vec3_t		water_start;
 	qboolean	water = false;
 	int			content_mask = MASK_SHOT | MASK_WATER;
@@ -153,8 +195,8 @@ This is an internal support routine used for bullet/pellet based weapons.
 		vectoangles (aimdir, dir);
 		AngleVectors (dir, forward, right, up);
 
-		r = crandom()*hspread;
-		u = crandom()*vspread;
+		float r = crandom()*hspread;
+		float u = crandom()*vspread;
 		VectorMA (start, 8192, forward, end);
 		VectorMA (end, r, right, end);
 		VectorMA (end, u, up, end);
@@ -219,6 +261,26 @@ This is an internal support routine used for bullet/pellet based weapons.
 			// re-trace ignoring water this time
 			tr = gi.trace (water_start, NULL, NULL, end, self, MASK_SHOT);
 		}
+
+		//mxd. Spawn tracer...
+		vec3_t tracer_dir, tracer_start;
+
+		// Chaingun has horrible start position spread, let's fix this...
+		if(self->client && mod == MOD_CHAINGUN)
+		{
+			vec3_t tracer_fwd, tracer_right, tracer_offset;
+			AngleVectors(self->client->v_angle, tracer_fwd, tracer_right, NULL);
+			VectorSet(tracer_offset, 13, 4, self->viewheight - 5); // +x - forward, +y - right
+			P_ProjectSource(self->client, self->s.origin, tracer_offset, forward, right, tracer_start);
+		}
+		else
+		{
+			VectorCopy(start, tracer_start);
+		}
+
+		VectorSubtract(end, tracer_start, tracer_dir);
+		VectorNormalize(tracer_dir);
+		fire_tracer(tracer_start, tracer_dir, te_impact);
 	}
 
 	// send gun puff / flash
@@ -298,9 +360,7 @@ Shoots shotgun pellets.  Used by shotgun and super shotgun.
 */
 void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod)
 {
-	int		i;
-
-	for (i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 		fire_lead (self, start, aimdir, damage, kick, TE_SHOTGUN, hspread, vspread, mod);
 }
 
@@ -379,12 +439,11 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, int color)
 {
 	edict_t	*bolt;
-	trace_t	tr;
 
-	//Knightmare- only change color with blaster_color cvar if self is a player or actor
-	qboolean color_changeable = false;
+	//Knightmare- only change color with blaster_color cvar if self is a player or actor //mxd. Never used
+	/*qboolean color_changeable = false;
 	if ( (self->client && !(self->flags & FL_TURRET_OWNER)) || !strcmp(self->classname, "target_actor"))
-		color_changeable = true;
+		color_changeable = true;*/
 
 	VectorNormalize (dir);
 
@@ -432,7 +491,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	if (self->client)
 		check_dodge (self, bolt->s.origin, dir, speed);
 
-	tr = gi.trace (self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
+	trace_t tr = gi.trace (self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
 	if (tr.fraction < 1.0)
 	{
 		VectorMA (bolt->s.origin, -10, dir, bolt->s.origin);

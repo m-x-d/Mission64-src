@@ -762,7 +762,9 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 		VectorCopy(self->s.origin, g->s.origin);
 		VectorCopy(self->velocity, g->velocity);
 		VectorCopy(self->s.angles, g->s.angles);
-		VectorScale(g->avelocity, 0.5f, g->avelocity);
+		g->avelocity[0] *= 0.5f;
+		g->avelocity[1] *= 0.5f;
+		g->avelocity[2] *= 2.0f;
 		g->dmg = kick;
 		g->touch = fake_flyer_touch;
 

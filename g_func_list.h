@@ -738,6 +738,8 @@
 {"fire_shotgun", (byte *)fire_shotgun},
 {"fire_bullet", (byte *)fire_bullet},
 {"fire_lead", (byte *)fire_lead},
+{"fire_tracer", (byte *)fire_tracer},
+{"tracer_touch", (byte *)tracer_touch},
 {"fire_hit", (byte *)fire_hit},
 {"check_dodge", (byte *)check_dodge},
 {"SP_func_vehicle", (byte *)SP_func_vehicle},
