@@ -93,7 +93,7 @@ qboolean M_SetDeath(edict_t *self, mmove_t **deathmoves)
 
 void monster_eject_bullet_shell(edict_t *ent, vec3_t offset)
 {
-	if (deathmatch->value) return;
+	if (deathmatch->value || !m64_spawn_casings->value) return;
 
 	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/bullet/tris.md3", 0, GIB_BULLET_SHELL);
 	if (!shell) return;
@@ -123,7 +123,7 @@ void monster_eject_bullet_shell(edict_t *ent, vec3_t offset)
 
 void monster_eject_shotgun_shell(edict_t *ent, vec3_t offset)
 {
-	if (deathmatch->value) return;
+	if (deathmatch->value || !m64_spawn_casings->value) return;
 
 	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/shell/tris.md3", 0, GIB_SHOTGUN_SHELL);
 	if (!shell) return;
@@ -1108,10 +1108,7 @@ void swimmonster_start (edict_t *self)
 
 void InitiallyDead (edict_t *self)
 {
-	int	damage;
-
-	if(self->max_health > 0)
-		return;
+	if(self->max_health > 0) return;
 
 //	gi.dprintf("InitiallyDead on %s at %s\n",self->classname,vtos(self->s.origin));
 	
@@ -1122,11 +1119,13 @@ void InitiallyDead (edict_t *self)
 		if(self->deadflag != DEAD_DEAD)
 			level.killed_monsters--;
 	}
+
 	if(self->deadflag != DEAD_DEAD)
 	{
-		damage = 1 - self->health;
+		int damage = 1 - self->health;
 		self->health = 1;
-		T_Damage (self, world, world, vec3_origin, self->s.origin, vec3_origin, damage, 0, DAMAGE_NO_ARMOR, 0);
+		T_Damage(self, world, world, vec3_origin, self->s.origin, vec3_origin, damage, 0, DAMAGE_NO_ARMOR, 0);
+		
 		if(self->svflags & SVF_MONSTER)
 		{
 			self->svflags |= SVF_DEADMONSTER;
@@ -1134,6 +1133,7 @@ void InitiallyDead (edict_t *self)
 			self->nextthink = level.time + FRAMETIME;
 		}
 	}
+
 	gi.linkentity(self);
 }
 

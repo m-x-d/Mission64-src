@@ -128,6 +128,7 @@
 {"hover_move_attack1", &hover_move_attack1},
 {"hover_move_start_attack", &hover_move_start_attack},
 {"hover_move_backward", &hover_move_backward},
+{"hover_move_death2", &hover_move_death2},
 {"hover_move_death1", &hover_move_death1},
 {"hover_move_run", &hover_move_run},
 {"hover_move_walk", &hover_move_walk},

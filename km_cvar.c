@@ -203,6 +203,10 @@ cvar_t	*tech_vampire;       // sets percentage of health gained from damage infl
 cvar_t	*tech_vampiremax;    // sets maximum health that can be gained from vampire rune
 // end CTF stuff
 
+//mxd. Mission64 cvars...
+cvar_t	*m64_spawn_casings; // whether to spawn bullet casings
+cvar_t	*m64_spawn_tracers; // whether to spawn bullet tracers
+
 void InitLithiumVars (void)
 {
 	mega_gibs = gi.cvar("mega_gibs", "0", 0);
@@ -380,4 +384,8 @@ void InitLithiumVars (void)
 	tech_vampire = gi.cvar("tech_vampire", "0.5", 0);
 	tech_vampiremax = gi.cvar("tech_vampiremax", "200", 0);
 	// end CTF Tech stuff
+
+	//mxd. Mission64 cvars...
+	m64_spawn_casings = gi.cvar("spawn_casings", "1", 0);
+	m64_spawn_tracers = gi.cvar("spawn_tracers", "1", 0);
 }

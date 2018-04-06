@@ -1362,9 +1362,7 @@ Cmd_Wave_f
 */
 void Cmd_Wave_f (edict_t *ent)
 {
-	int		i;
-
-	i = atoi (gi.argv(1));
+	int i = atoi (gi.argv(1));
 
 	// can't wave when ducked
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
@@ -1408,31 +1406,32 @@ void Cmd_Wave_f (edict_t *ent)
 
 qboolean CheckFlood(edict_t *ent)
 {
-	int		i;
-	gclient_t *cl;
+	if (flood_msgs->value)
+	{
+		gclient_t *cl = ent->client;
 
-	if (flood_msgs->value) {
-		cl = ent->client;
-
-        if (level.time < cl->flood_locktill) {
-			safe_cprintf(ent, PRINT_HIGH, "You can't talk for %d more seconds\n",
-				(int)(cl->flood_locktill - level.time));
+		if (level.time < cl->flood_locktill)
+		{
+			safe_cprintf(ent, PRINT_HIGH, "You can't talk for %d more seconds\n", (int)(cl->flood_locktill - level.time));
             return true;
         }
-        i = cl->flood_whenhead - flood_msgs->value + 1;
+
+        int i = cl->flood_whenhead - flood_msgs->value + 1;
+
         if (i < 0)
             i = (sizeof(cl->flood_when)/sizeof(cl->flood_when[0])) + i;
-		if (cl->flood_when[i] && 
-			level.time - cl->flood_when[i] < flood_persecond->value) {
+
+		if (cl->flood_when[i] && level.time - cl->flood_when[i] < flood_persecond->value)
+		{
 			cl->flood_locktill = level.time + flood_waitdelay->value;
-			safe_cprintf(ent, PRINT_CHAT, "Flood protection:  You can't talk for %d seconds.\n",
-				(int)flood_waitdelay->value);
+			safe_cprintf(ent, PRINT_CHAT, "Flood protection:  You can't talk for %d seconds.\n", (int)flood_waitdelay->value);
             return true;
         }
-		cl->flood_whenhead = (cl->flood_whenhead + 1) %
-			(sizeof(cl->flood_when)/sizeof(cl->flood_when[0]));
+
+		cl->flood_whenhead = (cl->flood_whenhead + 1) % (sizeof(cl->flood_when)/sizeof(cl->flood_when[0]));
 		cl->flood_when[cl->flood_whenhead] = level.time;
 	}
+
 	return false;
 }
 
@@ -1651,11 +1650,8 @@ void DrawBBox(edict_t *ent)
 
 void Cmd_Bbox_f (edict_t *ent)
 {
-	edict_t	*viewing;
-
-	viewing = LookingAt(ent, 0, NULL, NULL);
-	if(!viewing) return;
-	DrawBBox(viewing);
+	edict_t *viewing = LookingAt(ent, 0, NULL, NULL);
+	if(viewing) DrawBBox(viewing);
 }
 
 void SetLazarusCrosshair (edict_t *ent)

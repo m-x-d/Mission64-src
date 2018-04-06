@@ -197,3 +197,7 @@ extern	cvar_t	*tech_regen_armor_always;      // sets whether armor should be reg
 extern	cvar_t	*tech_vampire;       // sets percentage of health gained from damage inflicted
 extern	cvar_t	*tech_vampiremax;    // sets maximum health that can be gained from vampire rune
 // end CTF stuff
+
+//mxd. Mission64 cvars...
+extern	cvar_t	*m64_spawn_casings;
+extern	cvar_t	*m64_spawn_tracers;

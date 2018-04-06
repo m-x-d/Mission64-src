@@ -40,6 +40,7 @@ static int	sound_death2;
 static int	sound_sight;
 static int	sound_search1;
 static int	sound_search2;
+static int	sound_spin; //mxd
 
 
 void hover_sight (edict_t *self, edict_t *other)
@@ -49,10 +50,7 @@ void hover_sight (edict_t *self, edict_t *other)
 
 void hover_search (edict_t *self)
 {
-	if (random() < 0.5)
-		gi.sound (self, CHAN_VOICE, sound_search1, 1, ATTN_NORM, 0);
-	else
-		gi.sound (self, CHAN_VOICE, sound_search2, 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_VOICE, (random() < 0.5 ? sound_search1 : sound_search2), 1, ATTN_NORM, 0);
 }
 
 
@@ -63,6 +61,7 @@ void hover_attack (edict_t *self);
 void hover_reattack (edict_t *self);
 void hover_fire_blaster (edict_t *self);
 void hover_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void hover_dead_spin(edict_t *self); //mxd
 
 mframe_t hover_frames_stand [] =
 {
@@ -311,6 +310,7 @@ mframe_t hover_frames_walk [] =
 };
 mmove_t hover_move_walk = {FRAME_forwrd01, FRAME_forwrd35, hover_frames_walk, NULL};
 
+int hover_frames_run_distances_per_skill[] = { 10, 15, 20, 25 }; //mxd. Run distances per skill
 mframe_t hover_frames_run [] =
 {
 	ai_run,	10,	NULL,
@@ -367,6 +367,19 @@ mframe_t hover_frames_death1 [] =
 };
 mmove_t hover_move_death1 = {FRAME_death101, FRAME_death111, hover_frames_death1, hover_dead};
 
+//mxd. Spinning death
+mframe_t hover_frames_death2[] =
+{
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+	ai_move,	0,	hover_dead_spin,
+};
+mmove_t hover_move_death2 = { FRAME_pain301, FRAME_pain309 - 2, hover_frames_death2, NULL};
+
 mframe_t hover_frames_backward [] =
 {
 	ai_move,	0,	NULL,
@@ -422,14 +435,10 @@ mmove_t hover_move_end_attack = {FRAME_attak107, FRAME_attak108, hover_frames_en
 
 void hover_reattack (edict_t *self)
 {
-	if (self->enemy->health > 0 )
-		if (visible (self, self->enemy) )
-			if (random() <= 0.6)		
-			{
-				self->monsterinfo.currentmove = &hover_move_attack1;
-				return;
-			}
-	self->monsterinfo.currentmove = &hover_move_end_attack;
+	if (self->enemy->health > 0 && visible(self, self->enemy) && random() <= 0.6)
+		self->monsterinfo.currentmove = &hover_move_attack1;
+	else
+		self->monsterinfo.currentmove = &hover_move_end_attack;
 }
 
 
@@ -468,7 +477,7 @@ void hover_fire_blaster (edict_t *self)
 
 void hover_stand (edict_t *self)
 {
-		self->monsterinfo.currentmove = &hover_move_stand;
+	self->monsterinfo.currentmove = &hover_move_stand;
 }
 
 void hover_run (edict_t *self)
@@ -508,7 +517,7 @@ void hover_pain (edict_t *self, edict_t *other, float kick, int damage)
 	if (skill->value == 3)
 		return;		// no pain anims in nightmare
 
-	if (damage <= 25)
+	if (damage <= 25 || !self->groundentity) //mxd. Don't play "on ground" animation when in the air (is Hover ever on the ground though?..)
 	{
 		if (random() < 0.5)
 		{
@@ -528,27 +537,80 @@ void hover_pain (edict_t *self, edict_t *other, float kick, int damage)
 	}
 }
 
+//mxd
+void hover_spawn_gibs(edict_t *self, int damage)
+{
+	int n;
+	
+	// Knightmare- gibs!
+	gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
+	for(n = 0; n < 8; n++)
+		ThrowGib(self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
+	for(n = 0; n < 2; n++)
+		ThrowGib(self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
+	for(n = 0; n < 2; n++)
+		ThrowGib(self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
+	for(n = 0; n < 6; n++)
+		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+
+	ThrowGib(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+	BecomeExplosion1(self);
+}
+
 void hover_deadthink (edict_t *self)
 {
-	int		n;
-
-	if (!self->groundentity && level.time < self->timestamp)
-	{
+	if(!self->groundentity && level.time < self->timestamp)
 		self->nextthink = level.time + FRAMETIME;
-		return;
+	else
+		hover_spawn_gibs(self, 200); //mxd
+}
+
+//mxd
+void vector_rotate_xy(vec3_t v, float theta)
+{
+	float tcos = (float)cos(theta);
+	float tsin = (float)sin(theta);
+
+	float rx = tcos * v[0] - tsin * v[1];
+	float ry = tsin * v[0] + tcos * v[1];
+
+	v[0] = rx;
+	v[1] = ry;
+}
+
+//mxd
+void hover_dead_touch(edict_t *self, edict_t *other, cplane_t* p, csurface_t* s)
+{
+	// Ingnore baaad touches... 
+	if(strcmp(other->classname, "freed") != 0)
+	{
+		T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
+		hover_spawn_gibs(self, 200); // Removes self, must be called last
 	}
-	// Knightmare- gibs!
-	gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-	for (n= 0; n < 8; n++)
-		ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", 200, GIB_METALLIC);
-	for (n= 0; n < 2; n++)
-		ThrowGib (self, "models/objects/gibs/gear/tris.md2", 200, GIB_METALLIC);
-	for (n= 0; n < 2; n++)
-		ThrowGib (self, "models/objects/gibs/bone/tris.md2", 200, GIB_ORGANIC);
-	for (n= 0; n < 6; n++)
-		ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", 200, GIB_ORGANIC);
-	ThrowGib (self, "models/objects/gibs/head2/tris.md2", 200, GIB_ORGANIC);
-	BecomeExplosion1(self);
+}
+
+//mxd
+void hover_dead_spin(edict_t *self)
+{
+	if(level.time >= self->timestamp)
+	{
+		// In case we hadn't already exploded in 15 seconds...
+		hover_dead_touch(self, NULL, NULL, NULL);
+	}
+	else
+	{
+		// Update velocity...
+		vector_rotate_xy(self->velocity, level.time * 0.05f);
+		self->velocity[2] += 4;
+
+		// Throw occasional gibs... (1/5 chance)
+		if(!(rand()%5))
+		{
+			vec3_t dir = { crandom(), crandom(), crandom() };
+			M_SpawnEffect(self, TE_SPARKS, vec3_origin, dir);
+			ThrowGib(self, "models/objects/gibs/gear/tris.md2", 200 + rand() % 200, GIB_METALLIC);
+		}
+	}
 }
 
 void hover_dead (edict_t *self)
@@ -564,40 +626,39 @@ void hover_dead (edict_t *self)
 
 void hover_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int		n;
-
 	self->s.skinnum |= 1;
 
-// check for gib
+	// check for gib
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
-	{	// Knightmare- more gibs!
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 8; n++)
-			ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
-		for (n= 0; n < 2; n++)
-			ThrowGib (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
-		for (n= 0; n < 2; n++)
-			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 6; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowGib (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
-		BecomeExplosion1(self);
-		//ThrowHead (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		//self->deadflag = DEAD_DEAD;
+	{	
+		hover_spawn_gibs(self, damage); //mxd
 		return;
 	}
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
 
-// regular death
-	if (random() < 0.5)
-		gi.sound (self, CHAN_VOICE, sound_death1, 1, ATTN_NORM, 0);
-	else
-		gi.sound (self, CHAN_VOICE, sound_death2, 1, ATTN_NORM, 0);
+	// regular death
+	gi.sound(self, CHAN_VOICE, (random() < 0.5 ? sound_death1 : sound_death2), 1, ATTN_NORM, 0);
+
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
-	self->monsterinfo.currentmove = &hover_move_death1;
+	//self->monsterinfo.currentmove = &hover_move_death1;
+
+	//mxd. Spinny death animation
+	self->monsterinfo.currentmove = &hover_move_death2;
+	self->s.effects |= EF_GRENADE;
+	self->touch = hover_dead_touch;
+	self->timestamp = level.time + 15;
+	self->gravity *= -0.25f;
+	self->s.sound = sound_spin;
+
+	//mxd. Set initial velocity
+	VectorSet(self->velocity, self->velocity[0] + (164 + rand() % 64) * (rand() % 2 ? 1 : -1),
+							  self->velocity[1] + (164 + rand() % 64) * (rand() % 2 ? 1 : -1),
+							  self->velocity[2] + 8 + rand() % 8);
+	
+	vector_rotate_xy(self->velocity, level.time * 0.05f);
 }
 
 /*QUAKED monster_hover (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -617,10 +678,11 @@ void SP_monster_hover (edict_t *self)
 	sound_sight = gi.soundindex ("hover/hovsght1.wav");	
 	sound_search1 = gi.soundindex ("hover/hovsrch1.wav");	
 	sound_search2 = gi.soundindex ("hover/hovsrch2.wav");	
+	sound_spin = gi.soundindex("hover/hover_spin.wav"); //mxd	
 
-	gi.soundindex ("hover/hovatck1.wav");	
+	gi.soundindex("hover/hovatck1.wav");	
 
-	self->s.sound = gi.soundindex ("hover/hovidle1.wav");
+	self->s.sound = gi.soundindex("hover/hovidle1.wav");
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
@@ -637,12 +699,9 @@ void SP_monster_hover (edict_t *self)
 	VectorSet (self->maxs, 24, 24, 32);
 
 	// Lazarus: mapper-configurable health
-	if(!self->health)
-		self->health = 240;
-	if(!self->gib_health)
-		self->gib_health = -100;
-	if(!self->mass)
-		self->mass = 150;
+	if(!self->health) self->health = 240;
+	if(!self->gib_health) self->gib_health = -100;
+	if(!self->mass) self->mass = 150;
 
 	self->pain = hover_pain;
 	self->die = hover_die;
@@ -660,21 +719,25 @@ void SP_monster_hover (edict_t *self)
 		self->blood_type = 3; //sparks and blood
 
 	// Lazarus
-	if(self->powerarmor) {
+	if(self->powerarmor)
+	{
 		self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
 		self->monsterinfo.power_armor_power = self->powerarmor;
 	}
+
+	//mxd. Adjust run speed based on skill
+	int s = hover_frames_run_distances_per_skill[max(0, min(3, skill->integer))];
+	for(int i = 0; i < 35; i++)	hover_frames_run[i].dist = s;
 
 	gi.linkentity (self);
 	self->monsterinfo.currentmove = &hover_move_stand;	
 	if(self->health < 0)
 	{
-		mmove_t	*deathmoves[] = {&hover_move_death1,
-								 NULL};
+		mmove_t	*deathmoves[] = {&hover_move_death1, NULL};
 		M_SetDeath(self,(mmove_t **)&deathmoves);
 	}
 	self->common_name = "Icarus";
 	self->monsterinfo.scale = MODEL_SCALE;
 
-	flymonster_start (self);
+	flymonster_start(self);
 }

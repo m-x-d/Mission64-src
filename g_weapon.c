@@ -137,18 +137,22 @@ mxd. Tracers
 void tracer_touch(edict_t* self, edict_t* other, cplane_t* p, csurface_t* s)
 {
 	self->solid = SOLID_NOT;
-	self->nextthink = level.time + 0.1f;
+	self->nextthink = level.time + FRAMETIME;
 	self->think = G_FreeEdict;
 	gi.linkentity(self);
 }
 
 void fire_tracer(vec3_t start, vec3_t dir, const int type)
 {
+	if(!m64_spawn_tracers->value) return;
+	
 	edict_t *tracer = G_Spawn();
 	int speed = 2048 + rand()%511;
 
 	VectorCopy(start, tracer->s.origin);
 	vectoangles(dir, tracer->s.angles);
+	tracer->s.angles[ROLL] = rand()%359;
+	tracer->avelocity[ROLL] = rand()%64 - 128;
 	VectorScale(dir, speed, tracer->velocity);
 	VectorClear(tracer->mins);
 	VectorClear(tracer->maxs);
@@ -261,26 +265,6 @@ This is an internal support routine used for bullet/pellet based weapons.
 			// re-trace ignoring water this time
 			tr = gi.trace (water_start, NULL, NULL, end, self, MASK_SHOT);
 		}
-
-		//mxd. Spawn tracer...
-		vec3_t tracer_dir, tracer_start;
-
-		// Chaingun has horrible start position spread, let's fix this...
-		if(self->client && mod == MOD_CHAINGUN)
-		{
-			vec3_t tracer_fwd, tracer_right, tracer_offset;
-			AngleVectors(self->client->v_angle, tracer_fwd, tracer_right, NULL);
-			VectorSet(tracer_offset, 13, 4, self->viewheight - 5); // +x - forward, +y - right
-			P_ProjectSource(self->client, self->s.origin, tracer_offset, forward, right, tracer_start);
-		}
-		else
-		{
-			VectorCopy(start, tracer_start);
-		}
-
-		VectorSubtract(end, tracer_start, tracer_dir);
-		VectorNormalize(tracer_dir);
-		fire_tracer(tracer_start, tracer_dir, te_impact);
 	}
 
 	// send gun puff / flash
@@ -334,6 +318,26 @@ This is an internal support routine used for bullet/pellet based weapons.
 		gi.WritePosition (tr.endpos);
 		gi.multicast (pos, MULTICAST_PVS);
 	}
+
+	//mxd. Spawn tracer...
+	vec3_t tracer_dir, tracer_start;
+
+	// Chaingun has horrible start position spread, let's fix this...
+	if (self->client && mod == MOD_CHAINGUN)
+	{
+		vec3_t tracer_fwd, tracer_right, tracer_offset;
+		AngleVectors(self->client->v_angle, tracer_fwd, tracer_right, NULL);
+		VectorSet(tracer_offset, 13, 4, self->viewheight - 5); // +x - forward, +y - right
+		P_ProjectSource(self->client, self->s.origin, tracer_offset, forward, right, tracer_start);
+	}
+	else
+	{
+		VectorCopy(start, tracer_start);
+	}
+
+	VectorSubtract(end, tracer_start, tracer_dir);
+	VectorNormalize(tracer_dir);
+	fire_tracer(tracer_start, tracer_dir, te_impact);
 }
 
 

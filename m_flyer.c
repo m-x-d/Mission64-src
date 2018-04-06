@@ -298,7 +298,7 @@ void flyer_kamikaze_effect(edict_t *self)
 	gi.sound(self, CHAN_BODY, sound_suicide_init, 1, ATTN_NORM, 0);
 
 	vec3_t dir = { crandom(), crandom(), crandom() };
-	M_SpawnEffect(self, TE_BLASTER, vec3_origin, dir);
+	M_SpawnEffect(self, TE_ELECTRIC_SPARKS, vec3_origin, dir);
 }
 
 void flyer_kamikaze(edict_t *self)
@@ -733,8 +733,22 @@ void flyer_spawn_gibs(edict_t *self, int damage)
 //mxd
 void fake_flyer_touch(edict_t *self, edict_t *other, cplane_t* p, csurface_t* s)
 {
-	T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
-	flyer_spawn_gibs(self, self->dmg); // Removes self, must be called last
+	// Ingnore baaad touches... 
+	if(strcmp(other->classname, "freed") != 0)
+	{
+		T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
+		flyer_spawn_gibs(self, self->dmg); // Removes self, must be called last
+	}
+}
+
+//mxd
+void fake_flyer_sparks(edict_t *self)
+{
+	if(rand()%3 == 1) return;
+	vec3_t dir = { crandom(), crandom(), crandom() };
+	M_SpawnEffect(self, TE_ELECTRIC_SPARKS, vec3_origin, dir);
+
+	self->nextthink = level.time + FRAMETIME;
 }
 
 void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
@@ -767,6 +781,8 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 		g->avelocity[2] *= 2.0f;
 		g->dmg = kick;
 		g->touch = fake_flyer_touch;
+		g->think = fake_flyer_sparks;
+		g->nextthink = level.time + FRAMETIME;
 
 		// Set clipping and size, so we can SMACK into other monsters (and player)
 		g->solid = SOLID_BBOX;

@@ -81,11 +81,13 @@ void Use_Target_Speaker (edict_t *ent, edict_t *other, edict_t *activator)
 
 	if (ent->spawnflags & 3)
 	{	// looping sound toggles
-		if (ent->s.sound) {
+		if (ent->s.sound)
+		{
 			ent->s.sound = 0;	// turn it off
 			ent->nextthink = 0;
 		}
-		else {
+		else
+		{
 			ent->s.sound = ent->noise_index;	// start it
 #ifdef LOOP_SOUND_ATTENUATION
 			ent->s.attenuation = ent->attenuation;
@@ -94,7 +96,8 @@ void Use_Target_Speaker (edict_t *ent, edict_t *other, edict_t *activator)
 	}
 	else
 	{
-		if (ent->attenuation == -2) {
+		if (ent->attenuation == -2)
+		{
 			if(ent->spawnflags & 4)
 				chan = CHAN_VOICE|CHAN_RELIABLE;
 			else
@@ -113,7 +116,8 @@ void Use_Target_Speaker (edict_t *ent, edict_t *other, edict_t *activator)
 		}
 
 		ent->count--;
-		if(!ent->count) {
+		if(!ent->count)
+		{
 			ent->think = G_FreeEdict;
 			ent->nextthink = level.time + 1;
 		}
@@ -157,7 +161,8 @@ void SP_target_speaker (edict_t *ent)
 		ent->attenuation = 0;
 
 	// check for prestarted looping sound
-	if (ent->spawnflags & 1 /*|| ent->spawnflags & 2*/) { //mxd. Take LOOPED_OFF into account too
+	if (ent->spawnflags & 1 /*|| ent->spawnflags & 2*/) //mxd. Take LOOPED_OFF into account too
+	{ 
 		ent->s.sound = ent->noise_index;
 #ifdef LOOP_SOUND_ATTENUATION
 		ent->s.attenuation = ent->attenuation;

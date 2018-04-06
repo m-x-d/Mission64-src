@@ -128,6 +128,7 @@ extern mmove_t hover_move_end_attack ;
 extern mmove_t hover_move_attack1 ;
 extern mmove_t hover_move_start_attack ;
 extern mmove_t hover_move_backward ;
+extern mmove_t hover_move_death2 ;
 extern mmove_t hover_move_death1 ;
 extern mmove_t hover_move_run ;
 extern mmove_t hover_move_walk ;

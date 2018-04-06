@@ -792,7 +792,6 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 {
 	gclient_t	*client;
 	int			take;
-	int			save;
 	int			asave;
 	int			psave;
 	int			te_sparks;
@@ -865,8 +864,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 	if ( targ->classname && !Q_stricmp(targ->classname,"turret_driver") && 
 		(targ->spawnflags & 1) && (attacker->client) )
 	{
-		edict_t	*monster;
-		monster = targ->child;
+		edict_t *monster = targ->child;
 		if (monster)
 		{
 			monster->health = targ->health;
@@ -907,8 +905,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 	if (skill->value == 0 && deathmatch->value == 0 && targ->client)
 	{
 		damage *= 0.5;
-		if (!damage)
-			damage = 1;
+		if(!damage) damage = 1;
 	}
 
 	client = targ->client;
@@ -937,34 +934,29 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 
 // Lazarus: If monster is currently chasing a "thing" and mod is a laser,
 //          ignore knockback to give poor guy a chance to vamoose.
-	if (targ->movetarget && !Q_stricmp(targ->movetarget->classname,"thing") && (mod == MOD_TARGET_LASER))
+	if(targ->movetarget && !Q_stricmp(targ->movetarget->classname,"thing") && (mod == MOD_TARGET_LASER))
 		knockback = 0;
 
 // figure momentum add
-	if (!(dflags & DAMAGE_NO_KNOCKBACK))
+	if(!(dflags & DAMAGE_NO_KNOCKBACK))
 	{
 		// Lazarus: Added MOVETYPE_TOSS to no knockback (pickup items and dead bodies)
-		if ((knockback) && (targ->movetype != MOVETYPE_NONE) && (targ->movetype != MOVETYPE_BOUNCE) && (targ->movetype != MOVETYPE_PUSH) && (targ->movetype != MOVETYPE_STOP) && (targ->movetype != MOVETYPE_TOSS))
+		if((knockback) && (targ->movetype != MOVETYPE_NONE) && (targ->movetype != MOVETYPE_BOUNCE) && (targ->movetype != MOVETYPE_PUSH) && (targ->movetype != MOVETYPE_STOP) && (targ->movetype != MOVETYPE_TOSS))
 		{
 			vec3_t	kvel;
-			float	mass;
+			float mass = max(targ->mass, 50);
 
-			if (targ->mass < 50)
-				mass = 50;
+			if(targ->client  && attacker == targ)
+				VectorScale(dir, 1600.0 * (float)knockback / mass, kvel);	// the rocket jump hack...
 			else
-				mass = targ->mass;
+				VectorScale(dir, 500.0 * (float)knockback / mass, kvel);
 
-			if (targ->client  && attacker == targ)
-				VectorScale (dir, 1600.0 * (float)knockback / mass, kvel);	// the rocket jump hack...
-			else
-				VectorScale (dir, 500.0 * (float)knockback / mass, kvel);
-
-			VectorAdd (targ->velocity, kvel, targ->velocity);
+			VectorAdd(targ->velocity, kvel, targ->velocity);
 		}
 	}
 
 	take = damage;
-	save = 0;
+	int save = 0;
 
 	// check for godmode
 	if ( (targ->flags & FL_GODMODE) && !(dflags & DAMAGE_NO_PROTECTION) )
@@ -995,7 +987,8 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 //team armor protect
 	if (ctf->value && targ->client && attacker->client &&
 		targ->client->resp.ctf_team == attacker->client->resp.ctf_team &&
-		targ != attacker && ((int)dmflags->value & DF_ARMOR_PROTECT)) {
+		targ != attacker && ((int)dmflags->value & DF_ARMOR_PROTECT))
+	{
 		psave = asave = 0;
 	}
 //ZOID
@@ -1035,7 +1028,8 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 		// Lazarus: Sparks rather than blood for NOGIB dead monsters
 		if ((targ->svflags & SVF_MONSTER) && (targ->spawnflags & SF_MONSTER_NOGIB) && (targ->health <= 0))
 			SpawnDamage (TE_SPARKS, point, normal);
-		else {
+		else
+		{
 			if ((targ->svflags & SVF_MONSTER) || (client))
 			{
 				// Knightmare- added support for sparks and blood
@@ -1079,8 +1073,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 		}
 		else
 		{
-			// Lazarus: For func_explosive target, check spawnflags and, if needed,
-			//          damage type
+			// Lazarus: For func_explosive target, check spawnflags and, if needed, damage type
 			if(targ->classname && !Q_stricmp(targ->classname,"func_explosive"))
 			{
 				qboolean good_damage = true;
@@ -1099,6 +1092,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 					if(mod == MOD_BARREL)      good_damage = true;
 					if(mod == MOD_BOMB)        good_damage = true;
 				}
+
 				if(!good_damage) return;
 			}
 
@@ -1121,6 +1115,7 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 		{
 			if (targ->pain)
 				targ->pain (targ, attacker, knockback, take);
+			
 			// nightmare mode monsters don't go into pain frames often
 			if (skill->value == 3)
 				targ->pain_debounce_time = level.time + 5;
@@ -1128,15 +1123,13 @@ void T_Damage (edict_t *in_targ, edict_t *inflictor, edict_t *in_attacker, vec3_
 	}
 	else if (client)
 	{
-		if (!(targ->flags & FL_GODMODE) && (take)) {
-			if (targ->pain)
-				targ->pain (targ, attacker, knockback, take);
-		}
+		if(!(targ->flags & FL_GODMODE) && take && targ->pain)
+			targ->pain(targ, attacker, knockback, take);
 	}
 	else if (take)
 	{
 		if (targ->pain)
-			targ->pain (targ, attacker, knockback, take);
+			targ->pain(targ, attacker, knockback, take);
 	}
 
 	// add to the damage inflicted on a player this frame

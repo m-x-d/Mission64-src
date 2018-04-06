@@ -28,9 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static qboolean	is_quad;
 static byte		is_silenced;
 
-//mxd. No throwable grenades
-//void weapon_grenade_fire (edict_t *ent, qboolean held);
-
+void cock_offhand_grenade(edict_t *ent); //mxd
+void throw_offhand_grenade(edict_t *ent); //mxd
 
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
 {
@@ -498,7 +497,7 @@ mxd. Shells and casings
 
 void eject_bullet_shell(edict_t *ent, vec3_t offset)
 {
-	if (!(ent->client) || deathmatch->value) return;
+	if (!ent->client || deathmatch->value || !m64_spawn_casings->value) return;
 
 	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/bullet/tris.md3", 0, GIB_BULLET_SHELL);
 	if (!shell) return;
@@ -533,7 +532,7 @@ void eject_bullet_shell(edict_t *ent, vec3_t offset)
 
 void eject_shotgun_shell(edict_t *ent, vec3_t offset)
 {
-	if (!ent->client || deathmatch->value) return;
+	if (!ent->client || deathmatch->value || !m64_spawn_casings->value) return;
 
 	edict_t	*shell = ThrowGib(ent, "models/weapons/shells/shell/tris.md3", 0, GIB_SHOTGUN_SHELL);
 	if (!shell) return;
@@ -585,11 +584,9 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 	//int oldstate = ent->client->weaponstate;
 	//qboolean haste_applied = false;
 
-	if(ent->deadflag || ent->s.modelindex != MAX_MODELS-1) // VWep animations screw up corpses
-	{
-		return;
-	}
+	if(ent->deadflag || ent->s.modelindex != MAX_MODELS-1) return; // VWep animations screw up corpses
 
+// Weapon deselecting
 	if (ent->client->weaponstate == WEAPON_DROPPING)
 	{
 		if (ent->client->ps.gunframe == FRAME_DEACTIVATE_LAST)
@@ -603,21 +600,22 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			ent->client->anim_priority = ANIM_REVERSE;
 			if(ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 			{
-				ent->s.frame = FRAME_crpain4+1;
+				ent->s.frame = FRAME_crpain4 + 1;
 				ent->client->anim_end = FRAME_crpain1;
 			}
 			else
 			{
-				ent->s.frame = FRAME_pain304+1;
+				ent->s.frame = FRAME_pain304 + 1;
 				ent->client->anim_end = FRAME_pain301;
 			}
 		}
 
 		//ent->client->ps.gunframe++;
-		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 2, FRAME_DEACTIVATE_LAST); //mxd
+		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 3, FRAME_DEACTIVATE_LAST); //mxd. 3x faster weapon switching
 		return;
 	}
 
+// Weapon selecting
 	if (ent->client->weaponstate == WEAPON_ACTIVATING)
 	{
 		if (ent->client->ps.gunframe == FRAME_ACTIVATE_LAST)
@@ -629,21 +627,20 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 
 		//mxd. Weapon select sound
 		if(ent->client->ps.gunframe == FRAME_SELECT_SOUND)
-		{
 			gi.sound(ent, CHAN_VOICE, gi.soundindex(PICKUP_SOUND), 1, ATTN_NORM, 0);
-		}
 
 		//ent->client->ps.gunframe++;
-		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 2, FRAME_ACTIVATE_LAST); //mxd
+		ent->client->ps.gunframe = min(ent->client->ps.gunframe + 2, FRAME_ACTIVATE_LAST); //mxd. 2x faster weapon switching
 		return;
 	}
 
-	if ((ent->client->newweapon) && (ent->client->weaponstate != WEAPON_FIRING))
+// Start weapon deselecting
+	if (ent->client->newweapon && ent->client->weaponstate != WEAPON_FIRING)
 	{
 		ent->client->weaponstate = WEAPON_DROPPING;
 		ent->client->ps.gunframe = FRAME_DEACTIVATE_FIRST;
 
-		if ((FRAME_DEACTIVATE_LAST - FRAME_DEACTIVATE_FIRST) < 4)
+		if (FRAME_DEACTIVATE_LAST - FRAME_DEACTIVATE_FIRST < 4)
 		{
 			ent->client->anim_priority = ANIM_REVERSE;
 			if(ent->client->ps.pmove.pm_flags & PMF_DUCKED)
@@ -655,14 +652,16 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			{
 				ent->s.frame = FRAME_pain304+1;
 				ent->client->anim_end = FRAME_pain301;
-				
 			}
 		}
+
 		return;
 	}
 
+// Weapon idle
 	if (ent->client->weaponstate == WEAPON_READY)
 	{
+#pragma region mxd. Unused homimg missile stuff
 		// Lazarus: Head off firing 2nd homer NOW, so firing animations aren't played
 		/*if ( ((ent->client->latched_buttons|ent->client->buttons) & BUTTONS_ATTACK) )
 		{
@@ -698,11 +697,11 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 				return;
 			}
 		}*/ //mxd
+#pragma endregion
 
-		if (((ent->client->latched_buttons | ent->client->buttons) & BUTTONS_ATTACK))
+		if ((ent->client->latched_buttons | ent->client->buttons) & BUTTON_ATTACK) //mxd. BUTTONS_ATTACK -> BUTTON_ATTACK
 		{
-			if ((!ent->client->ammo_index) ||
-				(ent->client->pers.inventory[ent->client->ammo_index] >= ent->client->pers.weapon->quantity))
+			if (!ent->client->ammo_index || ent->client->pers.inventory[ent->client->ammo_index] >= ent->client->pers.weapon->quantity)
 			{
 				ent->client->ps.gunframe = FRAME_FIRE_FIRST;
 				ent->client->weaponstate = WEAPON_FIRING;
@@ -727,9 +726,10 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 					gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/noammo.wav"), 1, ATTN_NORM, 0);
 					ent->pain_debounce_time = level.time + 1;
 				}
-				NoAmmoWeaponChange (ent);
+				NoAmmoWeaponChange(ent);
 			}
-			ent->client->latched_buttons &= ~BUTTONS_ATTACK;
+
+			ent->client->latched_buttons &= ~BUTTON_ATTACK; //mxd. BUTTONS_ATTACK -> BUTTON_ATTACK
 		}
 		else
 		{
@@ -742,13 +742,7 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			if (pause_frames)
 			{
 				for (n = 0; pause_frames[n]; n++)
-				{
-					if (ent->client->ps.gunframe == pause_frames[n])
-					{
-						if (rand()&15)
-							return;
-					}
-				}
+					if (ent->client->ps.gunframe == pause_frames[n] && rand() & 15) return;
 			}
 
 			ent->client->ps.gunframe++;
@@ -756,22 +750,19 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		}
 	}
 
+// Weapon firing
 	if (ent->client->weaponstate == WEAPON_FIRING)
 	{
 		for (n = 0; fire_frames[n]; n++)
 		{
 			if (ent->client->ps.gunframe == fire_frames[n])
 			{
-//ZOID
-				if (!CTFApplyStrengthSound(ent))
-//ZOID
-				if (ent->client->quad_framenum > level.framenum)
+				if (!CTFApplyStrengthSound(ent) && ent->client->quad_framenum > level.framenum)
 					gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage3.wav"), 1, ATTN_NORM, 0);
 
-//ZOID
-				CTFApplyHasteSound(ent);
-//ZOID
-				fire (ent, ((ent->client->latched_buttons|ent->client->buttons) & BUTTON_ATTACK2) );
+				CTFApplyHasteSound(ent); //ZOID
+
+				fire(ent, (ent->client->latched_buttons|ent->client->buttons) & BUTTON_ATTACK2);
 				break;
 			}
 		}
@@ -779,7 +770,7 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		if (!fire_frames[n])
 			ent->client->ps.gunframe++;
 
-		if (ent->client->ps.gunframe == FRAME_IDLE_FIRST+1)
+		if (ent->client->ps.gunframe == FRAME_IDLE_FIRST + 1)
 			ent->client->weaponstate = WEAPON_READY;
 	}
 }
@@ -789,6 +780,20 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 //mxd. Added select sounds
 void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire))
 {
+	//mxd. Cock offhand grenade?
+	if((ent->client->latched_buttons | ent->client->buttons) & BUTTON_ATTACK2)
+	{
+		cock_offhand_grenade(ent);
+		ent->client->latched_buttons &= ~BUTTON_ATTACK2;
+	}
+
+	//mxd. Time to throw offhand grenade?
+	if(ent->client->grenade_blew_up && ent->client->grenade_time <= level.time)
+	{
+		throw_offhand_grenade(ent);
+		ent->client->grenade_blew_up = false;
+	}
+	
 	int oldstate = ent->client->weaponstate;
 
 	Weapon_Generic2 (ent, FRAME_ACTIVATE_LAST, FRAME_FIRE_LAST, 
@@ -837,12 +842,73 @@ GRENADE
 ======================================================================
 */
 
-//mxd. No throwable grenades in Q2 N64
-/*#define GRENADE_TIMER		3.0
-#define GRENADE_MINSPEED	400
-#define GRENADE_MAXSPEED	800
 
-void weapon_grenade_fire (edict_t *ent, qboolean held)
+#define GRENADE_TIMER			3.0
+#define GRENADE_RETHROW_DELAY	1.0f //mxd
+#define GRENADE_MINSPEED		250  //mxd. Was 400
+#define GRENADE_MAXSPEED		500  //mxd. Was 800
+
+// mxd. Offhand grenade logic...
+void throw_offhand_grenade(edict_t *ent)
+{
+	vec3_t	offset, forward, right, start, v_angle;
+	int		damage = sk_hand_grenade_damage->value;
+	float	radius = sk_hand_grenade_radius->value; //was damage + 40
+
+	if(is_quad) damage *= 4;
+
+	VectorCopy(ent->client->v_angle, v_angle);
+	v_angle[ROLL] = max(-88, v_angle[ROLL] - 15); // Offset vertical angle a bit
+	AngleVectors(v_angle, forward, right, NULL);
+
+	VectorSet(offset, 8, -8, ent->viewheight - 8); // +x - forward, +y - right
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	// Convert player camera angle to 0..1 range, 0 - looking 45 deg or less down, 1 - looking 45 deg or more up // ent->client->v_angle[PITCH]: 88 - max down, -88 - max. up, 0 - center
+	float v_mul = max(-45.0f, min(45.0f, ent->client->v_angle[PITCH])) / -90.0f + 0.5f; 
+	int speed = GRENADE_MINSPEED + (GRENADE_MAXSPEED - GRENADE_MINSPEED) * v_mul;
+
+	gi.sound(ent, CHAN_WEAPON, gi.soundindex("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
+	fire_grenade2(ent, start, forward, damage, speed, GRENADE_TIMER, radius, false); // held == detonate in hand
+
+	// Also push the view down-right a bit
+	ent->client->kick_angles[0] += 4 + random() * 3;
+	ent->client->kick_angles[1] -= 5 + random() * 4;
+}
+
+//mxd
+void cock_offhand_grenade(edict_t *ent)
+{
+	// Too early to rethrow?
+	if(ent->client->grenade_time + GRENADE_RETHROW_DELAY > level.time) return;
+
+	// Check ammo...
+	const int item_index = ITEM_INDEX(FindItem("grenades"));
+	if(ent->client->pers.inventory[item_index])
+	{
+		// Play cock sound...
+		gi.sound(ent, CHAN_WEAPON, gi.soundindex("weapons/hgrena1b.wav"), 1, ATTN_NORM, 0);
+
+		// Schedule the throw...
+		ent->client->grenade_time = level.time + FRAMETIME * 8.0f;
+
+		// Reduce ammo count
+		if(!((int)dmflags->value & DF_INFINITE_AMMO))
+			ent->client->pers.inventory[item_index]--;
+
+		// Hijack to indicate busy state
+		ent->client->grenade_blew_up = true;
+	}
+	else if(level.time >= ent->pain_debounce_time)
+	{
+		// Play "no ammo" sound...
+		gi.sound(ent, CHAN_VOICE, gi.soundindex("weapons/noammo.wav"), 1, ATTN_NORM, 0);
+		ent->pain_debounce_time = level.time + 1;
+	}
+}
+
+//mxd. No throwable grenades in Q2 N64
+/*void weapon_grenade_fire (edict_t *ent, qboolean held)
 {
 	vec3_t	offset;
 	vec3_t	forward, right;
@@ -1026,8 +1092,6 @@ void weapon_grenadelauncher_fire (edict_t *ent, qboolean altfire)
 	ent->client->kick_angles[0] = -1;
 
 	fire_grenade (ent, start, forward, damage, sk_grenade_speed->value, 2.5, radius, altfire);
-	// temporary crap to test grenade bounce
-//	fire_grenade (ent, start, forward, damage, sk_grenade_speed->value, 25, radius);
 
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
@@ -1424,7 +1488,6 @@ MACHINEGUN / CHAINGUN
 
 void Machinegun_Fire (edict_t *ent, qboolean altfire)
 {
-	int	i;
 	vec3_t		start;
 	vec3_t		forward, right;
 	vec3_t		angles;
@@ -1462,7 +1525,7 @@ void Machinegun_Fire (edict_t *ent, qboolean altfire)
 		kick *= 4;
 	}
 
-	for (i=1 ; i<3 ; i++)
+	for (int i = 1; i < 3; i++)
 	{
 		ent->client->kick_origin[i] = crandom() * 0.35;
 		ent->client->kick_angles[i] = crandom() * 0.7;
@@ -1914,11 +1977,11 @@ void Weapon_BFG (edict_t *ent)
 //======================================================================
 void Weapon_Null(edict_t *ent)
 {
-	if (ent->client->newweapon)
-		ChangeWeapon(ent);
+	if(ent->client->newweapon) ChangeWeapon(ent);
 }
 //======================================================================
 qboolean Pickup_Health (edict_t *ent, edict_t *other);
+
 void kick_attack (edict_t *ent)
 {
 	vec3_t		start;
@@ -1926,7 +1989,6 @@ void kick_attack (edict_t *ent)
 	vec3_t		offset;
 	int			damage = sk_jump_kick_damage->value;
 	int			kick = 300;
-	trace_t		tr;
 	vec3_t		end;
 
 	if(ent->client->quad_framenum > level.framenum)
@@ -1937,50 +1999,68 @@ void kick_attack (edict_t *ent)
 
 	AngleVectors (ent->client->v_angle, forward, right, NULL);
 	
-	VectorScale (forward, 0, ent->client->kick_origin);
+	//VectorScale (forward, 0, ent->client->kick_origin); //mxd. Errr?...
+	VectorSet(ent->client->kick_origin, 0, 0, 0);
 	
-	VectorSet(offset, 0, 0,  ent->viewheight-20);
+	VectorSet(offset, 0, 0, ent->viewheight - 28); //mxd. was viewheight-20
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 	
-	VectorMA( start, 25, forward, end );
-	
-	tr = gi.trace (ent->s.origin, NULL, NULL, end, ent, MASK_SHOT);
-	
-	// don't need to check for water
-    if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))    
-    {
-        if (tr.fraction < 1.0)        
-        {            
-            if (tr.ent->takedamage)
-            {
-				if ( tr.ent->health <= 0 )
-					return;
-				//Knightmare- don't jump kick exploboxes or pushable crates, or insanes, or ambient models
-				if (!strcmp(tr.ent->classname, "misc_explobox") || !strcmp(tr.ent->classname, "func_pushable")
-					|| !strcmp(tr.ent->classname, "model_spawn") || !strcmp(tr.ent->classname, "model_train")
-					|| !strcmp(tr.ent->classname, "misc_insane"))
-					return;
-				//also don't jumpkick actors, unless they're bad guys
-				if (!strcmp(tr.ent->classname, "misc_actor") && (tr.ent->monsterinfo.aiflags & AI_GOOD_GUY))
-					return;
-				//nor goodguy monsters
-				if (strstr(tr.ent->classname, "monster_") && tr.ent->monsterinfo.aiflags & AI_GOOD_GUY)
-					return;
-				//nor shootable items
-				if (tr.ent->item && !strstr(tr.ent->classname, "monster_") && (strstr(tr.ent->classname, "ammo_") || strstr(tr.ent->classname, "weapon_")
-					|| strstr(tr.ent->classname, "item_") || strstr(tr.ent->classname, "key_") || tr.ent->item->pickup == Pickup_Health) )
-					return;
-				if (((tr.ent != ent) && ((deathmatch->value && ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))) || coop->value) && OnSameTeam (tr.ent, ent)))
-					return;
-				// zucc stop powerful upwards kicking
-				//forward[2] = 0;
-				
-				// glass fx
-				T_Damage (tr.ent, ent, ent, forward, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_KICK );
-				gi.sound(ent, CHAN_WEAPON, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
-				PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
-				ent->client->jumping = 0; // only 1 jumpkick per jump
-			}
-		}
+	VectorMA(start, 28, forward, end); //mxd. was 25
+
+	//mxd. It's really hard to kick even larger monsers (like gunner or berserk), because player just jumps over them,
+	// so try several traces with different vertical offsets...
+	end[2] -= 25;
+	for (int i = 0; i < 3; i++)
+	{
+		end[2] += 25;
+		trace_t tr = gi.trace(ent->s.origin, NULL, NULL, end, ent, MASK_SHOT);
+
+		// don't need to check for water
+		if (tr.surface && tr.surface->flags & SURF_SKY || tr.fraction >= 1.0f || !tr.ent->takedamage || tr.ent->health <= 0)
+			continue;
+
+		//Knightmare- don't jump kick exploboxes or pushable crates, or insanes, or ambient models
+		if (!strcmp(tr.ent->classname, "misc_explobox") || !strcmp(tr.ent->classname, "func_pushable") || !strcmp(tr.ent->classname, "model_spawn")
+			|| !strcmp(tr.ent->classname, "model_train") || !strcmp(tr.ent->classname, "misc_insane"))
+			continue;
+
+		//also don't jumpkick actors, unless they're bad guys
+		if (!strcmp(tr.ent->classname, "misc_actor") && (tr.ent->monsterinfo.aiflags & AI_GOOD_GUY))
+			continue;
+
+		//nor goodguy monsters
+		if (strstr(tr.ent->classname, "monster_") && tr.ent->monsterinfo.aiflags & AI_GOOD_GUY)
+			continue;
+
+		//nor shootable items
+		if (tr.ent->item && !strstr(tr.ent->classname, "monster_") && (strstr(tr.ent->classname, "ammo_") || strstr(tr.ent->classname, "weapon_")
+			|| strstr(tr.ent->classname, "item_") || strstr(tr.ent->classname, "key_") || tr.ent->item->pickup == Pickup_Health))
+			continue;
+
+		if (tr.ent != ent && ((deathmatch->value && ((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS))) || coop->value) && OnSameTeam(tr.ent, ent))
+			continue;
+
+		//mxd. Push player back a bit
+		vec3_t dir = { forward[0] * -1, forward[1] * -1, forward[2] };
+		VectorMA(ent->velocity, kick, dir, ent->velocity);
+
+		// Also push the view up a bit
+		ent->client->kick_angles[0] -= 6 + random() * 4;
+
+		// Do damage and SFX
+		T_Damage(tr.ent, ent, ent, forward, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_KICK);
+		gi.sound(ent, CHAN_WEAPON, gi.soundindex("weapons/kick.wav"), 1, ATTN_NORM, 0);
+		PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
+		ent->client->jumping = 0; // only 1 jumpkick per jump
+
+		//mxd. Tweak velocity a bit...
+		float mul = kick / (float)tr.ent->mass;
+		float hmul = min(1.0f, mul * 0.5f);
+		tr.ent->velocity[0] *= hmul;
+		tr.ent->velocity[1] *= hmul;
+		tr.ent->velocity[2] += max(mul * 120.0f, 120.0f) + rand()%31;
+
+		//mxd. Break the loop...
+		break;
 	}
 }
