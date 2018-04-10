@@ -322,13 +322,13 @@ char	*vtos (vec3_t v)
 {
 	static	int		index;
 	static	char	str[8][32];
-	char	*s;
 
 	// use an array so that multiple vtos won't collide
-	s = str[index];
+	char *s = str[index];
 	index = (index + 1)&7;
 
-	Com_sprintf (s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
+	//Com_sprintf (s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
+	Com_sprintf (s, 32, "(%6.2f %6.2f %6.2f)", v[0], v[1], v[2]); //mxd. Let's have a bit more precision
 
 	return s;
 }
@@ -472,9 +472,7 @@ void vectoangles2 (vec3_t value1, vec3_t angles)
 
 char *G_CopyString (char *in)
 {
-	char	*out;
-	
-	out = gi.TagMalloc (strlen(in)+1, TAG_LEVEL);
+	char *out = gi.TagMalloc (strlen(in)+1, TAG_LEVEL);
 	strcpy (out, in);
 	return out;
 }

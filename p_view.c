@@ -325,27 +325,35 @@ void SV_CalcViewOffset (edict_t *ent)
 	// absolutely bound offsets
 	// so the view can never be outside the player box
 
-	if(ent->client->chasetoggle) {
+	if(ent->client->chasetoggle)
+	{
 		VectorSet (v, 0, 0, 0);
-		if(ent->client->chasecam != NULL) {
+		if(ent->client->chasecam != NULL)
+		{
 			ent->client->ps.pmove.origin[0] = ent->client->chasecam->s.origin[0]*8;
 			ent->client->ps.pmove.origin[1] = ent->client->chasecam->s.origin[1]*8;
 			ent->client->ps.pmove.origin[2] = ent->client->chasecam->s.origin[2]*8;
 		}
-	} else if(ent->client->spycam) {
+	}
+	else if(ent->client->spycam)
+	{
 		VectorSet (v, 0, 0, 0);
-        VectorCopy (ent->client->spycam->s.angles, ent->client->ps.viewangles); 
+		VectorCopy (ent->client->spycam->s.angles, ent->client->ps.viewangles);
 		if(ent->client->spycam->svflags & SVF_MONSTER)
 			ent->client->ps.viewangles[PITCH] = ent->client->spycam->move_angles[PITCH];
-	} else {
+	}
+	else
+	{
 		if (v[0] < -14)
 			v[0] = -14;
 		else if (v[0] > 14)
 			v[0] = 14;
+		
 		if (v[1] < -14)
 			v[1] = -14;
 		else if (v[1] > 14)
 			v[1] = 14;
+		
 		if (v[2] < -22)
 			v[2] = -22;
 		else if (v[2] > 30)

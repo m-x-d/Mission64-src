@@ -1316,6 +1316,7 @@ void ClientEndServerFrame (edict_t *ent);
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
 void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
+void P_ProjectSource2 (gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t up, vec3_t result); //mxd
 void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire));
 void kick_attack (edict_t *ent);
 

@@ -47,6 +47,19 @@ void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, vec3_t f
 	G_ProjectSource (point, _distance, forward, right, result);
 }
 
+//mxd. Same as P_ProjectSource, but with up vector...
+void P_ProjectSource2(gclient_t *client, vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t up, vec3_t result)
+{
+	vec3_t	_distance;
+
+	VectorCopy(distance, _distance);
+	if (client->pers.hand == LEFT_HANDED)
+		_distance[1] *= -1;
+	else if (client->pers.hand == CENTER_HANDED)
+		_distance[1] = 0;
+	G_ProjectSource2(point, _distance, forward, right, up, result);
+}
+
 /*
 ===============
 PlayerNoise
@@ -495,7 +508,7 @@ mxd. Shells and casings
 ================
 */
 
-void eject_bullet_shell(edict_t *ent, vec3_t offset)
+void eject_bullet_shell(edict_t *ent, vec3_t offset) // offset must be local (e.g. without viewheight)
 {
 	if (!ent->client || deathmatch->value || !m64_spawn_casings->value) return;
 
@@ -514,23 +527,30 @@ void eject_bullet_shell(edict_t *ent, vec3_t offset)
 	shell->s.angles[PITCH] = ent->client->v_angle[PITCH];
 
 	// Position
-	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, shell->s.origin);
+	vec3_t view_offset;
+	P_ProjectSource(ent->client, ent->s.origin, tv(0, 0, ent->viewheight), forward, right, shell->s.origin);
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(shell->s.origin, view_offset, shell->s.origin);
+
+	// Modify position by velocity to reduce visual discrepancy... max. horiz. velocity: 300, max. vert. velocity: ~1200.
+	for(int i = 0; i < 3; i++)
+		shell->s.origin[i] += 4 * (ent->velocity[i] / 300.0f);
 
 	// Velocity
-	VectorScale(forward, ((rand() & 16) + 8), shell->velocity);
-	VectorMA(shell->velocity, 70 + (rand() & 48), right, shell->velocity);
+	VectorScale(forward, ((rand() % 17) + 8), shell->velocity);
+	VectorMA(shell->velocity, 70 + (rand() % 48), right, shell->velocity);
 	VectorAdd(shell->velocity, ent->velocity, shell->velocity);
 	if(ent->groundentity) VectorAdd(shell->velocity, ent->groundentity->velocity, shell->velocity);
-	shell->velocity[2] += 120 + (rand() & 31);
+	shell->velocity[2] += 120 + (rand() % 33);
 
 	// Angular velocity
-	VectorSet(shell->avelocity, (rand() & 32) + 64, (rand() & 32) + 32, (rand() & 32) + 64);
-	if (rand() & 2) shell->avelocity[0] *= -1;
-	if (rand() & 2) shell->avelocity[1] *= -1;
-	if (rand() & 2) shell->avelocity[2] *= -1;
+	VectorSet(shell->avelocity, (rand() % 33) + 64, (rand() % 33) + 32, (rand() % 33) + 64);
+	if (rand() % 2) shell->avelocity[0] *= -1;
+	if (rand() % 2) shell->avelocity[1] *= -1;
+	if (rand() % 2) shell->avelocity[2] *= -1;
 }
 
-void eject_shotgun_shell(edict_t *ent, vec3_t offset)
+void eject_shotgun_shell(edict_t *ent, vec3_t offset) // offset must be local (e.g. without viewheight)
 {
 	if (!ent->client || deathmatch->value || !m64_spawn_casings->value) return;
 
@@ -549,21 +569,28 @@ void eject_shotgun_shell(edict_t *ent, vec3_t offset)
 	shell->s.angles[PITCH] = ent->client->v_angle[PITCH];
 
 	// Position
-	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, shell->s.origin);
+	vec3_t view_offset;
+	P_ProjectSource(ent->client, ent->s.origin, tv(0, 0, ent->viewheight), forward, right, shell->s.origin);
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(shell->s.origin, view_offset, shell->s.origin);
+
+	// Modify position by velocity to reduce visual discrepancy... max. horiz. velocity: 300, max. vert. velocity: ~1200.
+	for (int i = 0; i < 3; i++)
+		shell->s.origin[i] += 4 * (ent->velocity[i] / 300.0f);
 
 	// Velocity
-	VectorScale(forward, ((rand() & 16) + 8), shell->velocity);
-	VectorMA(shell->velocity, 70 + (rand() & 48), right, shell->velocity);
+	VectorScale(forward, ((rand() % 17) + 8), shell->velocity);
+	VectorMA(shell->velocity, 70 + (rand() % 48), right, shell->velocity);
 	VectorAdd(shell->velocity, ent->velocity, shell->velocity);
 	if(ent->groundentity) VectorAdd(shell->velocity, ent->groundentity->velocity, shell->velocity);
-	shell->velocity[2] += 100 + (rand() & 28);
-	shell->velocity[1] += 28 + (rand() & 8);
+	shell->velocity[2] += 100 + (rand() % 28);
+	shell->velocity[1] += 28 + (rand() % 9);
 
 	// Angular velocity
-	VectorSet(shell->avelocity, (rand() & 32) + 64, (rand() & 32) + 32, (rand() & 32) + 64);
-	if (rand() & 2) shell->avelocity[0] *= -1;
-	if (rand() & 2) shell->avelocity[1] *= -1;
-	if (rand() & 2) shell->avelocity[2] *= -1;
+	VectorSet(shell->avelocity, (rand() % 33) + 64, (rand() % 33) + 32, (rand() % 33) + 64);
+	if (rand() % 2) shell->avelocity[0] *= -1;
+	if (rand() % 2) shell->avelocity[1] *= -1;
+	if (rand() % 2) shell->avelocity[2] *= -1;
 }
 
 /*
@@ -820,17 +847,12 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 	//mxd. Eject shotgun shells...
 	if(Q_stricmp(ent->client->pers.weapon->classname, "weapon_shotgun") == 0 && ent->client->ps.gunframe == 14)
 	{
-		vec3_t shell_offset;
-		VectorSet(shell_offset, 12, 2, ent->viewheight - 3); // +x - forward, +y - right
-		eject_shotgun_shell(ent, shell_offset);
+		eject_shotgun_shell(ent, tv(12, 2, -3)); // +x - forward, +y - right
 	}
 	else if(Q_stricmp(ent->client->pers.weapon->classname, "weapon_supershotgun") == 0 && ent->client->ps.gunframe == 14)
 	{
-		vec3_t shell_offset;
-		VectorSet(shell_offset, 8, 5, ent->viewheight - 3); // +x - forward, +y - right
-		eject_shotgun_shell(ent, shell_offset);
-		shell_offset[1] += 3;
-		eject_shotgun_shell(ent, shell_offset);
+		eject_shotgun_shell(ent, tv(8, 5, -3));
+		eject_shotgun_shell(ent, tv(8, 8, -3));
 	}
 }
 
@@ -871,9 +893,10 @@ void throw_offhand_grenade(edict_t *ent)
 	gi.sound(ent, CHAN_WEAPON, gi.soundindex("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
 	fire_grenade2(ent, start, forward, damage, speed, GRENADE_TIMER, radius, false); // held == detonate in hand
 
-	// Also push the view down-right a bit
-	ent->client->kick_angles[0] += 4 + random() * 3;
-	ent->client->kick_angles[1] -= 5 + random() * 4;
+	// Also push the view up-right a bit
+	ent->client->v_dmg_pitch = -8 - random() * 6;
+	ent->client->v_dmg_roll =  -4 - random() * 3;
+	ent->client->v_dmg_time = level.time + DAMAGE_TIME;
 }
 
 //mxd
@@ -898,6 +921,10 @@ void cock_offhand_grenade(edict_t *ent)
 
 		// Hijack to indicate busy state
 		ent->client->grenade_blew_up = true;
+
+		// Also push the view down a bit
+		ent->client->v_dmg_pitch = 3 + random() * 3;
+		ent->client->v_dmg_time = level.time + FALL_TIME;
 	}
 	else if(level.time >= ent->pain_debounce_time)
 	{
@@ -1075,23 +1102,31 @@ GRENADE LAUNCHER
 
 void weapon_grenadelauncher_fire (edict_t *ent, qboolean altfire)
 {
-	vec3_t	offset;
-	vec3_t	forward, right;
+	vec3_t	offset, view_offset;
+	vec3_t	forward, right, up;
 	vec3_t	start;
 	int		damage = sk_grenade_damage->value;
 
 	float radius = sk_grenade_radius->value; // damage+40;
-	if (is_quad)
-		damage *= 4;
+	if (is_quad) damage *= 4;
 
-	VectorSet(offset, 8, 8, ent->viewheight-8);
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	//VectorSet(offset, 8, 8, ent->viewheight-8);
+	AngleVectors (ent->client->v_angle, forward, right, up);
+	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect projectile position when looking up/down...
+	VectorSet(offset, 8, 7, -8); //was 8, 8, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_grenade (ent, start, forward, damage, sk_grenade_speed->value, 2.5, radius, altfire);
+	fire_grenade(ent, start, forward, damage, sk_grenade_speed->value, 2.5, radius, altfire);
 
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
@@ -1102,7 +1137,7 @@ void weapon_grenadelauncher_fire (edict_t *ent, qboolean altfire)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+	if (!((int)dmflags->value & DF_INFINITE_AMMO))
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
@@ -1168,44 +1203,50 @@ edict_t	*rocket_target(edict_t *self, vec3_t start, vec3_t forward)
 
 void Weapon_RocketLauncher_Fire (edict_t *ent, qboolean altfire)
 {
-	vec3_t	offset, start;
-	vec3_t	forward, right;
-	int		damage;
-	float	damage_radius;
-	int		radius_damage;
+	vec3_t	offset, start, view_offset;
+	vec3_t	forward, right, up;
 
-	damage = sk_rocket_damage->value + (int)(random() * sk_rocket_damage2->value);
-	radius_damage = sk_rocket_rdamage->value;
-	damage_radius = sk_rocket_radius->value;
+	int damage = sk_rocket_damage->value + (int)(random() * sk_rocket_damage2->value);
+	int radius_damage = sk_rocket_rdamage->value;
+	float damage_radius = sk_rocket_radius->value;
+	
 	if (is_quad)
 	{
 		damage *= 4;
 		radius_damage *= 4;
 	}
 
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
+	AngleVectors (ent->client->v_angle, forward, right, up);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	VectorSet(offset, 8, 8, ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
-	// Knightmare- changed constant 650 for cvar sk_rocket_speed->value
-	if (ent->client->pers.fire_mode)
-	{
-		edict_t	*target;
+	//VectorSet(offset, 8, 8, ent->viewheight-8);
+	//P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
 
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight); 
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect projectile position when looking up/down...
+	VectorSet(offset, 8, 4, -8); // was 8, 8, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
+	
+	// Knightmare- changed constant 650 for cvar sk_rocket_speed->value
+	/*if (ent->client->pers.fire_mode)
+	{
 		if(ent->client->homing_rocket && ent->client->homing_rocket->inuse)
 		{
 			ent->client->ps.gunframe++;
 			return;
 		}
 		
-		target = rocket_target(ent, start, forward);
+		edict_t *target = rocket_target(ent, start, forward);
 		fire_rocket (ent, start, forward, damage, sk_rocket_speed->value, damage_radius, radius_damage, target);
 	}
-	else
-		fire_rocket (ent, start, forward, damage, sk_rocket_speed->value, damage_radius, radius_damage, NULL);
+	else*/ //mxd. We don't need HML 
+		fire_rocket(ent, start, forward, damage, sk_rocket_speed->value, damage_radius, radius_damage, NULL);
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
@@ -1217,7 +1258,7 @@ void Weapon_RocketLauncher_Fire (edict_t *ent, qboolean altfire)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+	if (!((int)dmflags->value & DF_INFINITE_AMMO))
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
@@ -1254,24 +1295,31 @@ BLASTER / HYPERBLASTER
 
 void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, int effect, int color)
 {
-	vec3_t	forward, right;
-	vec3_t	start, offset;
+	vec3_t	forward, right, up;
+	vec3_t	start, offset, view_offset;
 	int		muzzleflash;
 
-	if (is_quad)
-		damage *= 4;
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	VectorSet(offset, 24, 8, ent->viewheight-8);
+	if (is_quad) damage *= 4;
+
+	AngleVectors (ent->client->v_angle, forward, right, up);
+	/*VectorSet(offset, 24, 8, ent->viewheight-8);
 	VectorAdd (offset, g_offset, offset);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);*/
+
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight); 
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect projectile position when looking up/down...
+	VectorSet(offset, 24, 8, -8);
+	VectorAdd(offset, g_offset, offset);
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	if (!hyper)
-		fire_blaster (ent, start, forward, damage, sk_blaster_speed->value, effect, hyper, color);
-	else
-		fire_blaster (ent, start, forward, damage, sk_hyperblaster_speed->value, effect, hyper, color);
+	fire_blaster(ent, start, forward, damage, (hyper ? sk_hyperblaster_speed->value : sk_blaster_speed->value), effect, hyper, color);
 
 	// Knightmare- select muzzle flash
 	if (hyper)
@@ -1366,7 +1414,7 @@ void Weapon_Blaster_Fire (edict_t *ent, qboolean altfire)
 	else // standard orange
 		effect = EF_BLASTER;
 
-	Blaster_Fire (ent, vec3_origin, damage, false, effect, color);
+	Blaster_Fire (ent, tv(0, -1, 1), damage, false, effect, color);
 	ent->client->ps.gunframe++;
 }
 
@@ -1381,11 +1429,9 @@ void Weapon_Blaster (edict_t *ent)
 
 void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 {
-	float	rotation;
 	vec3_t	offset;
 	int		effect;
 	int		damage;
-	int		color;
 
 	ent->client->weapon_sound = gi.soundindex("weapons/hyprbl1a.wav");
 
@@ -1395,7 +1441,7 @@ void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 	}
 	else
 	{
-		if (! ent->client->pers.inventory[ent->client->ammo_index] )
+		if (!ent->client->pers.inventory[ent->client->ammo_index])
 		{
 			if (level.time >= ent->pain_debounce_time)
 			{
@@ -1406,16 +1452,18 @@ void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 		}
 		else
 		{
-			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
+			float rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
 			offset[0] = -4 * sin(rotation);
 			offset[1] = 0;
 			offset[2] = 4 * cos(rotation);
 
 			// Knightmare- select color
-			color = sk_hyperblaster_color->value;
+			int color = sk_hyperblaster_color->value;
+			
 			// hyperblaster_color could be any other value, so clamp this
 			if (sk_hyperblaster_color->value < 2 || sk_hyperblaster_color->value > 4)
 				color = BLASTER_ORANGE;
+			
 			// CTF color override
 			if (ctf->value && ctf_blastercolors->value && ent->client)
 				color = 5-ent->client->resp.ctf_team;
@@ -1440,8 +1488,10 @@ void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 				damage = sk_hyperblaster_damage_dm->value;
 			else
 				damage = sk_hyperblaster_damage->value;
+
 			Blaster_Fire (ent, offset, damage, true, effect, color);
-			if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+			
+			if (!((int)dmflags->value & DF_INFINITE_AMMO))
 				ent->client->pers.inventory[ent->client->ammo_index]--;
 
 			ent->client->anim_priority = ANIM_ATTACK;
@@ -1467,7 +1517,6 @@ void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 		gi.sound(ent, CHAN_AUTO, gi.soundindex("weapons/hyprbd1a.wav"), 1, ATTN_NORM, 0);
 		ent->client->weapon_sound = 0;
 	}
-
 }
 
 void Weapon_HyperBlaster (edict_t *ent)
@@ -1488,8 +1537,7 @@ MACHINEGUN / CHAINGUN
 
 void Machinegun_Fire (edict_t *ent, qboolean altfire)
 {
-	vec3_t		start;
-	vec3_t		forward, right;
+	vec3_t		forward, right, up, start, view_offset;
 	vec3_t		angles;
 	int			damage = sk_machinegun_damage->value;
 	int			kick = 2;
@@ -1542,16 +1590,20 @@ void Machinegun_Fire (edict_t *ent, qboolean altfire)
 	}
 
 	// get start / end positions
-	VectorAdd (ent->client->v_angle, ent->client->kick_angles, angles);
-	AngleVectors (angles, forward, right, NULL);
-	VectorSet(offset, 0, 8, ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
-	fire_bullet (ent, start, forward, damage, kick, sk_machinegun_hspread->value, sk_machinegun_vspread->value, MOD_MACHINEGUN);
+	VectorAdd(ent->client->v_angle, ent->client->kick_angles, angles);
+	AngleVectors(angles, forward, right, up);
+	VectorSet(offset, 0, 0, ent->viewheight); //mxd. First project firing position without offsets...
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect tracers position when looking up/down...
+	VectorSet(offset, 24, 8, -8); // was 0, 8, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
+
+	fire_bullet(ent, start, forward, damage, kick, sk_machinegun_hspread->value, sk_machinegun_vspread->value, MOD_MACHINEGUN);
 	
 	//mxd. Eject shell...
-	vec3_t shell_offset;
-	VectorSet(shell_offset, 13, 5, ent->viewheight - 6); // +x - forward, +y - right 
-	eject_bullet_shell(ent, shell_offset);
+	eject_bullet_shell(ent, tv(13, 5, -6)); // +x - forward, +y - right 
 
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
@@ -1693,9 +1745,7 @@ void Chaingun_Fire (edict_t *ent, qboolean altfire)
 	}
 
 	//mxd. Eject shell...
-	vec3_t shell_offset;
-	VectorSet(shell_offset, 8, 7, ent->viewheight - 5); // +x - forward, +y - right 
-	eject_bullet_shell(ent, shell_offset);
+	eject_bullet_shell(ent, tv(8, 7, -5)); // +x - forward, +y - right 
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
@@ -1731,8 +1781,8 @@ SHOTGUN / SUPERSHOTGUN
 void weapon_shotgun_fire (edict_t *ent, qboolean altfire)
 {
 	vec3_t		start;
-	vec3_t		forward, right;
-	vec3_t		offset;
+	vec3_t		forward, right, up;
+	vec3_t		offset, view_offset;
 	int			damage = sk_shotgun_damage->value;
 	int			kick = 8;
 
@@ -1742,13 +1792,22 @@ void weapon_shotgun_fire (edict_t *ent, qboolean altfire)
 		return;
 	}
 
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
+	AngleVectors (ent->client->v_angle, forward, right, up);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -2;
 
-	VectorSet(offset, 0, 8,  ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	//VectorSet(offset, 0, 8,  ent->viewheight-8);
+	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight); 
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect tracers position when looking up/down...
+	VectorSet(offset, 16, 8, -8); // was 0, 8, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
 
 	if (is_quad)
 	{
@@ -1783,19 +1842,28 @@ void Weapon_Shotgun (edict_t *ent)
 void weapon_supershotgun_fire (edict_t *ent, qboolean altfire)
 {
 	vec3_t		start;
-	vec3_t		forward, right;
-	vec3_t		offset;
+	vec3_t		forward, right, up;
+	vec3_t		offset, view_offset;
 	vec3_t		v;
 	int			damage = sk_sshotgun_damage->value;
 	int			kick = 12;
 
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
+	AngleVectors (ent->client->v_angle, forward, right, up);
 
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -2;
 
-	VectorSet(offset, 0, 8,  ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	//VectorSet(offset, 0, 8,  ent->viewheight-8);
+	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight); 
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect tracers position when looking up/down...
+	VectorSet(offset, 16, 8, -5); // was 0, 8, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
 
 	if (is_quad)
 	{
@@ -1846,8 +1914,8 @@ RAILGUN
 void weapon_railgun_fire (edict_t *ent, qboolean altfire)
 {
 	vec3_t		start;
-	vec3_t		forward, right;
-	vec3_t		offset;
+	vec3_t		forward, right, up;
+	vec3_t		offset, view_offset;
 	int			damage;
 	int			kick;
 
@@ -1868,13 +1936,23 @@ void weapon_railgun_fire (edict_t *ent, qboolean altfire)
 		kick *= 4;
 	}
 
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
+	AngleVectors (ent->client->v_angle, forward, right, up);
 
 	VectorScale (forward, -3, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -3;
 
-	VectorSet(offset, 0, 7,  ent->viewheight-8);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	//VectorSet(offset, 0, 7,  ent->viewheight-8);
+	//P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	
+	//mxd. First project firing position without offsets...
+	VectorSet(offset, 0, 0, ent->viewheight);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	//mxd. Then project view offset only... Fixes incorrect projectile position when looking up/down...
+	VectorSet(offset, 0, 7, -6);// was 0, 7, -8
+	P_ProjectSource2(ent->client, vec3_origin, offset, forward, right, up, view_offset);
+	VectorAdd(start, view_offset, start);
+	
 	fire_rail (ent, start, forward, damage, kick);
 
 	// send muzzle flash
@@ -1886,7 +1964,7 @@ void weapon_railgun_fire (edict_t *ent, qboolean altfire)
 	ent->client->ps.gunframe++;
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+	if (!((int)dmflags->value & DF_INFINITE_AMMO))
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 

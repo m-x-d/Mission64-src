@@ -147,28 +147,40 @@ void fire_tracer(vec3_t start, vec3_t dir, const int type)
 	if(!m64_spawn_tracers->value) return;
 	
 	edict_t *tracer = G_Spawn();
-	int speed = 2048 + rand()%511;
+	
+	int speed;
+	switch(type)
+	{
+		case TE_SHOTGUN: 
+			tracer->s.modelindex = gi.modelindex("models/weapons/tracers/shell/tris.md2");
+			speed = 2048 + rand() % 513;
+			break;
+
+		case TE_GUNSHOT:
+			tracer->s.modelindex = gi.modelindex("models/weapons/tracers/bullet/tris.md2");
+			speed = 3072 + rand() % 513;
+			break;
+
+		default: 
+			gi.error("fire_tracer: unknown tracer type");
+			speed = 0;
+			break;
+	}
 
 	VectorCopy(start, tracer->s.origin);
 	vectoangles(dir, tracer->s.angles);
-	tracer->s.angles[ROLL] = rand()%359;
-	tracer->avelocity[ROLL] = rand()%64 - 128;
+	tracer->s.angles[ROLL] = rand()%361;
+	tracer->avelocity[ROLL] = (rand()%257 + 128) * (rand() % 2 == 1 ? 1 : -1);
 	VectorScale(dir, speed, tracer->velocity);
 	VectorClear(tracer->mins);
 	VectorClear(tracer->maxs);
 
+	tracer->svflags = SVF_DEADMONSTER; // see blaster_fire for explanation
 	tracer->movetype = MOVETYPE_FLYMISSILE;
 	tracer->clipmask = MASK_SHOT;
 	tracer->solid = SOLID_BBOX;
 	tracer->s.renderfx |= RF_NOSHADOW | RF_TRANSLUCENT;
 	tracer->classname = "tracer";
-
-	switch(type)
-	{
-		case TE_SHOTGUN: tracer->s.modelindex = gi.modelindex("models/weapons/tracers/shell/tris.md2"); break;
-		case TE_GUNSHOT: tracer->s.modelindex = gi.modelindex("models/weapons/tracers/bullet/tris.md2"); break;
-		default: gi.error("fire_tracer: unknown tracer type");
-	}
 
 	tracer->touch = tracer_touch; // With speed this high, tracer would oftentimes disappear before visually hitting anything, so delay it's disappearance a bit...
 
@@ -321,18 +333,29 @@ This is an internal support routine used for bullet/pellet based weapons.
 
 	//mxd. Spawn tracer...
 	vec3_t tracer_dir, tracer_start;
+	VectorCopy(start, tracer_start);
+	
+	if(self->client)
+	{
+		// Chaingun has horrible start position spread, let's fix this...
+		if(mod == MOD_CHAINGUN)
+		{
+			vec3_t tracer_fwd, tracer_right, tracer_up, tracer_offset, view_offset;
 
-	// Chaingun has horrible start position spread, let's fix this...
-	if (self->client && mod == MOD_CHAINGUN)
-	{
-		vec3_t tracer_fwd, tracer_right, tracer_offset;
-		AngleVectors(self->client->v_angle, tracer_fwd, tracer_right, NULL);
-		VectorSet(tracer_offset, 13, 4, self->viewheight - 5); // +x - forward, +y - right
-		P_ProjectSource(self->client, self->s.origin, tracer_offset, forward, right, tracer_start);
-	}
-	else
-	{
-		VectorCopy(start, tracer_start);
+			// First project firing position without offsets...
+			AngleVectors(self->client->v_angle, tracer_fwd, tracer_right, tracer_up);
+			VectorSet(tracer_offset, 0, 0, self->viewheight);
+			P_ProjectSource(self->client, self->s.origin, tracer_offset, tracer_fwd, tracer_right, tracer_start);
+
+			// Then project view offset only... Fixes incorrect vertical position when looking up/down... Needed beacuse otherwise tracers will look strange...
+			VectorSet(tracer_offset, 24, 4 + crandom(), crandom() - 4.5f); // +x - forward, +y - right
+			P_ProjectSource2(self->client, vec3_origin, tracer_offset, tracer_fwd, tracer_right, tracer_up, view_offset);
+			VectorAdd(tracer_start, view_offset, tracer_start);
+		}
+		
+		// Modify offset by velocity to reduce visual discrepancy... max. horiz. velocity: 300, max. vert. velocity: ~1200.
+		for(int i = 0; i < 3; i++)
+			tracer_start[i] += 4 * (self->velocity[i] / 300.0f);
 	}
 
 	VectorSubtract(end, tracer_start, tracer_dir);

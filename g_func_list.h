@@ -114,6 +114,7 @@
 {"ChangeWeapon", (byte *)ChangeWeapon},
 {"Pickup_Weapon", (byte *)Pickup_Weapon},
 {"PlayerNoise", (byte *)PlayerNoise},
+{"P_ProjectSource2", (byte *)P_ProjectSource2},
 {"P_ProjectSource", (byte *)P_ProjectSource},
 {"ClientEndServerFrame", (byte *)ClientEndServerFrame},
 {"WhatsIt", (byte *)WhatsIt},

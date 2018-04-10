@@ -647,7 +647,7 @@ void hover_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 
 	//mxd. Spinny death animation
 	self->monsterinfo.currentmove = &hover_move_death2;
-	self->s.effects |= EF_GRENADE;
+	self->s.effects |= EF_ROCKET;
 	self->touch = hover_dead_touch;
 	self->timestamp = level.time + 15;
 	self->gravity *= -0.25f;
