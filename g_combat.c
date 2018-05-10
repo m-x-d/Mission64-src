@@ -416,6 +416,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 					// they're both monsters but one is AI_GOOD_GUY and the other is not,
 					// or we've turned the game into a free-for-all with a target_monsterbattle
 					edict_t *teammate = G_Find(NULL,FOFS(dmgteam),targ->dmgteam);
+					qboolean kamikaze_triggered = false; //mxd
 					while(teammate)
 					{
 						if(teammate != targ)
@@ -424,7 +425,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 							{
 								if(teammate->health > 0 && (teammate->enemy != attacker) && !(teammate->monsterinfo.aiflags & AI_CHASE_THING))
 								{
-									if(!teammate->enemy || !teammate->enemy->dmgteam || !attacker->dmgteam || strcmp(teammate->enemy->dmgteam, attacker->dmgteam))
+									if(!teammate->enemy || !teammate->enemy->dmgteam || !attacker->dmgteam || strcmp(teammate->enemy->dmgteam, attacker->dmgteam) != 0)
 									{
 										// If either 1) this teammate doesn't currently have an enemy,
 										//        or 2) the teammate's enemy is not a member of a dmgteam
@@ -437,16 +438,34 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 
 								//mxd. If teammate is Flyer, make it go CRAZY if targ is going to be killed by incoming damage
 								// (25% chance on medium, 50% on hard)
-								if (teammate->health > 0 && skill->integer > 0 && teammate->class_id == ENTITY_MONSTER_FLYER && 
+								if (!kamikaze_triggered && teammate->health > 0 && skill->integer > 0 && teammate->class_id == ENTITY_MONSTER_FLYER &&
 									targ->health - damage < 1 && random() < (skill->value * 0.25f))
 								{
-									flyer_become_kamikaze(teammate);
+									// Only if we can see the target...
+									if (gi.inPVS(teammate->s.origin, targ->s.origin))
+									{
+										// Spawn lightning SFX...
+										gi.WriteByte(svc_temp_entity);
+										gi.WriteByte(TE_LIGHTNING);
+										gi.WriteShort(teammate - g_edicts);	// destination entity
+										gi.WriteShort(targ - g_edicts);		// source entity
+										gi.WritePosition(teammate->s.origin);
+										gi.WritePosition(targ->s.origin);
+										gi.multicast(targ->s.origin, MULTICAST_PVS);
+
+										// Go nuts
+										flyer_become_kamikaze(teammate);
+										kamikaze_triggered = true; // Do this only once
+									}
 								}
 							}
 							else if(!(teammate->svflags & SVF_DEADMONSTER))
-								G_UseTargets(teammate,attacker);
+							{
+								G_UseTargets(teammate, attacker);
+							}
 						}
-						teammate = G_Find(teammate,FOFS(dmgteam),targ->dmgteam);
+
+						teammate = G_Find(teammate, FOFS(dmgteam), targ->dmgteam);
 					}
 				}
 			}
@@ -477,6 +496,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 					}
 				}
 			}
+
 			teammate = G_Find(teammate,FOFS(dmgteam),"player");
 		}
 	}
@@ -500,8 +520,6 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 
 void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 {
-	qboolean is_turret;
-
 	if( targ->health <= 0 )
 		return;
 
@@ -518,7 +536,7 @@ void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 	if (targ->flags & FL_ROBOT)
 		return;
 
-	is_turret = (attacker->classname && !Q_stricmp(attacker->classname,"turret_breach"));
+	const qboolean is_turret = (attacker->classname && !Q_stricmp(attacker->classname, "turret_breach"));
 
 	targ->spawnflags &= ~(SF_MONSTER_AMBUSH | SF_MONSTER_SIGHT);	// 1.6.1.3
 

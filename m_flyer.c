@@ -733,8 +733,8 @@ void flyer_spawn_gibs(edict_t *self, int damage)
 //mxd
 void fake_flyer_touch(edict_t *self, edict_t *other, cplane_t* p, csurface_t* s)
 {
-	// Ingnore baaad touches... 
-	if(strcmp(other->classname, "freed") != 0)
+	// Ingnore baaad touches and tracers... 
+	if(strcmp(other->classname, "freed") != 0 && strcmp(other->classname, "tracer") != 0)
 	{
 		T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
 		flyer_spawn_gibs(self, self->dmg); // Removes self, must be called last
@@ -756,16 +756,16 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	//mxd
 	if(self->class_id == ENTITY_MONSTER_FLYER && damage < 100)
 	{
-		int scaler = 32;
+		float scaler = 28;
 
 		// Single shotgun pellet does little damage
-		if(inflictor->client && (inflictor->client->pers.weapon->classname == "weapon_shotgun" || inflictor->client->pers.weapon->classname == "weapon_supershotgun"))
-			scaler *= 2;
+		if(inflictor->client && (!strcmp(inflictor->client->pers.weapon->classname, "weapon_shotgun") || !strcmp(inflictor->client->pers.weapon->classname, "weapon_supershotgun")))
+			scaler *= 1.2f;
 		// Rockets and grenades, on the other hand, do way too much...
-		else if(inflictor->classname == "rocket" || inflictor->classname == "grenade") 
-			scaler *= 0.6f;
+		else if(!strcmp(inflictor->classname , "rocket") || !strcmp(inflictor->classname, "grenade"))
+			scaler *= 0.5f;
 
-		int kick = max(300, min(damage * scaler, 600)) + rand() % 63;
+		const int kick = max(200, min(damage * scaler, 400)) + rand() % 63;
 
 		// I'm grenade!
 		edict_t* g = ThrowGib(self, "models/monsters/flyer/tris.md2", damage, GIB_METALLIC);

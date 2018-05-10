@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 /* Knightmare's cvar header file */
+#ifndef KM_CVAR_H
+#define KM_CVAR_H
 
 extern	cvar_t	*mega_gibs;				// whether to spawn extra gibs, default to 0
 extern	cvar_t	*player_gib_health;		// what health level to gib players at
@@ -201,3 +203,5 @@ extern	cvar_t	*tech_vampiremax;    // sets maximum health that can be gained fro
 //mxd. Mission64 cvars...
 extern	cvar_t	*m64_spawn_casings;
 extern	cvar_t	*m64_spawn_tracers;
+
+#endif // KM_CVAR_H

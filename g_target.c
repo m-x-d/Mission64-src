@@ -2366,10 +2366,8 @@ void target_effect_trail (edict_t *self, edict_t *activator)
   Similar but slightly different syntax to trail stuff */
 void target_effect_lightning(edict_t *self, edict_t *activator)
 {
-	edict_t	*target;
-
 	if(!self->target) return;
-	target = G_Find(NULL,FOFS(targetname),self->target);
+	edict_t *target = G_Find(NULL, FOFS(targetname), self->target);
 	if(!target) return;
 
 	gi.WriteByte (svc_temp_entity);
@@ -2491,29 +2489,33 @@ void target_effect_widowbeam(edict_t *self, edict_t *activator)
 
 void target_effect_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	if(self->spawnflags & 1) {
+	if(self->spawnflags & 1)
+	{
 		// currently looped on - turn it off
 		self->spawnflags &= ~1;
 		self->spawnflags |= 2;
 		self->nextthink = 0;
 		return;
 	}
-	if(self->spawnflags & 2) {
+
+	if(self->spawnflags & 2)
+	{
 		// currently looped off - turn it on
 		self->spawnflags &= ~2;
 		self->spawnflags |= 1;
 		self->nextthink = level.time + self->wait;
 	}
-	if(self->spawnflags & 4) {
-		// "if_moving" set. If movewith target isn't moving,
-		// don't play
-		edict_t	*mover;
+
+	if(self->spawnflags & 4)
+	{
+		// "if_moving" set. If movewith target isn't moving, don't play
 		if(!self->movewith) return;
-		mover = G_Find(NULL,FOFS(targetname),self->movewith);
+		edict_t *mover = G_Find(NULL, FOFS(targetname), self->movewith);
 		if(!mover) return;
 		if(!VectorLength(mover->velocity)) return;
 	}
-	self->play(self,activator);
+
+	self->play(self, activator);
 }
 void target_effect_think(edict_t *self)
 {

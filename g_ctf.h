@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef G_CTF_H
+#define G_CTF_H
+
 #define CTF_VERSION			2.12 //1.52  Knightmare- show Lazarus version
 #define CTF_VSTRING2(x) #x
 #define CTF_VSTRING(x) CTF_VSTRING2(x)
@@ -230,3 +233,4 @@ void SP_info_teleport_destination (edict_t *ent);
 
 void CTFSetPowerUpEffect(edict_t *ent, int def);
 
+#endif // G_CTF_H

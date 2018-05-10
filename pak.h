@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef PAK_H
+#define PAK_H
+
 typedef struct
 {
 	char id[4]; // Should be 'PACK'
@@ -32,3 +35,5 @@ typedef struct
 	int start; // Offset in .pak file to start of item
 	int size; // Size of item in bytes
 } pak_item_t;
+
+#endif // PAK_H

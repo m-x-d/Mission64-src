@@ -565,18 +565,14 @@ fire_grenade
 
 void Grenade_Evade (edict_t *monster)
 {
-	edict_t	*grenade;
 	vec3_t	grenade_vec;
-	float	grenade_dist, best_r, best_yaw, r;
-	float	yaw;
-	int		i;
 	vec3_t	forward;
 	vec3_t	pos, best_pos;
-	trace_t	tr;
 
 	// We assume on entry here that monster is alive and that he's not already
 	// AI_CHASE_THING
-	grenade = world->next_grenade;
+	edict_t *grenade = world->next_grenade;
+	float grenade_dist = 0.0f; //mxd
 	while(grenade)
 	{
 		// we only care about grenades on the ground
@@ -591,31 +587,37 @@ void Grenade_Evade (edict_t *monster)
 					break;
 			}
 		}
+
 		grenade = grenade->next_grenade;
 	}
-	if(!grenade)
+
+	if(!grenade || grenade_dist == 0.0f) //mxd. +grenade_dist check
 		return;
+
 	// Find best escape route.
-	best_r = 9999;
-	for(i=0; i<8; i++)
+	float best_r = 9999;
+	float best_yaw = monster->ideal_yaw; //mxd
+	for(int i = 0; i < 8; i++)
 	{
-		yaw = anglemod( i*45 );
+		const float yaw = anglemod( i*45 );
 		forward[0] = cos( DEG2RAD(yaw) );
 		forward[1] = sin( DEG2RAD(yaw) );
 		forward[2] = 0;
+
 		// Estimate of required distance to run. This is conservative.
-		r = grenade->dmg_radius + grenade_dist*DotProduct(forward,grenade_vec) + monster->size[0] + 16;
-		if( r < best_r )
+		const float r = grenade->dmg_radius + grenade_dist*DotProduct(forward,grenade_vec) + monster->size[0] + 16;
+		if(r < best_r)
 		{
 			VectorMA(monster->s.origin,r,forward,pos);
-			tr = gi.trace(monster->s.origin,monster->mins,monster->maxs,pos,monster,MASK_MONSTERSOLID);
+			const trace_t tr = gi.trace(monster->s.origin, monster->mins, monster->maxs, pos, monster, MASK_MONSTERSOLID);
 			if(tr.fraction < 1.0)
 				continue;
 			best_r = r;
 			best_yaw = yaw;
-			VectorCopy(tr.endpos,best_pos);
+			VectorCopy(tr.endpos, best_pos);
 		}
 	}
+
 	if(best_r < 9000)
 	{
 		edict_t	*thing = SpawnThing();
@@ -634,9 +636,7 @@ void Grenade_Evade (edict_t *monster)
 
 /*static*/ void Grenade_Add_To_Chain (edict_t *grenade)
 {
-	edict_t	*ancestor;
-
-	ancestor = world;
+	edict_t *ancestor = world;
 	while (ancestor->next_grenade && ancestor->next_grenade->inuse)
 		ancestor = ancestor->next_grenade;
 	ancestor->next_grenade = grenade;
@@ -732,7 +732,7 @@ void Grenade_Evade (edict_t *monster)
 	}
 
 	//mxd. Align to touched surface if we are going to stop...
-	qboolean stopped = VectorCompare(ent->velocity, vec3_origin);
+	const qboolean stopped = VectorCompare(ent->velocity, vec3_origin);
 	if (stopped)
 	{
 		AlignToPlane(ent, plane, 0);
@@ -992,9 +992,7 @@ void SP_handgrenade (edict_t *grenade)
 // Lazarus: homing rocket
 void homing_think (edict_t *self)
 {
-	trace_t	tr;
 	vec3_t	dir, target;
-	vec_t	speed;
 
 	if(level.time > self->endtime)
 	{
@@ -1003,24 +1001,28 @@ void homing_think (edict_t *self)
 		BecomeExplosion1(self);
 		return;
 	}
+
 	if(self->enemy && self->enemy->inuse)
 	{
-		VectorMA(self->enemy->absmin,0.5,self->enemy->size,target);
-		tr = gi.trace(self->s.origin,vec3_origin,vec3_origin,target,self,MASK_OPAQUE);
+		VectorMA(self->enemy->absmin, 0.5, self->enemy->size, target);
+		const trace_t tr = gi.trace(self->s.origin, vec3_origin, vec3_origin, target, self, MASK_OPAQUE);
 		if(tr.fraction == 1)
 		{
 			// target in view; apply correction
 			VectorSubtract(target, self->s.origin, dir);
 			VectorNormalize(dir);
+
 			if(self->enemy->client)
 				VectorScale(dir, 0.8+0.1*skill->value, dir);
 			else
 				VectorScale(dir, 1.0, dir);  // 0=no correction, 1=turn on a dime
+
 			VectorAdd(dir, self->movedir, dir);
 			VectorNormalize(dir);
 			VectorCopy(dir, self->movedir);
 			vectoangles(dir, self->s.angles);
-			speed = VectorLength(self->velocity);
+
+			const vec_t speed = VectorLength(self->velocity);
 			VectorScale(dir, speed, self->velocity);
 
 			if(level.time >= self->starttime && self->starttime > 0)
@@ -1033,10 +1035,12 @@ void homing_think (edict_t *self)
 						gi.sound (self->enemy, CHAN_AUTO, gi.soundindex ("weapons/homing/lockon.wav"), 1, ATTN_NORM, 0);
 					self->owner->fly_sound_debounce_time = level.time + 2.0;
 				}
+
 				self->starttime = 0;
 			}
 		}
 	}
+
 	self->nextthink = level.time + FRAMETIME;
 }
 

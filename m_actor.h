@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef M_ACTOR_H
+#define M_ACTOR_H
+
 //ed - weapon protos
 void actorBlaster (edict_t *self);
 void actorShotgun (edict_t *self);
@@ -253,3 +256,4 @@ void actorBFG (edict_t *self);
 
 #define MODEL_SCALE	1.000000
 
+#endif // M_ACTOR_H

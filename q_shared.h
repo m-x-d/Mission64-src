@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 	
 // q_shared.h -- included first by ALL program modules
+#ifndef Q_SHARED_H
+#define Q_SHARED_H
 
 #ifdef _MSC_VER	// _WIN32
 // unknown pragmas are SUPPOSED to be ignored, but....
@@ -142,7 +144,7 @@ __inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list 
 
 #define PNG_SUPPORT // whether to include PNG image support
 
-#define USE_CURL	// whether to include HTTP downloading
+//#define USE_CURL	// whether to include HTTP downloading //mxd -> OFF
 
 #define LOC_SUPPORT	// whether to include loc file support
 
@@ -168,7 +170,7 @@ __inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list 
 
 #define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
 #define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
-#define	MAX_TOKEN_CHARS		128		// max length of an individual token
+#define	MAX_TOKEN_CHARS		256		// max length of an individual token //mxd. 128->256
 
 #define	MAX_QPATH			64		// max length of a quake game pathname
 #define	MAX_OSPATH			256		// max length of a filesystem pathname
@@ -1579,3 +1581,4 @@ extern int vidref_val;
 // PGM
 // ==================
 
+#endif // Q_SHARED_H

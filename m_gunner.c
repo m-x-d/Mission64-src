@@ -65,7 +65,7 @@ void gunner_search (edict_t *self)
 }
 
 
-qboolean visible (edict_t *self, edict_t *other);
+//qboolean visible (edict_t *self, edict_t *other);
 void GunnerGrenade (edict_t *self);
 void GunnerFire (edict_t *self);
 void gunner_fire_chain(edict_t *self);
@@ -352,17 +352,16 @@ mmove_t gunner_move_death = {FRAME_death01, FRAME_death11, gunner_frames_death, 
 
 void gunner_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int		n;
-
 	self->s.skinnum |= 1;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
-// check for gib
+	
+// Check for gib
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
+		for (int n = 0; n < 2; n++)
 			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
+		for (int n = 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
@@ -540,7 +539,6 @@ void GunnerGrenade (edict_t *self)
 	vec3_t	start,target;
 	vec3_t	forward, right, up;
 	vec3_t	aim;
-	vec_t	monster_speed;
 	int		flash_number;
 
 	if(!self->enemy || !self->enemy->inuse)
@@ -599,31 +597,27 @@ void GunnerGrenade (edict_t *self)
 	// lead target... 20, 35, 50, 65 chance of leading
 	if( random() < (0.2 + skill->value * 0.15) )
 	{
-		float	dist;
-		float	time;
-
 		VectorSubtract(target, start, aim);
-		dist = VectorLength (aim);
-		time = dist/GRENADE_VELOCITY;  // Not correct, but better than nothin'
+		const float dist = VectorLength (aim);
+		const float time = dist/GRENADE_VELOCITY;  // Not correct, but better than nothin'
 		VectorMA(target, time, self->enemy->velocity, target);
 	}
 
 	AimGrenade (self, start, target, GRENADE_VELOCITY, aim);
 	// Lazarus - take into account (sort of) feature of adding shooter's velocity to
 	// grenade velocity
-	monster_speed = VectorLength(self->velocity);
+	const vec_t monster_speed = VectorLength(self->velocity);
 	if(monster_speed > 0) {
 		vec3_t	v1;
-		vec_t	delta;
 
 		VectorCopy(self->velocity,v1);
 		VectorNormalize(v1);
-		delta = -monster_speed/GRENADE_VELOCITY;
+		const vec_t delta = -monster_speed/GRENADE_VELOCITY;
 		VectorMA(aim,delta,v1,aim);
 		VectorNormalize(aim);
 	}
 
-	monster_fire_grenade (self, start, aim, 50, GRENADE_VELOCITY, flash_number);
+	monster_fire_grenade (self, start, aim, 50, (int)GRENADE_VELOCITY, flash_number);
 }
 
 mframe_t gunner_frames_attack_chain [] =

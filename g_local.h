@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // g_local.h -- local definitions for game module
 
+#ifndef G_LOCAL_H
+#define G_LOCAL_H
+
 #ifdef _WIN32
 #include <malloc.h>
 #include <direct.h>
@@ -2018,3 +2021,5 @@ qboolean	paused;
 // ACEBOT_ADD
 #include "acebot.h"
 // ACEBOT_END
+
+#endif // G_LOCAL_H

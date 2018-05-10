@@ -23,6 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // laz_misc.h- Miscellaneous declarations that really don't belong in q_shared.h...
 //
 
+#ifndef LAZ_MISC_H
+#define LAZ_MISC_H
+
 //
 // MD2 format info
 //
@@ -245,3 +248,5 @@ ENTITY_PLAYER_NOISE
 
 // ==================
 //#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
+
+#endif // LAZ_MISC_H //mxd

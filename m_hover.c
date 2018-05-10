@@ -568,11 +568,11 @@ void hover_deadthink (edict_t *self)
 //mxd
 void vector_rotate_xy(vec3_t v, float theta)
 {
-	float tcos = (float)cos(theta);
-	float tsin = (float)sin(theta);
+	const float tcos = (float)cos(theta);
+	const float tsin = (float)sin(theta);
 
-	float rx = tcos * v[0] - tsin * v[1];
-	float ry = tsin * v[0] + tcos * v[1];
+	const float rx = tcos * v[0] - tsin * v[1];
+	const float ry = tsin * v[0] + tcos * v[1];
 
 	v[0] = rx;
 	v[1] = ry;
@@ -581,8 +581,8 @@ void vector_rotate_xy(vec3_t v, float theta)
 //mxd
 void hover_dead_touch(edict_t *self, edict_t *other, cplane_t* p, csurface_t* s)
 {
-	// Ingnore baaad touches... 
-	if(strcmp(other->classname, "freed") != 0)
+	// Ingnore baaad touches and tracers... 
+	if(strcmp(other->classname, "freed") != 0 && strcmp(other->classname, "tracer") != 0)
 	{
 		T_RadiusDamage(self, self, 45 + 5 * skill->value, NULL, 128 + 16 * skill->value, MOD_EXPLOSIVE, -2.0 / (4.0 + skill->value));
 		hover_spawn_gibs(self, 200); // Removes self, must be called last

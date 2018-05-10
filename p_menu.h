@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef P_MENU_H
+#define P_MENU_H
 
 enum {
 	PMENU_ALIGN_LEFT,
@@ -52,3 +54,4 @@ void PMenu_Next(edict_t *ent);
 void PMenu_Prev(edict_t *ent);
 void PMenu_Select(edict_t *ent);
 
+#endif // P_MENU_H

@@ -206,10 +206,7 @@ vec3_t infantry_bleed_positions[][2] =
 void infantry_bleed(edict_t *self)
 {
 	if (random() > 0.7f) return;
-
-	int i;
-	i = self->s.frame - FRAME_death101;
-
+	const int i = self->s.frame - FRAME_death101;
 	M_SpawnEffect(self, (random() > 0.8f ? TE_MOREBLOOD : TE_BLOOD), infantry_bleed_positions[i][0], infantry_bleed_positions[i][1]);
 }
 
@@ -289,8 +286,6 @@ mmove_t infantry_move_pain2 = {FRAME_pain201, FRAME_pain210, infantry_frames_pai
 
 void infantry_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
-	int		n;
-
 	if (self->health < (self->max_health / 2))
 		self->s.skinnum |= 1;
 
@@ -302,7 +297,7 @@ void infantry_pain (edict_t *self, edict_t *other, float kick, int damage)
 	if (skill->value == 3)
 		return;		// no pain anims in nightmare
 
-	n = rand() % 2;
+	int n = rand() % 2;
 	if (n == 0)
 	{
 		self->monsterinfo.currentmove = &infantry_move_pain1;
@@ -534,19 +529,24 @@ qboolean is_headless(edict_t *self)
 
 void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int		n;
-
 	self->s.skinnum |= 1;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
+
+// Check for gib
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 4; n++) //mxd. 2 -> 4
-			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 6; n++) //mxd. 4 -> 6
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		if(!is_headless(self)) ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC); //mxd. Don't throw 2 heads...
 		self->deadflag = DEAD_DEAD;
+		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
+		for (int n = 0; n < 4; n++) //mxd. 2 -> 4
+			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
+		for (int n = 0; n < 6; n++) //mxd. 4 -> 6
+			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+		
+		if(!is_headless(self))
+			ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC); //mxd. Don't throw 2 heads...
+		else
+			G_FreeEdict(self); //mxd. Avoid throwing gibs multiple times...
+
 		return;
 	}
 
@@ -563,7 +563,7 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	VectorAdd(head_pos, self->s.origin, head_pos);
 
 	//mxd. Skip "last stand" attack (infantry_move_death2) on Easy
-	n = (skill->integer < 1 ? ((rand() % 2) ? 2 : 0) : rand() % 3);
+	int n = (skill->integer < 1 ? ((rand() % 2) ? 2 : 0) : rand() % 3);
 	//n = rand() % 3;
 	if (n == 0)
 	{

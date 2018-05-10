@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef P_TEXT_H
+#define P_TEXT_H
 
 enum {
 	TEXT_LEFT,
@@ -51,3 +53,4 @@ void Text_Update(edict_t *ent);
 void Text_Next(edict_t *ent);
 void Text_Prev(edict_t *ent);
 
+#endif // P_TEXT_H
