@@ -96,27 +96,27 @@ qboolean ACEMV_CanMove(edict_t *self, int direction)
 	// Now check to see if move will move us off an edge
 	VectorCopy(self->s.angles,angles);
 	
-	if(direction == MOVE_LEFT)
+	if (direction == MOVE_LEFT)
 		angles[1] += 90;
-	else if(direction == MOVE_RIGHT)
+	else if (direction == MOVE_RIGHT)
 		angles[1] -= 90;
-	else if(direction == MOVE_BACK)
+	else if (direction == MOVE_BACK)
 		angles[1] -=180;
 
 	// Set up the vectors
-	AngleVectors (angles, forward, right, NULL);
+	AngleVectors(angles, forward, right, NULL);
 	
 	VectorSet(offset, 36, 0, 24);
-	G_ProjectSource (self->s.origin, offset, forward, right, start);
+	G_ProjectSource(self->s.origin, offset, forward, right, start);
 		
 	VectorSet(offset, 36, 0, -400);
-	G_ProjectSource (self->s.origin, offset, forward, right, end);
+	G_ProjectSource(self->s.origin, offset, forward, right, end);
 	
 	tr = gi.trace(start, NULL, NULL, end, self, MASK_OPAQUE);
 	
-	if(tr.fraction > 0.3 && tr.fraction != 1 || tr.contents & (CONTENTS_LAVA|CONTENTS_SLIME))
+	if (tr.fraction > 0.3 && tr.fraction != 1 || tr.contents & (CONTENTS_LAVA|CONTENTS_SLIME))
 	{
-		if(debug_mode)
+		if (debug_mode)
 			debug_printf("%s: move blocked\n",self->client->pers.netname);
 		return false;	
 	}
@@ -139,19 +139,19 @@ qboolean ACEMV_SpecialMove(edict_t *self, usercmd_t *ucmd)
 	// Get current direction
 	VectorCopy(self->client->ps.viewangles,dir);
 	dir[YAW] = self->s.angles[YAW];
-	AngleVectors (dir, forward, right, NULL);
+	AngleVectors(dir, forward, right, NULL);
 
 	VectorSet(offset, 18, 0, 0);
-	G_ProjectSource (self->s.origin, offset, forward, right, start);
+	G_ProjectSource(self->s.origin, offset, forward, right, start);
 	offset[0] += 18;
-	G_ProjectSource (self->s.origin, offset, forward, right, end);
+	G_ProjectSource(self->s.origin, offset, forward, right, end);
 	
 	// trace it
 	start[2] += 18; // so they are not jumping all the time
 	end[2] += 18;
-	tr = gi.trace (start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID);
+	tr = gi.trace(start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID);
 		
-	if(tr.allsolid)
+	if (tr.allsolid)
 	{
 		// Check for crouching
 		start[2] -= 14;
@@ -160,10 +160,10 @@ qboolean ACEMV_SpecialMove(edict_t *self, usercmd_t *ucmd)
 		// Set up for crouching check
 		VectorCopy(self->maxs,top);
 		top[2] = 0.0; // crouching height
-		tr = gi.trace (start, self->mins, top, end, self, MASK_PLAYERSOLID);
+		tr = gi.trace(start, self->mins, top, end, self, MASK_PLAYERSOLID);
 		
 		// Crouch
-		if(!tr.allsolid) 
+		if (!tr.allsolid) 
 		{
 			ucmd->forwardmove = 400; 
 			ucmd->upmove = -400; 
@@ -173,9 +173,9 @@ qboolean ACEMV_SpecialMove(edict_t *self, usercmd_t *ucmd)
 		// Check for jump
 		start[2] += 32;
 		end[2] += 32;
-		tr = gi.trace (start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID);
+		tr = gi.trace(start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID);
 
-		if(!tr.allsolid)
+		if (!tr.allsolid)
 		{	
 			ucmd->forwardmove = 400;
 			ucmd->upmove = 400;
@@ -206,23 +206,23 @@ qboolean ACEMV_CheckEyes(edict_t *self, usercmd_t *ucmd)
 
 	// Get current angle and set up "eyes"
 	VectorCopy(self->s.angles,dir);
-	AngleVectors (dir, forward, right, NULL);
+	AngleVectors(dir, forward, right, NULL);
 	
 	// Let them move to targets by walls
-	if(!self->movetarget)
+	if (!self->movetarget)
 		VectorSet(offset,200,0,4); // focalpoint 
 	else
 		VectorSet(offset,36,0,4); // focalpoint 
 	
-	G_ProjectSource (self->s.origin, offset, forward, right, focalpoint);
+	G_ProjectSource(self->s.origin, offset, forward, right, focalpoint);
 
 	// Check from self to focalpoint
 	// Ladder code
 	VectorSet(offset,36,0,0); // set as high as possible
-	G_ProjectSource (self->s.origin, offset, forward, right, upend);
+	G_ProjectSource(self->s.origin, offset, forward, right, upend);
 	traceFront = gi.trace(self->s.origin, self->mins, self->maxs, upend, self, MASK_OPAQUE);
 		
-	if(traceFront.contents & 0x8000000) // using detail brush here cuz sometimes it does not pick up ladders...??
+	if (traceFront.contents & 0x8000000) // using detail brush here cuz sometimes it does not pick up ladders...??
 	{
 		ucmd->upmove = 400;
 		ucmd->forwardmove = 400;
@@ -230,18 +230,18 @@ qboolean ACEMV_CheckEyes(edict_t *self, usercmd_t *ucmd)
 	}
 	
 	// If this check fails we need to continue on with more detailed checks
-	if(traceFront.fraction == 1)
+	if (traceFront.fraction == 1)
 	{	
 		ucmd->forwardmove = 400;
 		return true;
 	}
 
 	VectorSet(offset, 0, 18, 4);
-	G_ProjectSource (self->s.origin, offset, forward, right, leftstart);
+	G_ProjectSource(self->s.origin, offset, forward, right, leftstart);
 	
 	offset[1] -= 36; // want to make sure this is correct
 	//VectorSet(offset, 0, -18, 4);
-	G_ProjectSource (self->s.origin, offset, forward, right, rightstart);
+	G_ProjectSource(self->s.origin, offset, forward, right, rightstart);
 
 	traceRight = gi.trace(rightstart, NULL, NULL, focalpoint, self, MASK_OPAQUE);
 	traceLeft = gi.trace(leftstart, NULL, NULL, focalpoint, self, MASK_OPAQUE);
@@ -250,24 +250,24 @@ qboolean ACEMV_CheckEyes(edict_t *self, usercmd_t *ucmd)
 	// check will be done first.
 		
 	// If open space move ok
-	if(traceRight.fraction != 1 || traceLeft.fraction != 1 || strcmp(traceLeft.ent->classname,"func_door")!=0)
+	if (traceRight.fraction != 1 || traceLeft.fraction != 1 || strcmp(traceLeft.ent->classname,"func_door")!=0)
 	{
 		// Special uppoint logic to check for slopes/stairs/jumping etc.
 		VectorSet(offset, 0, 18, 24);
-		G_ProjectSource (self->s.origin, offset, forward, right, upstart);
+		G_ProjectSource(self->s.origin, offset, forward, right, upstart);
 
 		VectorSet(offset,0,0,200); // scan for height above head
-		G_ProjectSource (self->s.origin, offset, forward, right, upend);
+		G_ProjectSource(self->s.origin, offset, forward, right, upend);
 		traceUp = gi.trace(upstart, NULL, NULL, upend, self, MASK_OPAQUE);
 			
 		VectorSet(offset,200,0,200*traceUp.fraction-5); // set as high as possible
-		G_ProjectSource (self->s.origin, offset, forward, right, upend);
+		G_ProjectSource(self->s.origin, offset, forward, right, upend);
 		traceUp = gi.trace(upstart, NULL, NULL, upend, self, MASK_OPAQUE);
 
 		// If the upper trace is not open, we need to turn.
-		if(traceUp.fraction != 1)
+		if (traceUp.fraction != 1)
 		{						
-			if(traceRight.fraction > traceLeft.fraction)
+			if (traceRight.fraction > traceLeft.fraction)
 				self->s.angles[YAW] += (1.0 - traceLeft.fraction) * 45.0;
 			else
 				self->s.angles[YAW] += -(1.0 - traceRight.fraction) * 45.0;
@@ -302,7 +302,7 @@ void ACEMV_ChangeBotAngle (edict_t *ent)
 	current_yaw = anglemod(ent->s.angles[YAW]);
 	current_pitch = anglemod(ent->s.angles[PITCH]);
 	
-	vectoangles (ent->move_vector, ideal_angle);
+	vectoangles(ent->move_vector, ideal_angle);
 
 	ideal_yaw = anglemod(ideal_angle[YAW]);
 	ideal_pitch = anglemod(ideal_angle[PITCH]);
@@ -371,20 +371,20 @@ void ACEMV_MoveToGoal(edict_t *self, usercmd_t *ucmd)
 {
 	// If a rocket or grenade is around deal with it
 	// Simple, but effective (could be rewritten to be more accurate)
-	if(strcmp(self->movetarget->classname,"rocket")==0 ||
+	if (strcmp(self->movetarget->classname,"rocket")==0 ||
 	   strcmp(self->movetarget->classname,"grenade")==0 ||
 	   strcmp(self->movetarget->classname,"homing rocket")==0)
 
 	{
-		VectorSubtract (self->movetarget->s.origin, self->s.origin, self->move_vector);
+		VectorSubtract(self->movetarget->s.origin, self->s.origin, self->move_vector);
 		ACEMV_ChangeBotAngle(self);
-		if(debug_mode)
+		if (debug_mode)
 			debug_printf("%s: Oh crap a rocket!\n",self->client->pers.netname);
 		
 		// strafe left/right
-		if(rand()%1 && ACEMV_CanMove(self, MOVE_LEFT))
+		if (rand()%1 && ACEMV_CanMove(self, MOVE_LEFT))
 				ucmd->sidemove = -400;
-		else if(ACEMV_CanMove(self, MOVE_RIGHT))
+		else if (ACEMV_CanMove(self, MOVE_RIGHT))
 				ucmd->sidemove = 400;
 		return;
 
@@ -392,7 +392,7 @@ void ACEMV_MoveToGoal(edict_t *self, usercmd_t *ucmd)
 	else
 	{
 		// Set bot's movement direction
-		VectorSubtract (self->movetarget->s.origin, self->s.origin, self->move_vector);
+		VectorSubtract(self->movetarget->s.origin, self->s.origin, self->move_vector);
 		ACEMV_ChangeBotAngle(self);
 		ucmd->forwardmove = 400;
 		return;
@@ -410,7 +410,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	int i;
 		
 	// Get current and next node back from nav code.
-	if(!ACEND_FollowPath(self))
+	if (!ACEND_FollowPath(self))
 	{
 		self->state = STATE_WANDER;
 		self->wander_timeout = level.time + 1.0;
@@ -429,7 +429,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	////////////////////////////////////////////////////////
 	// Grapple
 	///////////////////////////////////////////////////////
-	if(next_node_type == NODE_GRAPPLE)
+	if (next_node_type == NODE_GRAPPLE)
 	{
 		ACEMV_ChangeBotAngle(self);
 		ACEIT_ChangeWeapon(self,FindItem("grapple"));	
@@ -437,7 +437,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 		return;
 	}
 	// Reset the grapple if hangin on a graple node
-	if(current_node_type == NODE_GRAPPLE)
+	if (current_node_type == NODE_GRAPPLE)
 	{
 		CTFPlayerResetGrapple(self);
 		return;
@@ -446,20 +446,20 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	////////////////////////////////////////////////////////
 	// Platforms
 	///////////////////////////////////////////////////////
-	if(current_node_type != NODE_PLATFORM && next_node_type == NODE_PLATFORM)
+	if (current_node_type != NODE_PLATFORM && next_node_type == NODE_PLATFORM)
 	{
 		// check to see if lift is down?
-		for(i=0;i<num_items;i++)
-			if(item_table[i].node == self->next_node)
-				if(item_table[i].ent && // Knightmare- fix crash
+		for (i=0;i<num_items;i++)
+			if (item_table[i].node == self->next_node)
+				if (item_table[i].ent && // Knightmare- fix crash
 					item_table[i].ent->moveinfo.state != STATE_BOTTOM) // crashes here
 				    return; // Wait for elevator
 	}
-	if(current_node_type == NODE_PLATFORM && next_node_type == NODE_PLATFORM)
+	if (current_node_type == NODE_PLATFORM && next_node_type == NODE_PLATFORM)
 	{
 		// Move to the center
 		self->move_vector[2] = 0; // kill z movement	
-		if(VectorLength(self->move_vector) > 10)
+		if (VectorLength(self->move_vector) > 10)
 			ucmd->forwardmove = 200; // walk to center
 				
 		ACEMV_ChangeBotAngle(self);
@@ -470,7 +470,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	////////////////////////////////////////////////////////
 	// Jumpto Nodes
 	///////////////////////////////////////////////////////
-	if(next_node_type == NODE_JUMP || 
+	if (next_node_type == NODE_JUMP || 
 	  (current_node_type == NODE_JUMP && next_node_type != NODE_ITEM && nodes[self->next_node].origin[2] > self->s.origin[2]))
 	{
 		// Set up a jump move
@@ -488,7 +488,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	////////////////////////////////////////////////////////
 	// Ladder Nodes
 	///////////////////////////////////////////////////////
-	if(next_node_type == NODE_LADDER && nodes[self->next_node].origin[2] > self->s.origin[2])
+	if (next_node_type == NODE_LADDER && nodes[self->next_node].origin[2] > self->s.origin[2])
 	{
 		// Otherwise move as fast as we can
 		ucmd->forwardmove = 400; 
@@ -500,7 +500,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 
 	}
 	// If getting off the ladder
-	if(current_node_type == NODE_LADDER && next_node_type != NODE_LADDER &&
+	if (current_node_type == NODE_LADDER && next_node_type != NODE_LADDER &&
 	   nodes[self->next_node].origin[2] > self->s.origin[2])
 	{
 		ucmd->forwardmove = 400; 
@@ -513,13 +513,13 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	////////////////////////////////////////////////////////
 	// Water Nodes
 	///////////////////////////////////////////////////////
-	if(current_node_type == NODE_WATER)
+	if (current_node_type == NODE_WATER)
 	{
 		// We need to be pointed up/down
 		ACEMV_ChangeBotAngle(self);
 
 		// If the next node is not in the water, then move up to get out.
-		if(next_node_type != NODE_WATER && !(gi.pointcontents(nodes[self->next_node].origin) & MASK_WATER)) // Exit water
+		if (next_node_type != NODE_WATER && !(gi.pointcontents(nodes[self->next_node].origin) & MASK_WATER)) // Exit water
 			ucmd->upmove = 400;
 		
 		ucmd->forwardmove = 300;
@@ -528,7 +528,7 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 	}
 	
 	// Falling off ledge?
-	if(!self->groundentity)
+	if (!self->groundentity)
 	{
 		ACEMV_ChangeBotAngle(self);
 
@@ -540,10 +540,10 @@ void ACEMV_Move(edict_t *self, usercmd_t *ucmd)
 		
 	// Check to see if stuck, and if so try to free us
 	// Also handles crouching
- 	if(VectorLength(self->velocity) < 37)
+ 	if (VectorLength(self->velocity) < 37)
 	{
 		// Keep a random factor just in case....
-		if(random() > 0.1 && ACEMV_SpecialMove(self, ucmd))
+		if (random() > 0.1 && ACEMV_SpecialMove(self, ucmd))
 			return;
 		
 		self->s.angles[YAW] += random() * 180 - 90; 
@@ -569,12 +569,12 @@ void ACEMV_Wander(edict_t *self, usercmd_t *ucmd)
 	vec3_t  temp;
 	
 	// Do not move
-	if(self->next_move_time > level.time)
+	if (self->next_move_time > level.time)
 		return;
 
 	// Special check for elevators, stand still until the ride comes to a complete stop.
-	if(self->groundentity != NULL && self->groundentity->use == Use_Plat)
-		if(self->groundentity->moveinfo.state == STATE_UP ||
+	if (self->groundentity != NULL && self->groundentity->use == Use_Plat)
+		if (self->groundentity->moveinfo.state == STATE_UP ||
 		   self->groundentity->moveinfo.state == STATE_DOWN) // only move when platform not
 		{
 			self->velocity[0] = 0;
@@ -595,10 +595,10 @@ void ACEMV_Wander(edict_t *self, usercmd_t *ucmd)
 	VectorCopy(self->s.origin,temp);
 	temp[2]+=24;
 
-	if(gi.pointcontents (temp) & MASK_WATER)
+	if (gi.pointcontents(temp) & MASK_WATER)
 	{
 		// If drowning and no node, move up
-		if(self->client->next_drown_time > 0)
+		if (self->client->next_drown_time > 0)
 		{
 			ucmd->upmove = 1;	
 			self->s.angles[PITCH] = -45; 
@@ -615,7 +615,7 @@ void ACEMV_Wander(edict_t *self, usercmd_t *ucmd)
 	// Lava?
 	////////////////////////////////
 	temp[2]-=48;	
-	if(gi.pointcontents(temp) & (CONTENTS_LAVA|CONTENTS_SLIME))
+	if (gi.pointcontents(temp) & (CONTENTS_LAVA|CONTENTS_SLIME))
 	{
 		//	safe_bprintf(PRINT_MEDIUM,"lava jump\n");
 		self->s.angles[YAW] += random() * 360 - 180; 
@@ -624,18 +624,18 @@ void ACEMV_Wander(edict_t *self, usercmd_t *ucmd)
 		return;
 	}
 
-	if(ACEMV_CheckEyes(self,ucmd))
+	if (ACEMV_CheckEyes(self,ucmd))
 		return;
 	
 	// Check for special movement if we have a normal move (have to test)
- 	if(VectorLength(self->velocity) < 37)
+	if (VectorLength(self->velocity) < 37)
 	{
-		if(random() > 0.1 && ACEMV_SpecialMove(self,ucmd))
+		if (random() > 0.1 && ACEMV_SpecialMove(self,ucmd))
 			return;
 
 		self->s.angles[YAW] += random() * 180 - 90; 
 
-		if(!M_CheckBottom(self) || !self->groundentity) // if there is ground continue otherwise wait for next move
+		if (!M_CheckBottom(self) || !self->groundentity) // if there is ground continue otherwise wait for next move
 			ucmd->forwardmove = 400;
 		
 		return;
@@ -660,17 +660,17 @@ void ACEMV_Attack (edict_t *self, usercmd_t *ucmd)
 	// Randomly choose a movement direction
 	c = random();
 	
-	if(c < 0.2 && ACEMV_CanMove(self,MOVE_LEFT))
+	if (c < 0.2 && ACEMV_CanMove(self,MOVE_LEFT))
 		ucmd->sidemove -= 400; 
-	else if(c < 0.4 && ACEMV_CanMove(self,MOVE_RIGHT))
+	else if (c < 0.4 && ACEMV_CanMove(self,MOVE_RIGHT))
 		ucmd->sidemove += 400; 
 		
-	if(c < 0.6 && ACEMV_CanMove(self,MOVE_FORWARD))
+	if (c < 0.6 && ACEMV_CanMove(self,MOVE_FORWARD))
 		ucmd->forwardmove += 400; 
-	else if(c < 0.8 && ACEMV_CanMove(self,MOVE_FORWARD))
+	else if (c < 0.8 && ACEMV_CanMove(self,MOVE_FORWARD))
 		ucmd->forwardmove -= 400;
 	
-	if(c < 0.95)
+	if (c < 0.95)
 		ucmd->upmove -= 200;
 	else
 		ucmd->upmove += 200;
@@ -686,10 +686,10 @@ void ACEMV_Attack (edict_t *self, usercmd_t *ucmd)
 //	target[1] += (random()-0.5) * 20;
 	
 	// Set direction
-	VectorSubtract (target, self->s.origin, self->move_vector);
-	vectoangles (self->move_vector, angles);
+	VectorSubtract(target, self->s.origin, self->move_vector);
+	vectoangles(self->move_vector, angles);
 	VectorCopy(angles,self->s.angles);
 	
-//	if(debug_mode)
+//	if (debug_mode)
 //		debug_printf("%s attacking %s\n",self->client->pers.netname,self->enemy->client->pers.netname);
 }

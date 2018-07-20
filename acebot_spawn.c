@@ -91,7 +91,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     FILE *pOut;
 	int i,count = 0;
 	    			
-	if((pOut = fopen("ace\\bots.tmp", "wb" )) == NULL)
+	if ((pOut = fopen("ace\\bots.tmp", "wb" )) == NULL)
 		return; // bail
 	
 	// Get number of bots
@@ -103,14 +103,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 			count++;
 	}
 	
-	fwrite(&count,sizeof (int),1,pOut); // Write number of bots
+	fwrite(&count,sizeof(int),1,pOut); // Write number of bots
 
 	for (i = maxclients->value; i > 0; i--)
 	{
 		bot = g_edicts + i + 1;
 
 		if (bot->inuse && bot->is_bot)
-			fwrite(bot->client->pers.userinfo,sizeof (char) * MAX_INFO_STRING,1,pOut); 
+			fwrite(bot->client->pers.userinfo,sizeof(char) * MAX_INFO_STRING,1,pOut); 
 	}
 		
     fclose(pOut);
@@ -129,12 +129,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	char userinfo[MAX_INFO_STRING];
 	int i, count;
 
-	if((pIn = fopen("ace\\bots.tmp", "rb" )) == NULL)
+	if ((pIn = fopen("ace\\bots.tmp", "rb" )) == NULL)
 		return; // bail
 	
-	fread(&count,sizeof (int),1,pIn); 
+	fread(&count,sizeof(int),1,pIn); 
 
-	for(i=0;i<count;i++)
+	for (i=0;i<count;i++)
 	{
 		fread(userinfo,sizeof(char) * MAX_INFO_STRING,1,pIn); 
 		ACESP_SpawnBot (NULL, NULL, NULL, userinfo);
@@ -149,26 +149,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ///////////////////////////////////////////////////////////////////////
 void ACESP_HoldSpawn(edict_t *self)
 {
-	if (!KillBox (self))
+	if (!KillBox(self))
 	{	// could't spawn in?
 	}
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 
 	self->think = ACEAI_Think;
 	self->nextthink = level.time + FRAMETIME;
 
 	// send effect
-	gi.WriteByte (svc_muzzleflash);
-	gi.WriteShort (self-g_edicts);
-	gi.WriteByte (MZ_LOGIN);
-	gi.multicast (self->s.origin, MULTICAST_PVS);
+	gi.WriteByte(svc_muzzleflash);
+	gi.WriteShort(self-g_edicts);
+	gi.WriteByte(MZ_LOGIN);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
-	if(ctf->value)
+	if (ctf->value)
 	safe_bprintf(PRINT_MEDIUM, "%s joined the %s team.\n",
 		self->client->pers.netname, CTFTeamName(self->client->resp.ctf_team));
 	else
-		safe_bprintf (PRINT_MEDIUM, "%s entered the game\n", self->client->pers.netname);
+		safe_bprintf(PRINT_MEDIUM, "%s entered the game\n", self->client->pers.netname);
 
 }
 
@@ -182,7 +182,6 @@ void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
 	int		index;
 	vec3_t	spawn_origin, spawn_angles;
 	gclient_t	*client;
-	int		i;
 	client_persistant_t	saved;
 	client_respawn_t	resp;
 	char *s;
@@ -208,11 +207,11 @@ void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
 		ClientUserinfoChanged (bot, userinfo);
 	}
 	else
-		memset (&resp, 0, sizeof(resp));
+		memset(&resp, 0, sizeof(resp));
 	
 	// clear everything but the persistant data
 	saved = client->pers;
-	memset (client, 0, sizeof(*client));
+	memset(client, 0, sizeof(*client));
 	client->pers = saved;
 	client->resp = resp;
 	
@@ -240,20 +239,20 @@ void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
 	bot->svflags &= ~SVF_DEADMONSTER;
 	bot->is_jumping = false;
 	
-	if(ctf->value)
+	if (ctf->value)
 	{
 		client->resp.ctf_team = team;
 		client->resp.ctf_state = CTF_STATE_START;
-		s = Info_ValueForKey (client->pers.userinfo, "skin");
+		s = Info_ValueForKey(client->pers.userinfo, "skin");
 		CTFAssignSkin(bot, s);
 	}
 
-	VectorCopy (mins, bot->mins);
-	VectorCopy (maxs, bot->maxs);
-	VectorClear (bot->velocity);
+	VectorCopy(mins, bot->mins);
+	VectorCopy(maxs, bot->maxs);
+	VectorClear(bot->velocity);
 
 	// clear playerstate values
-	memset (&bot->client->ps, 0, sizeof(client->ps));
+	memset(&bot->client->ps, 0, sizeof(client->ps));
 	
 	client->ps.pmove.origin[0] = spawn_origin[0]*8;
 	client->ps.pmove.origin[1] = spawn_origin[1]*8;
@@ -286,18 +285,18 @@ void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
 	bot->s.modelindex = MAX_MODELS-1;		// will use the skin specified model
 	bot->s.modelindex2 = MAX_MODELS-1;		// custom gun model
 	bot->s.frame = 0;
-	VectorCopy (spawn_origin, bot->s.origin);
+	VectorCopy(spawn_origin, bot->s.origin);
 	bot->s.origin[2] += 1;	// make sure off ground
 
 	// set the delta angle
-	for (i=0 ; i<3 ; i++)
+	for (int i = 0; i < 3; i++)
 		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - client->resp.cmd_angles[i]);
 
 	bot->s.angles[PITCH] = 0;
 	bot->s.angles[YAW] = spawn_angles[YAW];
 	bot->s.angles[ROLL] = 0;
-	VectorCopy (bot->s.angles, client->ps.viewangles);
-	VectorCopy (bot->s.angles, client->v_angle);
+	VectorCopy(bot->s.angles, client->ps.viewangles);
+	VectorCopy(bot->s.angles, client->v_angle);
 	
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
@@ -315,40 +314,39 @@ void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
 	bot->suicide_timeout = level.time + 15.0;
 
 	// If we are not respawning hold off for up to three seconds before releasing into game
-    if(!respawn)
+    if (!respawn)
 	{
 		bot->think = ACESP_HoldSpawn;
 		//bot->nextthink = level.time + 0.1; //mxd
-		bot->nextthink = level.time + random()*3.0; // up to three seconds
+		bot->nextthink = level.time + random()*3.0f; // up to three seconds
 	}
 	else
 	{
-		if (!KillBox (bot))
+		if (!KillBox(bot))
 		{	// could't spawn in?
 		}
 
-		gi.linkentity (bot);
+		gi.linkentity(bot);
 
 		bot->think = ACEAI_Think;
 		bot->nextthink = level.time + FRAMETIME;
 
-			// send effect
-		gi.WriteByte (svc_muzzleflash);
-		gi.WriteShort (bot-g_edicts);
-		gi.WriteByte (MZ_LOGIN);
-		gi.multicast (bot->s.origin, MULTICAST_PVS);
+		// send effect
+		gi.WriteByte(svc_muzzleflash);
+		gi.WriteShort(bot-g_edicts);
+		gi.WriteByte(MZ_LOGIN);
+		gi.multicast(bot->s.origin, MULTICAST_PVS);
 	}
-	
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Respawn the bot
 ///////////////////////////////////////////////////////////////////////
-void ACESP_Respawn (edict_t *self)
+void ACESP_Respawn(edict_t *self)
 {
 	CopyToBodyQue (self);
 
-	if(ctf->value)
+	if (ctf->value)
 		ACESP_PutClientInServer (self,true, self->client->resp.ctf_team);
 	else
 		ACESP_PutClientInServer (self,true,0);
@@ -378,7 +376,7 @@ edict_t *ACESP_FindFreeClient (void)
 	{
 		bot = g_edicts + i + 1;
 		
-		if(bot->count > max_count)
+		if (bot->count > max_count)
 			max_count = bot->count;
 	}
 
@@ -428,7 +426,7 @@ void ACESP_LoadBotInfo()
 		return;
 	// Knightmare- rewote this
 	GameDirRelativePath ("bots.cfg", filename);
-	if((pIn = fopen(filename, "rb" )) == NULL)
+	if ((pIn = fopen(filename, "rb" )) == NULL)
 	{
 		safe_bprintf(PRINT_MEDIUM,"ACE: No bots.cfg file found, using default bots.\n");
 		return; // bail
@@ -442,14 +440,14 @@ void ACESP_LoadBotInfo()
 		if (!token || !strlen(token)) // catch bad line
 			continue;
 	//	strncpy (botname, token, sizeof(botname)-1);
-		Q_strncpyz (botname, token, sizeof(botname));
+		Q_strncpyz(botname, token, sizeof(botname));
 		token = COM_Parse (&parseline);
 		if (!token || !strlen(token)) // catch bad line
 			continue;
 	//	strncpy (bot_info[num_botinfo].name, botname, sizeof(bot_info[num_botinfo].name)-1);
 	//	strncpy (bot_info[num_botinfo].skin, token, sizeof(bot_info[num_botinfo].skin)-1);
-		Q_strncpyz (bot_info[num_botinfo].name, botname, sizeof(bot_info[num_botinfo].name));
-		Q_strncpyz (bot_info[num_botinfo].skin, token, sizeof(bot_info[num_botinfo].skin));
+		Q_strncpyz(bot_info[num_botinfo].name, botname, sizeof(bot_info[num_botinfo].name));
+		Q_strncpyz(bot_info[num_botinfo].skin, token, sizeof(bot_info[num_botinfo].skin));
 		//gi.dprintf("%s %s\n", bot_info[num_botinfo].name, bot_info[num_botinfo].skin);
 		bot_info[num_botinfo].ingame_count = 0;
 		num_botinfo++;
@@ -519,7 +517,7 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 
 	// Set the name for the bot.
 	// name
-	if(strlen(name) == 0)
+	if (strlen(name) == 0)
 	{
 		// Randomly select from the name/skin table
 		if (num_botinfo > 0)
@@ -558,9 +556,10 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 		Q_strncpyz(bot_name, name, sizeof(bot_name));
 
 	// skin
-	if(strlen(skin) == 0)
+	if (strlen(skin) == 0)
 	{	// check if this bot is in the table
 		for (i = 0; i < num_botinfo; i++)
+		{
 			if (!Q_stricmp(bot_name, bot_info[i].name))
 			{
 				Com_sprintf(bot_name, sizeof(bot_name), bot_info[i].name); // fix capitalization
@@ -568,26 +567,30 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 				bot_info[i].ingame_count++;
 				break;
 			}
-			if (strlen(bot_skin) == 0)
-			{	// randomly choose skin 
-				rnd = random();
-				for (i = 0; i < NUM_BOT_SKINS; i++)
-					if (rnd < ((float)(i+1)/(float)NUM_BOT_SKINS) )
-					{	r=i; break; }
-				Com_sprintf(bot_skin, sizeof(bot_skin), skinnames[r]);
-			}
+		}
+
+		if (strlen(bot_skin) == 0)
+		{	// randomly choose skin 
+			rnd = random();
+			for (i = 0; i < NUM_BOT_SKINS; i++)
+				if (rnd < ((float)(i + 1) / (float)NUM_BOT_SKINS))
+				{
+					r = i; break;
+				}
+			Com_sprintf(bot_skin, sizeof(bot_skin), skinnames[r]);
+		}
 	}
 	else
 	//	strncpy(bot_skin, skin);
 		Q_strncpyz(bot_skin, skin, sizeof(bot_skin));
 	
 	// initialise userinfo
-	memset (userinfo, 0, sizeof(userinfo));
+	memset(userinfo, 0, sizeof(userinfo));
 
 	// add bot's name/skin/hand to userinfo
-	Info_SetValueForKey (userinfo, "name", bot_name);
-	Info_SetValueForKey (userinfo, "skin", bot_skin);
-	Info_SetValueForKey (userinfo, "hand", "2"); // bot is center handed for now!
+	Info_SetValueForKey(userinfo, "name", bot_name);
+	Info_SetValueForKey(userinfo, "skin", bot_skin);
+	Info_SetValueForKey(userinfo, "hand", "2"); // bot is center handed for now!
 
 	ClientConnect (bot, userinfo);
 	// Knightmare- removed this
@@ -599,13 +602,11 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 ///////////////////////////////////////////////////////////////////////
 void ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 {
-	edict_t	*bot;
-	
-	bot = ACESP_FindFreeClient ();
+	edict_t *bot = ACESP_FindFreeClient();
 	
 	if (!bot)
 	{
-		safe_bprintf (PRINT_MEDIUM, "Server is full, increase Maxclients.\n");
+		safe_bprintf(PRINT_MEDIUM, "Server is full, increase Maxclients.\n");
 		return;
 	}
 
@@ -614,7 +615,7 @@ void ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 	bot->is_bot = true;
 
 	// To allow bots to respawn
-	if(userinfo == NULL)
+	if (userinfo == NULL)
 		ACESP_SetName(bot, name, skin, team);
 	else
 		ClientConnect (bot, userinfo);
@@ -624,19 +625,19 @@ void ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 	InitClientResp (bot->client);
 	
 	// locate ent at a spawn point
-    if (ctf->value)
-	{	// Knightmare- rewrote this
-		edict_t		*player;
-		int i;
+	if (ctf->value)
+	{
+		// Knightmare- rewrote this
 		int team1count = 0, team2count = 0, team3count = 0;
 		int jointeam;
-		float r = random();
+		const float r = random();
 
-		for (i = 1; i <= maxclients->value; i++)
+		for (int i = 1; i <= maxclients->value; i++)
 		{
-			player = &g_edicts[i];
+			edict_t *player = &g_edicts[i];
 			if (!player->inuse || !player->client || player == bot)
 				continue;
+
 			switch (player->client->resp.ctf_team)
 			{
 			case CTF_TEAM1:
@@ -704,12 +705,9 @@ void ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo)
  		ACESP_PutClientInServer (bot,false,0);
 
 	// make sure all view stuff is valid
-	ClientEndServerFrame (bot);
-	
-	ACEIT_PlayerAdded (bot); // let the world know we added another
-
+	ClientEndServerFrame(bot);
+	ACEIT_PlayerAdded(bot); // let the world know we added another
 	ACEAI_PickLongRangeGoal(bot); // pick a new goal
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -721,22 +719,22 @@ void ACESP_RemoveBot(char *name)
 	qboolean freed=false;
 	edict_t *bot;
 
-	for(i=0;i<maxclients->value;i++)
+	for (i=0;i<maxclients->value;i++)
 	{
 		bot = g_edicts + i + 1;
-		if(bot->inuse)
+		if (bot->inuse)
 		{
-			if(bot->is_bot && (Q_stricmp(bot->client->pers.netname,name)==0 || Q_stricmp(name,"all")==0))
+			if (bot->is_bot && (Q_stricmp(bot->client->pers.netname,name)==0 || Q_stricmp(name,"all")==0))
 			{
 				bot->health = 0;
-				player_die (bot, bot, bot, 100000, vec3_origin);
+				player_die(bot, bot, bot, 100000, vec3_origin);
 				// don't even bother waiting for death frames
 				bot->deadflag = DEAD_DEAD;
 				bot->inuse = false;
 				freed = true;
 				ACEIT_PlayerRemoved (bot);
 
-				safe_bprintf (PRINT_MEDIUM, "%s removed\n", bot->client->pers.netname);
+				safe_bprintf(PRINT_MEDIUM, "%s removed\n", bot->client->pers.netname);
 				// Knightmare- decrement this bot name's counter and exit loop
 				if (Q_stricmp(name,"all"))
 				{
@@ -753,8 +751,8 @@ void ACESP_RemoveBot(char *name)
 		}
 	}
 
-	if(!freed)	
-		safe_bprintf (PRINT_MEDIUM, "%s not found\n", name);
+	if (!freed)	
+		safe_bprintf(PRINT_MEDIUM, "%s not found\n", name);
 	// Knightmare- removed this
 	//ACESP_SaveBots(); // Save them again
 }

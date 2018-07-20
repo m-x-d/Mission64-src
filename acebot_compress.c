@@ -35,8 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+//#include <string.h>
+//#include <ctype.h>
 
 #define N		 4096	/* size of ring buffer */
 #define F		   18	/* upper limit for match_length */
@@ -137,7 +137,7 @@ int Encode(char *filename, unsigned char *buffer, int bufsize, int version)
 	//int version;
 	
 	pOut  = fopen(filename, "wb");
-	if(pOut == NULL)
+	if (pOut == NULL)
 		return -1; // bail
 
 	//version = 2; // compressed version
@@ -236,7 +236,7 @@ int Decode(char *filename, unsigned char *buffer, int bufsize)	/* Just the rever
 	int version;
 	
 	pIn  = fopen(filename, "rb");
-	if(pIn == NULL)
+	if (pIn == NULL)
 		return -1; // bail
 
 	// Read version info (uneeded here, but moves file ptr)
@@ -254,7 +254,7 @@ int Decode(char *filename, unsigned char *buffer, int bufsize)	/* Just the rever
 		if (flags & 1) {
 			if ((c = getc(pIn)) == EOF) break;
 			buffer[bufptr++] = c;	
-			if(bufptr > bufsize)
+			if (bufptr > bufsize)
 				return -1; // check for overflow
 			text_buf[r++] = c;  
 			r &= (N - 1);
@@ -265,7 +265,7 @@ int Decode(char *filename, unsigned char *buffer, int bufsize)	/* Just the rever
 			for (k = 0; k <= j; k++) {
 				c = text_buf[(i + k) & (N - 1)];
 				buffer[bufptr++] = c;
-				if(bufptr > bufsize)
+				if (bufptr > bufsize)
 					return -1; // check for overflow
 				text_buf[r++] = c;  
 				r &= (N - 1);

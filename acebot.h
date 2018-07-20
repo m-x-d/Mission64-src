@@ -295,7 +295,7 @@ void     ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker);
 void     TossClientWeapon (edict_t *self);
 void     ClientThink (edict_t *ent, usercmd_t *ucmd);
 void	 SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles, int *style, int *health);
-void     ClientUserinfoChanged (edict_t *ent, char *userinfo);
+//void     ClientUserinfoChanged (edict_t *ent, char *userinfo);
 void     CopyToBodyQue (edict_t *ent);
 qboolean ClientConnect (edict_t *ent, char *userinfo);
 void     Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
@@ -317,7 +317,7 @@ void     ACEIT_PlayerRemoved(edict_t *ent);
 qboolean ACEIT_IsVisible(edict_t *self, vec3_t goal);
 qboolean ACEIT_IsReachable(edict_t *self,vec3_t goal);
 qboolean ACEIT_ChangeWeapon (edict_t *ent, gitem_t *item);
-qboolean ACEIT_CanUseArmor (gitem_t *item, edict_t *other);
+qboolean ACEIT_CanUseArmor(gitem_t *item, edict_t *other);
 float	 ACEIT_ItemNeed(edict_t *self, int item);
 int		 ACEIT_ClassnameToIndex(char *classname);
 void     ACEIT_BuildItemNodeTable (qboolean rebuild);
@@ -354,15 +354,15 @@ void     ACEND_LoadNodes();
 void	 ACESP_LoadBotInfo(); // Knightmare added
 void     ACESP_HoldSpawn(edict_t *self);
 void     ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team);
-void     ACESP_Respawn (edict_t *self);
+void     ACESP_Respawn(edict_t *self);
 edict_t *ACESP_FindFreeClient (void);
 void     ACESP_SetName(edict_t *bot, char *name, char *skin, char *team);
 void     ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo);
 void     ACESP_ReAddBots();
 void     ACESP_RemoveBot(char *name);
-void	 safe_cprintf (edict_t *ent, int printlevel, char *fmt, ...);
+void	 safe_cprintf(edict_t *ent, int printlevel, char *fmt, ...);
 void     safe_centerprintf (edict_t *ent, char *fmt, ...);
-void     safe_bprintf (int printlevel, char *fmt, ...);
+void     safe_bprintf(int printlevel, char *fmt, ...);
 void     debug_printf (char *fmt, ...);
 
 #endif

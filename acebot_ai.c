@@ -91,8 +91,8 @@ void ACEAI_Think (edict_t *self)
 
 	// Set up client movement
 	VectorCopy(self->client->ps.viewangles,self->s.angles);
-	VectorSet (self->client->ps.pmove.delta_angles, 0, 0, 0);
-	memset (&ucmd, 0, sizeof (ucmd));
+	VectorSet(self->client->ps.pmove.delta_angles, 0, 0, 0);
+	memset(&ucmd, 0, sizeof(ucmd));
 	self->enemy = NULL;
 	self->movetarget = NULL;
 	
@@ -103,24 +103,24 @@ void ACEAI_Think (edict_t *self)
 		ucmd.buttons = BUTTON_ATTACK;
 	}
 	
-	if(self->state == STATE_WANDER && self->wander_timeout < level.time)
+	if (self->state == STATE_WANDER && self->wander_timeout < level.time)
 	  ACEAI_PickLongRangeGoal(self); // pick a new long range goal
 
 	// Kill the bot if completely stuck somewhere
-	if(VectorLength(self->velocity) > 37) //
+	if (VectorLength(self->velocity) > 37) //
 		self->suicide_timeout = level.time + 10.0;
 
-	if(self->suicide_timeout < level.time)
+	if (self->suicide_timeout < level.time)
 	{
 		self->health = 0;
-		player_die (self, self, self, 100000, vec3_origin);
+		player_die(self, self, self, 100000, vec3_origin);
 	}
 	
 	// Find any short range goal
 	ACEAI_PickShortRangeGoal(self);
 	
 	// Look for enemies
-	if(ACEAI_FindEnemy(self))
+	if (ACEAI_FindEnemy(self))
 	{	
 		ACEAI_ChooseWeapon(self);
 		ACEMV_Attack (self, &ucmd);
@@ -128,16 +128,16 @@ void ACEAI_Think (edict_t *self)
 	else
 	{
 		// Execute the move, or wander
-		if(self->state == STATE_WANDER)
+		if (self->state == STATE_WANDER)
 			ACEMV_Wander(self,&ucmd);
-		else if(self->state == STATE_MOVE)
+		else if (self->state == STATE_MOVE)
 			ACEMV_Move(self,&ucmd);
 	}
 	
 	//debug_printf("State: %d\n",self->state);
 
 	// set approximate ping
-	ucmd.msec = 75 + floor (random () * 25) + 1;
+	ucmd.msec = 75 + floorf(random() * 25) + 1;
 
 	// show random ping values in scoreboard
 	self->client->ping = ucmd.msec;
@@ -173,7 +173,7 @@ void ACEAI_PickLongRangeGoal(edict_t *self)
 
 	self->current_node = current_node;
 	
-	if(current_node == -1)
+	if (current_node == -1)
 	{
 		self->state = STATE_WANDER;
 		self->wander_timeout = level.time + 1.0;
@@ -243,19 +243,19 @@ void ACEAI_PickLongRangeGoal(edict_t *self)
 	//=====================================================
 	// This should be its own function and is for now just
 	// finds a player to set as the goal.
-	for(i=0;i<num_players;i++)
+	for (i=0;i<num_players;i++)
 	{
-		if(players[i] == self)
+		if (players[i] == self)
 			continue;
 
 		node = ACEND_FindClosestReachableNode(players[i],NODE_DENSITY,NODE_ALL);
 		cost = ACEND_FindCost(current_node, node);
 
-		if(cost == INVALID || cost < 3) // ignore invalid and very short hops
+		if (cost == INVALID || cost < 3) // ignore invalid and very short hops
 			continue;
 
 		// Player carrying the flag?
-		if(ctf->value && (players[i]->client->pers.inventory[ITEMLIST_FLAG2] || players[i]->client->pers.inventory[ITEMLIST_FLAG1]))
+		if (ctf->value && (players[i]->client->pers.inventory[ITEMLIST_FLAG2] || players[i]->client->pers.inventory[ITEMLIST_FLAG1]))
 		  weight = 2.0;
 		else
 		  weight = 0.3; 
@@ -263,7 +263,7 @@ void ACEAI_PickLongRangeGoal(edict_t *self)
 		weight *= random(); // Allow random variations
 		weight /= cost; // Check against cost of getting there
 		
-		if(weight > best_weight)
+		if (weight > best_weight)
 		{		
 			best_weight = weight;
 			goal_node = node;
@@ -272,12 +272,12 @@ void ACEAI_PickLongRangeGoal(edict_t *self)
 	}
 
 	// If do not find a goal, go wandering....
-	if(best_weight == 0.0 || goal_node == INVALID)
+	if (best_weight == 0.0 || goal_node == INVALID)
 	{
 		self->goal_node = INVALID;
 		self->state = STATE_WANDER;
 		self->wander_timeout = level.time + 1.0;
-		if(debug_mode)
+		if (debug_mode)
 			debug_printf("%s did not find a LR goal, wandering.\n",self->client->pers.netname);
 		return; // no path? 
 	}
@@ -286,7 +286,7 @@ void ACEAI_PickLongRangeGoal(edict_t *self)
 	self->state = STATE_MOVE;
 	self->tries = 0; // Reset the count of how many times we tried this goal
 	 
-	if(goal_ent != NULL && debug_mode)
+	if (goal_ent != NULL && debug_mode)
 		debug_printf("%s selected a %s at node %d for LR goal.\n",self->client->pers.netname, goal_ent->classname, goal_node);
 
 	ACEND_SetGoal(self,goal_node);
@@ -318,7 +318,7 @@ void ACEAI_PickShortRangeGoal(edict_t *self)
 		if (strcmp(target->classname,"rocket")==0 || strcmp(target->classname,"grenade")==0
 			|| strcmp(target->classname,"homing rocket")==0)
 		{
-			if(debug_mode) 
+			if (debug_mode) 
 				debug_printf("ROCKET ALERT!\n");
 
 			self->movetarget = target;
@@ -332,7 +332,7 @@ void ACEAI_PickShortRangeGoal(edict_t *self)
 				index = ACEIT_ClassnameToIndex(target->classname);
 				weight = ACEIT_ItemNeed(self, index);
 				
-				if(weight > best_weight)
+				if (weight > best_weight)
 				{
 					best_weight = weight;
 					best = target;
@@ -348,7 +348,7 @@ void ACEAI_PickShortRangeGoal(edict_t *self)
 	{
 		self->movetarget = best;
 		
-		if(debug_mode && self->goalentity != self->movetarget)
+		if (debug_mode && self->goalentity != self->movetarget)
 			debug_printf("%s selected a %s for SR goal.\n",self->client->pers.netname, self->movetarget->classname);
 		
 		self->goalentity = best;
@@ -392,7 +392,7 @@ qboolean ACEAI_CheckShot(edict_t *self)
 {
 	trace_t tr;
 
-	tr = gi.trace (self->s.origin, tv(-8,-8,-8), tv(8,8,8), self->enemy->s.origin, self, MASK_OPAQUE);
+	tr = gi.trace(self->s.origin, tv(-8,-8,-8), tv(8,8,8), self->enemy->s.origin, self, MASK_OPAQUE);
 	
 	// Blocked, do not shoot
 	if (tr.fraction != 1.0)
@@ -410,23 +410,23 @@ void ACEAI_ChooseWeapon(edict_t *self)
 	vec3_t v;
 	
 	// if no enemy, then what are we doing here?
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 	
 	// always favor the railgun
-	if(ACEIT_ChangeWeapon(self,FindItem("railgun")))
+	if (ACEIT_ChangeWeapon(self,FindItem("railgun")))
 		return;
 
 	// Base selection on distance.
-	VectorSubtract (self->s.origin, self->enemy->s.origin, v);
+	VectorSubtract(self->s.origin, self->enemy->s.origin, v);
 	range = VectorLength(v);
 		
 	// Longer range 
-	if(range > 300)
+	if (range > 300)
 	{
 		// choose BFG if enough ammo
-		if(self->client->pers.inventory[ITEMLIST_CELLS] > 50)
-			if(ACEAI_CheckShot(self) && ACEIT_ChangeWeapon(self, FindItem("bfg10k")))
+		if (self->client->pers.inventory[ITEMLIST_CELLS] > 50)
+			if (ACEAI_CheckShot(self) && ACEIT_ChangeWeapon(self, FindItem("bfg10k")))
 				return;
 
 		// Knightmare added
@@ -437,28 +437,28 @@ void ACEAI_ChooseWeapon(edict_t *self)
 	}
 	
 	// Only use GL in certain ranges and only on targets at or below our level
-	if(range > 100 && range < 500 && self->enemy->s.origin[2] - 20 < self->s.origin[2])
-		if(ACEIT_ChangeWeapon(self,FindItem("grenade launcher")))
+	if (range > 100 && range < 500 && self->enemy->s.origin[2] - 20 < self->s.origin[2])
+		if (ACEIT_ChangeWeapon(self,FindItem("grenade launcher")))
 			return;
 
-	if(ACEIT_ChangeWeapon(self,FindItem("hyperblaster")))
+	if (ACEIT_ChangeWeapon(self,FindItem("hyperblaster")))
 		return;
 	
 	// Only use CG when ammo > 50
-	if(self->client->pers.inventory[ITEMLIST_BULLETS] >= 50)
-		if(ACEIT_ChangeWeapon(self,FindItem("chaingun")))
+	if (self->client->pers.inventory[ITEMLIST_BULLETS] >= 50)
+		if (ACEIT_ChangeWeapon(self,FindItem("chaingun")))
 			return;
 	
-	if(ACEIT_ChangeWeapon(self,FindItem("machinegun")))
+	if (ACEIT_ChangeWeapon(self,FindItem("machinegun")))
 		return;
 	
-	if(ACEIT_ChangeWeapon(self,FindItem("super shotgun")))
+	if (ACEIT_ChangeWeapon(self,FindItem("super shotgun")))
 		return;
 	
-	if(ACEIT_ChangeWeapon(self,FindItem("shotgun")))
+	if (ACEIT_ChangeWeapon(self,FindItem("shotgun")))
    	   return;
 	
-	if(ACEIT_ChangeWeapon(self,FindItem("blaster")))
+	if (ACEIT_ChangeWeapon(self,FindItem("blaster")))
    	   return;
 	
 	return;
