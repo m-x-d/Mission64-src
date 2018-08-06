@@ -101,6 +101,10 @@ typedef enum {false, true}	qboolean;
 #define max(a,b)        (((a) > (b)) ? (a) : (b))
 #endif
 
+#ifndef clamp //mxd
+#define clamp(value, minimum, maximum) (min(maximum, max(minimum, value)))
+#endif
+
 // from Quake3 source
 #ifdef _MSC_VER	// _WIN32
 //#define Q_vsnprintf _vsnprintf
@@ -316,24 +320,24 @@ extern long Q_ftol( float f );
 #define Vector4Negate(a,b)			(b[0]=-a[0],b[1]=-a[1],b[2]=-a[2],b[3]=-a[3])
 #define Vector4Set(v, w, x, y, z)	(v[0]=(w), v[1]=(x), v[2]=(y), v[3]=(z))
 
-void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
+void VectorMA(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
 
 // just in case you do't want to use the macros
-vec_t _DotProduct (vec3_t v1, vec3_t v2);
-void _VectorSubtract (vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorAdd (vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorCopy (vec3_t in, vec3_t out);
+vec_t _DotProduct(const vec3_t v1, const vec3_t v2);
+void _VectorSubtract(const vec3_t veca, const vec3_t vecb, vec3_t out);
+void _VectorAdd (const vec3_t veca, const vec3_t vecb, vec3_t out);
+void _VectorCopy(const vec3_t in, vec3_t out);
 
 void ClearBounds (vec3_t mins, vec3_t maxs);
-void AddPointToBounds (vec3_t v, vec3_t mins, vec3_t maxs);
-int VectorCompare (vec3_t v1, vec3_t v2);
-vec_t VectorLength (vec3_t v);
-void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross);
-vec_t VectorNormalize (vec3_t v);		// returns vector length
-vec_t VectorNormalize2 (vec3_t v, vec3_t out);
+void AddPointToBounds (const vec3_t v, vec3_t mins, vec3_t maxs);
+int VectorCompare (const vec3_t v1, const vec3_t v2);
+vec_t VectorLength(const vec3_t v);
+void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
+vec_t VectorNormalize(vec3_t v);		// returns vector length
+vec_t VectorNormalize2 (const vec3_t v, vec3_t out);
 void VectorNormalizeFast (vec3_t v);	// From Q2E
 void VectorInverse (vec3_t v);
-void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+void VectorScale(const vec3_t in, vec_t scale, vec3_t out);
 int Q_log2(int val);
 float Q_rsqrt (float in);	// From Q2E
 
@@ -348,12 +352,12 @@ qboolean AxisCompare (const vec3_t axis1[3], const vec3_t axis2[3]);
 void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
 
-void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
 void MakeNormalVectors (vec3_t forward, vec3_t right, vec3_t up);
 void VecToAngleRolled (vec3_t value1, float angleyaw, vec3_t angles);
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *plane);
 float	anglemod(float a);
-float LerpAngle (float a1, float a2, float frac);
+float LerpAngle (float a2, float a1, float frac);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
 	(((p)->type < 3)?						\
@@ -392,7 +396,7 @@ char *COM_ParseExt (char **data_p, qboolean allowNewLines);
 void Com_sprintf (char *dest, int size, char *fmt, ...);
 long Com_HashFileName (const char *fname, int hashSize, qboolean sized);
 
-void Com_PageInMemory (byte *buffer, int size);
+void Com_PageInMemory (const byte *buffer, int size);
 
 //=============================================
 
