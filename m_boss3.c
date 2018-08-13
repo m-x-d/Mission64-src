@@ -32,11 +32,11 @@ boss3
 
 void Use_Boss3 (edict_t *ent, edict_t *other, edict_t *activator)
 {
-	gi.WriteByte (svc_temp_entity);
-	gi.WriteByte (TE_BOSSTPORT);
-	gi.WritePosition (ent->s.origin);
-	gi.multicast (ent->s.origin, MULTICAST_PVS);
-	G_FreeEdict (ent);
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_BOSSTPORT);
+	gi.WritePosition(ent->s.origin);
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+	G_FreeEdict(ent);
 }
 
 void Think_Boss3Stand (edict_t *ent)
@@ -56,23 +56,23 @@ void SP_monster_boss3_stand (edict_t *self)
 {
 	if (deathmatch->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 	self->model = "models/monsters/boss3/rider/tris.md2";
-	self->s.modelindex = gi.modelindex (self->model);
+	self->s.modelindex = gi.modelindex(self->model);
 	self->s.frame = FRAME_stand201;
 
-	gi.soundindex ("misc/bigtele.wav");
+	gi.soundindex("misc/bigtele.wav");
 
-	VectorSet (self->mins, -32, -32, 0);
-	VectorSet (self->maxs, 32, 32, 90);
+	VectorSet(self->mins, -32, -32, 0);
+	VectorSet(self->maxs, 32, 32, 90);
 
 	self->use = Use_Boss3;
 	self->think = Think_Boss3Stand;
 	self->nextthink = level.time + FRAMETIME;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }

@@ -58,56 +58,56 @@ static char wavname[NUM_ACTOR_SOUNDS][32] =
 
 mframe_t actor_frames_stand [] =
 {
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
 
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
 
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
 
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL}
 };
 mmove_t actor_move_stand = {FRAME_stand01, FRAME_stand40, actor_frames_stand, NULL};
 
 void actor_stand (edict_t *self)
 {
 	self->s.sound = 0;
-	if(self->monsterinfo.aiflags & AI_CROUCH)
+	if (self->monsterinfo.aiflags & AI_CROUCH)
 		self->monsterinfo.currentmove = &actor_move_crouch;
 	else
 		self->monsterinfo.currentmove = &actor_move_stand;
@@ -131,18 +131,18 @@ mframe_t actor_frames_walk [] =
 	ai_walk, -2, NULL,
 	ai_walk, -2, NULL,
 	ai_walk, -1, NULL */
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL}
 };
 mmove_t actor_move_walk = {FRAME_run1, FRAME_run6, actor_frames_walk, NULL};
 
@@ -152,22 +152,17 @@ void actor_walk (edict_t *self)
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
 	{
-		if(!self->movetarget || !self->movetarget->inuse || (self->movetarget == world))
+		if (!self->movetarget || !self->movetarget->inuse || self->movetarget == world)
 			self->movetarget = self->monsterinfo.leader;
 	}
 
-	if( (self->monsterinfo.aiflags & AI_FOLLOW_LEADER) &&
-		(self->movetarget) &&
-		(self->movetarget->inuse) &&
-		(self->movetarget->health > 0) )
+	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER && self->movetarget && self->movetarget->inuse && self->movetarget->health > 0)
 	{
-		float	R;
-
-		R = realrange(self,self->movetarget);
-		if(R > ACTOR_FOLLOW_RUN_RANGE || self->enemy)
+		const float range = realrange(self,self->movetarget);
+		if (range > ACTOR_FOLLOW_RUN_RANGE || self->enemy)
 		{
 			self->monsterinfo.currentmove = &actor_move_run;
-			if(self->monsterinfo.aiflags & AI_CROUCH)
+			if (self->monsterinfo.aiflags & AI_CROUCH)
 			{
 				self->monsterinfo.aiflags &= ~AI_CROUCH;
 				self->maxs[2] += 28;
@@ -175,17 +170,17 @@ void actor_walk (edict_t *self)
 				self->move_origin[2] += 28;
 			}
 		}
-		else if(R <= ACTOR_FOLLOW_STAND_RANGE && self->movetarget->client)
+		else if (range <= ACTOR_FOLLOW_STAND_RANGE && self->movetarget->client)
 		{
 			self->monsterinfo.pausetime = level.time + 0.5;
-			if(self->monsterinfo.aiflags & AI_CROUCH)
+			if (self->monsterinfo.aiflags & AI_CROUCH)
 				self->monsterinfo.currentmove = &actor_move_crouch;
 			else
 				self->monsterinfo.currentmove = &actor_move_stand;
 		}
 		else
 		{
-			if(self->monsterinfo.aiflags & AI_CROUCH)
+			if (self->monsterinfo.aiflags & AI_CROUCH)
 				self->monsterinfo.currentmove = &actor_move_crouchwalk;
 			else
 				self->monsterinfo.currentmove = &actor_move_walk;
@@ -193,7 +188,7 @@ void actor_walk (edict_t *self)
 	}
 	else
 	{
-		if(self->monsterinfo.aiflags & AI_CROUCH)
+		if (self->monsterinfo.aiflags & AI_CROUCH)
 			self->monsterinfo.currentmove = &actor_move_crouchwalk;
 		else
 			self->monsterinfo.currentmove = &actor_move_walk;
@@ -245,29 +240,29 @@ void actor_footstep_heavy_loud(edict_t *self)
 
 mframe_t actor_frames_walk_back [] =
 {
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL}
 };
 mmove_t actor_move_walk_back = {FRAME_run1, FRAME_run6, actor_frames_walk_back, NULL};
 
 mframe_t actor_frames_crouchwalk_back [] =
 {
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL,
-	ai_walk, -10, NULL
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL},
+	{ai_walk, -10, NULL}
 };
 mmove_t actor_move_crouchwalk_back = {FRAME_crwalk1, FRAME_crwalk6, actor_frames_crouchwalk_back, NULL};
 
@@ -276,29 +271,24 @@ void actor_walk_back (edict_t *self)
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
 	{
-		if(!self->movetarget || !self->movetarget->inuse || (self->movetarget == world))
+		if (!self->movetarget || !self->movetarget->inuse || self->movetarget == world)
 			self->movetarget = self->monsterinfo.leader;
 	}
 
-	if( (self->monsterinfo.aiflags & AI_FOLLOW_LEADER) &&
-		(self->movetarget) &&
-		(self->movetarget->inuse) &&
-		(self->movetarget->health > 0) )
+	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER && self->movetarget && self->movetarget->inuse && self->movetarget->health > 0)
 	{
-		float	R;
-
-		R = realrange(self,self->movetarget);
-		if(R <= ACTOR_FOLLOW_STAND_RANGE && self->movetarget->client)
+		const float range = realrange(self,self->movetarget);
+		if (range <= ACTOR_FOLLOW_STAND_RANGE && self->movetarget->client)
 		{
 			self->monsterinfo.pausetime = level.time + 0.5;
-			if(self->monsterinfo.aiflags & AI_CROUCH)
+			if (self->monsterinfo.aiflags & AI_CROUCH)
 				self->monsterinfo.currentmove = &actor_move_crouch;
 			else
 				self->monsterinfo.currentmove = &actor_move_stand;
 		}
 		else
 		{
-			if(self->monsterinfo.aiflags & AI_CROUCH)
+			if (self->monsterinfo.aiflags & AI_CROUCH)
 				self->monsterinfo.currentmove = &actor_move_crouchwalk_back;
 			else
 				self->monsterinfo.currentmove = &actor_move_walk_back;
@@ -306,7 +296,7 @@ void actor_walk_back (edict_t *self)
 	}
 	else
 	{
-		if(self->monsterinfo.aiflags & AI_CROUCH)
+		if (self->monsterinfo.aiflags & AI_CROUCH)
 			self->monsterinfo.currentmove = &actor_move_crouchwalk_back;
 		else
 			self->monsterinfo.currentmove = &actor_move_walk_back;
@@ -314,60 +304,59 @@ void actor_walk_back (edict_t *self)
 }
 mframe_t actor_frames_crouch [] =
 {
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL},
+	{ai_stand, 0, NULL}
 };
 mmove_t actor_move_crouch = {FRAME_crstnd01, FRAME_crstnd19, actor_frames_crouch, NULL};
 
 mframe_t actor_frames_crouchwalk [] =
 {
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL,
-	ai_walk, 10, NULL
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL},
+	{ai_walk, 10, NULL}
 };
 mmove_t actor_move_crouchwalk = {FRAME_crwalk1, FRAME_crwalk6, actor_frames_crouchwalk, NULL};
 
-// DWH: Changed running speed to a constant (equal to player running speed) for normal
-//      misc_actor and 2/3 that for "bad guys". Also eliminated excess frames.
+// DWH: Changed running speed to a constant (equal to player running speed) for normal misc_actor and 2/3 that for "bad guys". Also eliminated excess frames.
 mframe_t actor_frames_run [] =
 {
-	ai_run, 40, NULL,
-	ai_run, 40, NULL,
-	ai_run, 40, NULL,
-	ai_run, 40, NULL,
-	ai_run, 40, NULL,
-	ai_run, 40, NULL
+	{ai_run, 40, NULL},
+	{ai_run, 40, NULL},
+	{ai_run, 40, NULL},
+	{ai_run, 40, NULL},
+	{ai_run, 40, NULL},
+	{ai_run, 40, NULL}
 };
 mmove_t actor_move_run = {FRAME_run1, FRAME_run6, actor_frames_run, NULL};
 
 mframe_t actor_frames_run_bad [] =
 {
-	ai_run, 30, NULL,
-	ai_run, 30, NULL,
-	ai_run, 30, NULL,
-	ai_run, 30, NULL,
-	ai_run, 30, NULL,
-	ai_run, 30, NULL
+	{ai_run, 30, NULL},
+	{ai_run, 30, NULL},
+	{ai_run, 30, NULL},
+	{ai_run, 30, NULL},
+	{ai_run, 30, NULL},
+	{ai_run, 30, NULL}
 };
 
 mmove_t actor_move_run_bad = {FRAME_run1, FRAME_run6, actor_frames_run_bad, NULL};
@@ -377,25 +366,27 @@ void actor_run (edict_t *self)
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
 	{
-		if(!self->movetarget || !self->movetarget->inuse || (self->movetarget == world))
+		if (!self->movetarget || !self->movetarget->inuse || (self->movetarget == world))
 			self->movetarget = self->monsterinfo.leader;
 	}
-	if ((level.time < self->pain_debounce_time) && (!self->enemy))
+
+	if (level.time < self->pain_debounce_time && !self->enemy)
 	{
 		if (self->movetarget)
 			actor_walk(self);
 		else
 			actor_stand(self);
+
 		return;
 	}
 
-	if ( self->monsterinfo.aiflags & AI_STAND_GROUND )
+	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		actor_stand(self);
 		return;
 	}
 
-	if( self->monsterinfo.aiflags & AI_CROUCH)
+	if (self->monsterinfo.aiflags & AI_CROUCH)
 	{
 		self->monsterinfo.aiflags &= ~AI_CROUCH;
 		self->maxs[2] += 28;
@@ -403,23 +394,20 @@ void actor_run (edict_t *self)
 		self->move_origin[2] += 28;
 	}
 
-	if( self->monsterinfo.aiflags & AI_GOOD_GUY ) {
+	if (self->monsterinfo.aiflags & AI_GOOD_GUY)
 		self->monsterinfo.currentmove = &actor_move_run;
-	}
 	else
-	{
 		self->monsterinfo.currentmove = &actor_move_run_bad;
-	}
 }
 
 mframe_t actor_frames_run_back [] =
 {
-	ai_run, -40, NULL,
-	ai_run, -40, NULL,
-	ai_run, -40, NULL,
-	ai_run, -40, NULL,
-	ai_run, -40, NULL,
-	ai_run, -40, NULL
+	{ai_run, -40, NULL},
+	{ai_run, -40, NULL},
+	{ai_run, -40, NULL},
+	{ai_run, -40, NULL},
+	{ai_run, -40, NULL},
+	{ai_run, -40, NULL}
 };
 mmove_t actor_move_run_back = {FRAME_run1, FRAME_run6, actor_frames_run_back, NULL};
 
@@ -428,25 +416,27 @@ void actor_run_back (edict_t *self)
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
 	{
-		if(!self->movetarget || !self->movetarget->inuse || (self->movetarget == world))
+		if (!self->movetarget || !self->movetarget->inuse || self->movetarget == world)
 			self->movetarget = self->monsterinfo.leader;
 	}
-	if ((level.time < self->pain_debounce_time) && (!self->enemy))
+
+	if (level.time < self->pain_debounce_time && !self->enemy)
 	{
 		if (self->movetarget)
 			actor_walk_back(self);
 		else
 			actor_stand(self);
+
 		return;
 	}
 
-	if ( self->monsterinfo.aiflags & AI_STAND_GROUND )
+	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		actor_stand(self);
 		return;
 	}
 
-	if( self->monsterinfo.aiflags & AI_CROUCH)
+	if (self->monsterinfo.aiflags & AI_CROUCH)
 	{
 		self->monsterinfo.aiflags &= ~AI_CROUCH;
 		self->maxs[2] += 28;
@@ -458,76 +448,73 @@ void actor_run_back (edict_t *self)
 }
 mframe_t actor_frames_pain1 [] =
 {
-	ai_move, -5, NULL,
-	ai_move, 4,  NULL,
-	ai_move, 1,  NULL,
-	ai_move, 1,  NULL
+	{ai_move, -5, NULL},
+	{ai_move, 4,  NULL},
+	{ai_move, 1,  NULL},
+	{ai_move, 1,  NULL}
 };
 mmove_t actor_move_pain1 = {FRAME_pain101, FRAME_pain104, actor_frames_pain1, actor_run};
 
 mframe_t actor_frames_pain2 [] =
 {
-	ai_move, -4, NULL,
-	ai_move, 4,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 0,  NULL
+	{ai_move, -4, NULL},
+	{ai_move, 4,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 0,  NULL}
 };
 mmove_t actor_move_pain2 = {FRAME_pain201, FRAME_pain204, actor_frames_pain2, actor_run};
 
 mframe_t actor_frames_pain3 [] =
 {
-	ai_move, -1, NULL,
-	ai_move, 1,  NULL,
-	ai_move, 0,  NULL,
-	ai_move, 1,  NULL
+	{ai_move, -1, NULL},
+	{ai_move, 1,  NULL},
+	{ai_move, 0,  NULL},
+	{ai_move, 1,  NULL}
 };
 mmove_t actor_move_pain3 = {FRAME_pain301, FRAME_pain304, actor_frames_pain3, actor_run};
 
 mframe_t actor_frames_flipoff [] =
 {
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL}
 };
 mmove_t actor_move_flipoff = {FRAME_flip01, FRAME_flip12, actor_frames_flipoff, actor_run};
 
 mframe_t actor_frames_taunt [] =
 {
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL,
-	ai_turn, 0,  NULL
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL},
+	{ai_turn, 0,  NULL}
 };
 mmove_t actor_move_taunt = {FRAME_taunt01, FRAME_taunt17, actor_frames_taunt, actor_run};
 
 void actor_ideal_range(edict_t *self)
 {
-	int	weapon;
-
-	weapon = self->actor_weapon[self->actor_current_weapon];
-
+	const int weapon = self->actor_weapon[self->actor_current_weapon];
 	switch(weapon)
 	{
 	case 2:
@@ -566,7 +553,7 @@ void actor_ideal_range(edict_t *self)
 	}
 }
 
-void actor_attack(edict_t *self);
+//void actor_attack(edict_t *self);
 void actor_switch (edict_t *self)
 {
 	self->actor_current_weapon = 1 - self->actor_current_weapon;
@@ -574,19 +561,17 @@ void actor_switch (edict_t *self)
 	actor_ideal_range(self);
 	gi.linkentity(self);
 }
+
 mframe_t actor_frames_switch [] =
 {
-	ai_run, 0, actor_switch,
-	ai_run, 0, NULL,
-	ai_run, 0, NULL
+	{ai_run, 0, actor_switch},
+	{ai_run, 0, NULL},
+	{ai_run, 0, NULL}
 };
 mmove_t actor_move_switch = {FRAME_jump4, FRAME_jump6, actor_frames_switch, actor_attack};
 
 void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
-	int		n;
-	int		r, l;
-
 	// DWH: Players don't have pain skins!
 //	if (self->health < (self->max_health / 2))
 //		self->s.skinnum = 1;
@@ -602,7 +587,8 @@ void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
 	// DWH: Use same scheme used for player pain sounds
 	if (!(self->flags & FL_GODMODE))
 	{
-		r = (rand()&1);
+		const int r = rand() & 1;
+		int l;
 		if (self->health < 25)
 			l = 0;
 		else if (self->health < 50)
@@ -611,35 +597,32 @@ void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
 			l = 4;
 		else
 			l = 6;
-		gi.sound (self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_PAIN_25_1 + l + r],
-			1, ATTN_NORM, 0);
+
+		gi.sound(self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_PAIN_25_1 + l + r],	1, ATTN_NORM, 0);
 	}
 
 	// Lazarus: Removed printed message, but keep taunt (not for monster actors, though)
-	if ((other->client) && (random() < 0.4) && (self->monsterinfo.aiflags & AI_GOOD_GUY))
+	if (other->client && random() < 0.4f && self->monsterinfo.aiflags & AI_GOOD_GUY)
 	{
-		vec3_t	v;
-		VectorSubtract (other->s.origin, self->s.origin, v);
-		self->ideal_yaw = vectoyaw (v);
-		if (random() < 0.5) {
+		vec3_t v;
+		VectorSubtract(other->s.origin, self->s.origin, v);
+		self->ideal_yaw = vectoyaw(v);
+
+		if (random() < 0.5f)
 			self->monsterinfo.currentmove = &actor_move_flipoff;
-		}
 		else
-		{
 			self->monsterinfo.currentmove = &actor_move_taunt;
-		}
+
 		return;
 	}
 
-
-	n = rand() % 3;
+	const int n = rand() % 3;
 	if (n == 0)
 		self->monsterinfo.currentmove = &actor_move_pain1;
 	else if (n == 1)
 		self->monsterinfo.currentmove = &actor_move_pain2;
 	else
 		self->monsterinfo.currentmove = &actor_move_pain3;
-
 }
 
 //
@@ -648,48 +631,46 @@ void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
 
 void actor_dead (edict_t *self)
 {
-	VectorSet (self->mins, -16, -16, -24);
-	VectorSet (self->maxs, 16, 16, -8);
+	VectorSet(self->mins, -16, -16, -24);
+	VectorSet(self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
-	gi.linkentity (self);
+	gi.linkentity(self);
 	M_FlyCheck (self);
 
 	// Lazarus monster fade
-	if(world->effects & FX_WORLDSPAWN_CORPSEFADE)
+	if (world->effects & FX_WORLDSPAWN_CORPSEFADE)
 	{
-		self->think=FadeDieSink;
-		self->nextthink=level.time+corpse_fadetime->value;
+		self->think = FadeDieSink;
+		self->nextthink = level.time + corpse_fadetime->value;
 	}
 }
 
 mframe_t actor_frames_death1 [] =
 {
-	ai_move, 0,   NULL,
-	ai_move, 0,   NULL,
-	ai_move, -13, NULL,
-	ai_move, 14,  NULL,
-	ai_move, 3,   NULL,
-	ai_move, -2,  NULL
+	{ai_move, 0,   NULL},
+	{ai_move, 0,   NULL},
+	{ai_move, -13, NULL},
+	{ai_move, 14,  NULL},
+	{ai_move, 3,   NULL},
+	{ai_move, -2,  NULL}
 };
 mmove_t actor_move_death1 = {FRAME_death101, FRAME_death106, actor_frames_death1, actor_dead};
 
 mframe_t actor_frames_death2 [] =
 {
-	ai_move, 0,   NULL,
-	ai_move, 7,   NULL,
-	ai_move, -6,  NULL,
-	ai_move, -5,  NULL,
-	ai_move, 1,   NULL,
-	ai_move, 0,   NULL
+	{ai_move, 0,   NULL},
+	{ai_move, 7,   NULL},
+	{ai_move, -6,  NULL},
+	{ai_move, -5,  NULL},
+	{ai_move, 1,   NULL},
+	{ai_move, 0,   NULL}
 };
 mmove_t actor_move_death2 = {FRAME_death201, FRAME_death206, actor_frames_death2, actor_dead};
 
-void actor_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void actor_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int		n;
-
 	//Remove the weapon model and turn off weapon sound, if any
 	self->s.modelindex2 = 0;
 	self->s.sound = 0;
@@ -697,12 +678,12 @@ void actor_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 // check for gib
 	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
-			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+		gi.sound(self, CHAN_BODY, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
+		for (int n = 0; n < 2; n++)
+			ThrowGib(self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
+		for (int n = 0; n < 4; n++)
+			ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+		ThrowHead(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
@@ -711,33 +692,29 @@ void actor_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 		return;
 
 // regular death
-	gi.sound (self, CHAN_VOICE, 
-		self->actor_sound_index[ACTOR_SOUND_DEATH1 + (rand()%4)], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_DEATH1 + (rand() % 4)], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
-	if(self->monsterinfo.aiflags & AI_CHASE_THING)
+	if (self->monsterinfo.aiflags & AI_CHASE_THING && self->movetarget && !Q_stricmp(self->movetarget->classname, "thing"))
 	{
-		if(self->movetarget && !Q_stricmp(self->movetarget->classname,"thing"))
-		{
-			G_FreeEdict(self->movetarget);
-			self->movetarget = NULL;
-		}
+		G_FreeEdict(self->movetarget);
+		self->movetarget = NULL;
 	}
+
 	self->monsterinfo.aiflags &= ~(AI_FOLLOW_LEADER | AI_CHASE_THING | AI_CHICKEN | AI_EVADE_GRENADE);
+	
 	if (random() > 0.5)
 		self->monsterinfo.currentmove = &actor_move_death1;
 	else
 		self->monsterinfo.currentmove = &actor_move_death2;
 }
 
-void actor_fire (edict_t *self)
+void actor_fire(edict_t *self)
 {
-	int	weapon;
-
-	weapon = self->actor_weapon[self->actor_current_weapon];
-
-	switch(weapon) {
+	const int weapon = self->actor_weapon[self->actor_current_weapon];
+	switch(weapon)
+	{
 	case 1:
 		actorBlaster (self);
 		break;
@@ -764,7 +741,7 @@ void actor_fire (edict_t *self)
 			self->monsterinfo.aiflags |= AI_HOLD_FRAME;
 		break;
 	case 6:
-		actorGrenadeLauncher (self);
+		actorGrenadeLauncher(self);
 		break;
 	case 7:
 		actorRocket(self);
@@ -795,172 +772,173 @@ void actor_no_weapon_sound(edict_t *self)
 	gi.linkentity(self);
 }
 
-static int chase_angle[] = {360,315,405,270,450,225,495,540};
+static int chase_angle[] = { 360, 315, 405, 270, 450, 225, 495, 540 };
 void actor_seekcover (edict_t *self)
 {
-	int		i;
-	edict_t	*thing;
 	vec3_t	atk, dir, best_dir, end, forward;
-	vec_t	travel, yaw;
 	vec3_t	mins, maxs;
 	vec3_t	testpos;
-	vec_t	best_dist=0;
-	trace_t	trace1, trace2;
+	vec_t	best_dist = 0;
 
-	// No point in hiding from enemy if.. we don't have an enemy
-	if(!self->enemy || !self->enemy->inuse)
+	// No point in hiding from enemy if we don't have an enemy
+	if (!self->enemy || !self->enemy->inuse)
 	{
 		actor_run(self);
 		return;
 	}
-	if(!actorscram->value)
+
+	if (!actorscram->value)
 	{
 		actor_run(self);
 		return;
 	}
+
 	// Don't hide from non-humanoid stuff
-	if(!self->enemy->client && !(self->enemy->svflags & SVF_MONSTER))
+	if (!self->enemy->client && !(self->enemy->svflags & SVF_MONSTER))
 	{
 		actor_run(self);
 		return;
 	}
-	// This shouldn't happen, we're just being cautious. Quit now if
-	// already chasing a "thing"
-	if(self->movetarget && !Q_stricmp(self->movetarget->classname,"thing"))
+
+	// This shouldn't happen, we're just being cautious. Quit now if already chasing a "thing"
+	if (self->movetarget && !Q_stricmp(self->movetarget->classname, "thing"))
 	{
 		actor_run(self);
 		return;
 	}
+
 	// Don't bother finding cover if we're within melee range of enemy
-	VectorSubtract(self->enemy->s.origin,self->s.origin,atk);
-	if(VectorLength(atk) < 80)
+	VectorSubtract(self->enemy->s.origin, self->s.origin, atk);
+	if (VectorLength(atk) < 80)
 	{
 		actor_run(self);
 		return;
 	}
-	VectorCopy(self->mins,mins);
-	mins[2] += 18;
-	if(mins[2] > 0) mins[2] = 0;
-	VectorCopy(self->maxs,maxs);
+
+	VectorCopy(self->mins, mins);
+	mins[2] = min(0, mins[2] + 18); //mxd
+	VectorCopy(self->maxs, maxs);
 
 	// Find a vector that will hide the actor from his enemy
-	VectorCopy(self->enemy->s.origin,atk);
+	VectorCopy(self->enemy->s.origin, atk);
 	atk[2] += self->enemy->viewheight;
 	VectorClear(best_dir);
-	AngleVectors(self->s.angles,forward,NULL,NULL);
+	AngleVectors(self->s.angles, forward, NULL, NULL);
 	dir[2] = 0;
-	for(travel=64; travel<257 && best_dist == 0; travel *= 2)
+
+	for (int travel = 64; travel < 257 && best_dist == 0; travel *= 2)
 	{
-		for(i=0; i<8 && best_dist == 0; i++)
+		for (int i = 0; i < 8 && best_dist == 0; i++)
 		{
-			yaw = self->s.angles[YAW] + chase_angle[i];
-			yaw = (int)(yaw/45)*45;
+			vec_t yaw = self->s.angles[YAW] + chase_angle[i];
+			yaw = (int)(yaw / 45) * 45;
 			yaw = anglemod(yaw);
-			yaw *= M_PI/180;
+			yaw *= M_PI / 180;
+
 			dir[0] = cos(yaw);
 			dir[1] = sin(yaw);
-			VectorMA(self->s.origin,travel,dir,end);
-			trace1 = gi.trace(self->s.origin,mins,maxs,end,self,MASK_MONSTERSOLID);
-			// Test whether proposed position can be seen by enemy. Test
-			// isn't foolproof - tests against 1) new origin, 2-5) each corner of top
-			// of bounding box.
-			trace2 = gi.trace(trace1.endpos,NULL,NULL,atk,self,MASK_SOLID);
-			if(trace2.fraction == 1.0) continue;
+			VectorMA(self->s.origin, travel, dir, end);
+
+			trace_t trace1 = gi.trace(self->s.origin, mins, maxs, end, self, MASK_MONSTERSOLID);
+			// Test whether proposed position can be seen by enemy.
+			// Test isn't foolproof - tests against 1) new origin, 2-5) each corner of top of bounding box.
+			trace_t trace2 = gi.trace(trace1.endpos, NULL, NULL, atk, self, MASK_SOLID);
+			if (trace2.fraction == 1.0) continue;
 
 			VectorAdd(trace1.endpos,self->maxs,testpos);
-			trace2 = gi.trace(testpos,NULL,NULL,atk,self,MASK_SOLID);
-			if(trace2.fraction == 1.0) continue;
+			trace2 = gi.trace(testpos, NULL, NULL, atk, self, MASK_SOLID);
+			if (trace2.fraction == 1.0) continue;
 
 			testpos[0] = trace1.endpos[0] + self->mins[0];
-			trace2 = gi.trace(testpos,NULL,NULL,atk,self,MASK_SOLID);
-			if(trace2.fraction == 1.0) continue;
+			trace2 = gi.trace(testpos, NULL, NULL, atk, self, MASK_SOLID);
+			if (trace2.fraction == 1.0) continue;
 
 			testpos[1] = trace1.endpos[1] + self->mins[1];
-			trace2 = gi.trace(testpos,NULL,NULL,atk,self,MASK_SOLID);
-			if(trace2.fraction == 1.0) continue;
+			trace2 = gi.trace(testpos, NULL, NULL, atk, self, MASK_SOLID);
+			if (trace2.fraction == 1.0) continue;
 
 			testpos[0] = trace1.endpos[0] + self->maxs[0];
-			trace2 = gi.trace(testpos,NULL,NULL,atk,self,MASK_SOLID);
-			if(trace2.fraction == 1.0) continue;
+			trace2 = gi.trace(testpos, NULL, NULL, atk, self, MASK_SOLID);
+			if (trace2.fraction == 1.0) continue;
 
 			best_dist = trace1.fraction * travel;
-			if(best_dist < 32) // not much point to this move
+			if (best_dist < 32) // not much point to this move
 				continue;
-			VectorCopy(dir,best_dir);
+
+			VectorCopy(dir, best_dir);
 		}
 	}
-	if(best_dist < 32)
+
+	if (best_dist < 32)
 	{
 		actor_run(self);
 		return;
 	}
-	// This snaps the angles, which may not be all that good but it sure
-	// is quicker than turning in place
-	vectoangles(best_dir,self->s.angles);
-	thing = SpawnThing();
-	VectorMA(self->s.origin,best_dist,best_dir,thing->s.origin);
+
+	// This snaps the angles, which may not be all that good but it sure is quicker than turning in place
+	vectoangles(best_dir, self->s.angles);
+	edict_t *thing = SpawnThing();
+	VectorMA(self->s.origin, best_dist, best_dir, thing->s.origin);
 	thing->touch_debounce_time = level.time + 3.0;
 	thing->target_ent = self;
 	ED_CallSpawn(thing);
 	self->movetarget = self->goalentity = thing;
 	self->monsterinfo.aiflags &= ~(AI_SOUND_TARGET | AI_STAND_GROUND | AI_TEMP_STAND_GROUND);
 	self->monsterinfo.aiflags |= (AI_SEEK_COVER | AI_CHASE_THING);
+
 	gi.linkentity(self);
 	actor_run(self);
 }
 
 mframe_t actor_frames_attack [] =
 {
-	ai_charge, 0,  actor_fire,
-	ai_charge, 0,  actor_no_weapon_sound,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL
+	{ai_charge, 0,  actor_fire},
+	{ai_charge, 0,  actor_no_weapon_sound},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL}
 };
 mmove_t actor_move_attack = {FRAME_attack1, FRAME_attack8, actor_frames_attack, actor_seekcover};
 
 mframe_t actor_frames_crattack [] =
 {
-	ai_charge, 0,  actor_fire,
-	ai_charge, 0,  actor_no_weapon_sound,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL
+	{ai_charge, 0,  actor_fire},
+	{ai_charge, 0,  actor_no_weapon_sound},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL},
+	{ai_charge, 0,  NULL}
 };
 mmove_t actor_move_crattack = {FRAME_crattak1, FRAME_crattak9, actor_frames_crattack, actor_run};
 
 void actor_attack (edict_t *self)
 {
-	int		n;
-	int		weapon, w_select;
-	mmove_t	*attackmove;
-	vec3_t	v;
-
-	w_select = self->actor_current_weapon;
-	weapon   = self->actor_weapon[w_select];
+	const int w_select = self->actor_current_weapon;
+	const int weapon   = self->actor_weapon[w_select];
 
 	if (self->enemy)
 	{
-		if ( w_select == 0 && self->actor_weapon[1] > 0 )
+		if (w_select == 0 && self->actor_weapon[1] > 0)
 		{
-			VectorSubtract(self->s.origin,self->enemy->s.origin,v);
-			if(VectorLength(v) < 200)
+			vec3_t v;
+			VectorSubtract(self->s.origin, self->enemy->s.origin, v);
+			if (VectorLength(v) < 200)
 			{
 				self->monsterinfo.currentmove = &actor_move_switch;
 				return;
 			}
 		}
-		else if ( w_select == 1 && self->actor_weapon[0] > 0 )
+		else if (w_select == 1 && self->actor_weapon[0] > 0)
 		{
-			VectorSubtract(self->s.origin,self->enemy->s.origin,v);
-			if(VectorLength(v) > 300)
+			vec3_t v;
+			VectorSubtract(self->s.origin, self->enemy->s.origin, v);
+			if (VectorLength(v) > 300)
 			{
 				self->monsterinfo.currentmove = &actor_move_switch;
 				return;
@@ -971,13 +949,14 @@ void actor_attack (edict_t *self)
 	self->actor_gunframe = 0;
 
 	// temporary deal to toggle crouch
-/*	if(self->actor_crouch_time < level.time)
+/*	if (self->actor_crouch_time < level.time)
 		self->actor_crouch_time = level.time + 5;
 	else
 		self->actor_crouch_time = 0; */
 	// end temp
 
-	if(self->actor_crouch_time < level.time)
+	mmove_t *attackmove;
+	if (self->actor_crouch_time < level.time)
 		attackmove = &actor_move_attack;
 	else
 		attackmove = &actor_move_crattack;
@@ -997,121 +976,115 @@ void actor_attack (edict_t *self)
 		self->monsterinfo.pausetime = level.time + 10 * FRAMETIME;
 		break;
 	case 4:
+	{
 		self->monsterinfo.currentmove = attackmove;
-		n = (rand() & 15) + 3 + 7;
+		const int n = (rand() & 15) + 10;
 		self->monsterinfo.pausetime = level.time + n * FRAMETIME;
+	}
 		break;
 	case 5:
+	{
 		self->monsterinfo.currentmove = attackmove;
-		n = (rand() & 20) + 20;
+		const int n = (rand() & 20) + 20;
 		self->monsterinfo.pausetime = level.time + n * FRAMETIME;
+	}
 		break;
 	case 6:
 	case 7:
 		self->monsterinfo.currentmove = attackmove;
-		if (self->monsterinfo.aiflags & AI_STAND_GROUND)
-		{ // if hes just standing there refire rate is normal
-			self->monsterinfo.pausetime = level.time + 7;
-		}
-		else
-		{ // otherwise, allow the target to fire back
-			self->monsterinfo.pausetime = level.time + 2;
-		}
+		const int refirerate = (self->monsterinfo.aiflags & AI_STAND_GROUND ? 7 : 2); // if hes just standing there refire rate is normal, otherwise, allow the target to fire back
+		self->monsterinfo.pausetime = level.time + refirerate;
 		break;
 	case 8:
+	{
 		self->monsterinfo.currentmove = attackmove;
-		n = (rand() & 15) + 3 + 7;
+		const int n = (rand() & 15) + 10;
 		self->monsterinfo.pausetime = level.time + n * FRAMETIME;
+	}
 		break;
 	case 9:
 		self->monsterinfo.currentmove = attackmove;
 		self->monsterinfo.pausetime = level.time + 3;
 		break;
 	case 10:
-		if(level.time > self->endtime)
+		if (level.time > self->endtime)
 		{
 			self->monsterinfo.currentmove = attackmove;
 			self->monsterinfo.pausetime = level.time + 1.5;
 		}
 		else
+		{
 			self->monsterinfo.currentmove = &actor_move_stand;
+		}
 		break;
 	}
 }
 
-void actor_use (edict_t *self, edict_t *other, edict_t *activator)
+void actor_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	vec3_t	v;
-
 	self->goalentity = self->movetarget = G_PickTarget(self->target);
 	if ((!self->movetarget) || (strcmp(self->movetarget->classname, "target_actor") != 0))
 	{
-		gi.dprintf ("%s has bad target %s at %s\n", self->classname, self->target, vtos(self->s.origin));
+		gi.dprintf("%s has bad target %s at %s\n", self->classname, self->target, vtos(self->s.origin));
 		self->target = NULL;
 		self->monsterinfo.pausetime = 100000000;
-		self->monsterinfo.stand (self);
+		self->monsterinfo.stand(self);
+
 		return;
 	}
-	VectorSubtract (self->goalentity->s.origin, self->s.origin, v);
+
+	vec3_t v;
+	VectorSubtract(self->goalentity->s.origin, self->s.origin, v);
 	self->ideal_yaw = self->s.angles[YAW] = vectoyaw(v);
-	self->monsterinfo.walk (self);
+	self->monsterinfo.walk(self);
 	self->target = NULL;
+
 	if (self->pathtarget)
 	{
-		char *savetarget;
-
-		savetarget = self->target;
+		char *savetarget = self->target;
 		self->target = self->pathtarget;
-		G_UseTargets (self, other);
+		G_UseTargets(self, other);
 		self->target = savetarget;
 	}
 }
 
-// Lazarus: checkattack - higher probabilities than normal monsters,
-//          also weapon-based
-
+// Lazarus: checkattack - higher probabilities than normal monsters, also weapon-based
 static float chancefar[11] =  { 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.4, 0.2, 0.5, 0.8 };
 static float chancenear[11] = { 0.0, 0.4, 0.0, 0.0, 0.0, 0.0, 0.4, 0.4, 0.4, 0.4, 0.4 };
-qboolean actor_checkattack (edict_t *self)
+qboolean actor_checkattack(edict_t *self)
 {
-	vec3_t		v;
-	vec3_t		forward, right, start, end;
-	float		chance;
-	float		range;
-	float		goodchance, poorchance, lorange, hirange;
-	trace_t		tr;
-	int			weapon;
-
 	// Paranoia check
 	if (!self->enemy)
 		return false;
 
 	// If running to "thing", never attack
-	if(self->monsterinfo.aiflags & AI_CHASE_THING)
+	if (self->monsterinfo.aiflags & AI_CHASE_THING)
 		return false;
 
-	weapon = self->actor_weapon[self->actor_current_weapon];
+	const int weapon = self->actor_weapon[self->actor_current_weapon];
+	
 	// If actor has no weapon, well then of course he should not attack
-	if(weapon < 1 || weapon > 10)
+	if (weapon < 1 || weapon > 10)
 		return false;
 
 	if (self->enemy->health > 0)
 	{
 		// see if any entities are in the way of the shot
-		AngleVectors (self->s.angles, forward, right, NULL);
-		G_ProjectSource (self->s.origin, self->muzzle, forward, right, start);
-		VectorCopy (self->enemy->s.origin, end);
+		vec3_t forward, right, start, end;
+		AngleVectors(self->s.angles, forward, right, NULL);
+		G_ProjectSource(self->s.origin, self->muzzle, forward, right, start);
+		VectorCopy(self->enemy->s.origin, end);
 
-		tr = gi.trace (start, NULL, NULL, end, self, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_SLIME|CONTENTS_LAVA|CONTENTS_WINDOW);
+		const trace_t tr = gi.trace(start, NULL, NULL, end, self, CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_SLIME | CONTENTS_LAVA | CONTENTS_WINDOW);
 
 		// do we have a clear shot?
-		if (tr.ent != self->enemy) {
+		if (tr.ent != self->enemy)
 			return false;
-		}
 	}
 
-	VectorSubtract (self->s.origin, self->enemy->s.origin, v);
-	range = VectorLength (v);
+	vec3_t v;
+	VectorSubtract(self->s.origin, self->enemy->s.origin, v);
+	const float range = VectorLength(v);
 
 	// melee attack
 	if (range <= MELEE_DISTANCE)
@@ -1133,36 +1106,41 @@ qboolean actor_checkattack (edict_t *self)
 	if (range > self->monsterinfo.max_range)
 		return false;
 
+	float chance;
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		chance = 0.4;
 	}
 	else
 	{
-		if(weapon >= 2 && weapon <= 5)
+		if (weapon >= 2 && weapon <= 5)
 		{
-			// Scatter guns - probability of firing based on percentage of rounds
-			// that will hit target at a given range.
-			if(skill->value == 1)
+			// Scatter guns - probability of firing based on percentage of rounds that will hit target at a given range.
+			float goodchance;
+			if (skill->value == 1)
 				goodchance = 0.6;
-			else if(skill->value > 1)
+			else if (skill->value > 1)
 				goodchance = 0.9;
 			else
 				goodchance = 0.3;
-			poorchance = 0.01;
+
+			const float poorchance = 0.01;
+			float lorange, hirange;
 			switch(weapon)
 			{
 			case 2: lorange=270; hirange=500; break;
 			case 3: lorange= 90; hirange=200; break;
 			case 4: lorange=450; hirange=628; break;
 			case 5: lorange=450; hirange=628; break;
+			default: lorange=0;  hirange=0;   break; //mxd. Should never happen
 			}
-			if(range <= lorange)
+
+			if (range <= lorange)
 				chance = goodchance;
-			else if(range > hirange)
+			else if (range > hirange)
 				chance = poorchance;
 			else
-				chance = goodchance + (range-lorange)/(hirange-lorange)*(poorchance-goodchance);
+				chance = goodchance + (range - lorange) / (hirange - lorange) * (poorchance - goodchance);
 		}
 		else
 		{
@@ -1170,31 +1148,32 @@ qboolean actor_checkattack (edict_t *self)
 				chance = chancenear[weapon];
 			else
 				chance = chancefar[weapon];
-			if(self->monsterinfo.aiflags & AI_GOOD_GUY)
+
+			if (self->monsterinfo.aiflags & AI_GOOD_GUY)
 			{
-				if(skill->value == 0)
+				if (skill->value == 0)
 					chance *= 2;
-				else if(skill->value == 2)
+				else if (skill->value == 2)
 					chance *= 0.5;
-				else if(skill->value == 3)
+				else if (skill->value == 3)
 					chance *= 0.25;
 			}
 			else
 			{
-				if(skill->value == 0)
+				if (skill->value == 0)
 					chance *= 0.5;
-				else if(skill->value == 2)
+				else if (skill->value == 2)
 					chance *= 2;
-				else if(skill->value == 3)
+				else if (skill->value == 3)
 					chance *= 4;
 			}
 		}
 	}
 
-	if (random () < chance)
+	if (random() < chance)
 	{
 		self->monsterinfo.attack_state = AS_MISSILE;
-		self->monsterinfo.attack_finished = level.time + 2*random();
+		self->monsterinfo.attack_finished = level.time + 2 * random();
 		return true;
 	}
 
@@ -1204,55 +1183,48 @@ qboolean actor_checkattack (edict_t *self)
 mmove_t actor_move_jump;
 void actor_end_jump (edict_t *self)
 {
-	if(self->flags & FL_ROBOT)
+	if (self->flags & FL_ROBOT)
 	{
-		if(self->monsterinfo.savemove)
-		{
+		if (self->enemy || self->monsterinfo.savemove)
 			actor_run(self);
-//			self->monsterinfo.currentmove = self->monsterinfo.savemove;
-/*			gi.dprintf("savemove=%d\n",self->monsterinfo.currentmove);
-			gi.dprintf("actor_move_jump=%d\n",&actor_move_jump);
-			gi.dprintf("actor_move_run=%d\n",&actor_move_run);
-			gi.dprintf("actor_move_walk=%d\n",&actor_move_walk);
-			gi.dprintf("actor_move_stand=%d\n",&actor_move_stand); */
-		}
-		else if(self->enemy)
-			actor_run(self);
-		else if(self->movetarget)
+		else if (self->movetarget)
 			actor_walk(self);
 		else
 			actor_stand(self);
 	}
 	else
+	{
 		actor_run(self);
+	}
 }
 
 mframe_t actor_frames_jump [] =
 {
-	ai_move,  0, NULL,
-	ai_move,  0, NULL,
-	ai_move,  0, NULL,
-	ai_move,  0, NULL,
-	ai_move,  0, NULL,
-	ai_move,  0, actor_end_jump
+	{ai_move,  0, NULL},
+	{ai_move,  0, NULL},
+	{ai_move,  0, NULL},
+	{ai_move,  0, NULL},
+	{ai_move,  0, NULL},
+	{ai_move,  0, actor_end_jump}
 };
 
 mmove_t actor_move_jump = {FRAME_jump1, FRAME_jump6, actor_frames_jump, actor_jump};
 
 void actor_jump (edict_t *self)
 {
-	gi.sound (self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_JUMP], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_JUMP], 1, ATTN_NORM, 0);
 	self->monsterinfo.currentmove = &actor_move_jump;
 }
+
 qboolean actor_blocked (edict_t *self, float dist)
 {
-	if(check_shot_blocked (self, 0.25 + (0.05 * skill->value) ))
+	if (check_shot_blocked(self, 0.25 + (0.05 * skill->value) ))
 		return true;
 
-	if(check_jump_blocked (self, dist, self->monsterinfo.jumpdn, self->monsterinfo.jumpup))
+	if (check_jump_blocked(self, dist, self->monsterinfo.jumpdn, self->monsterinfo.jumpup))
 		return true;
 
-	if(check_plat_blocked (self, dist))
+	if (check_plat_blocked(self, dist))
 		return true;
 
 	return false;
@@ -1260,17 +1232,17 @@ qboolean actor_blocked (edict_t *self, float dist)
 
 mframe_t actor_frames_salute [] =
 {
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL,
-	ai_turn, 0, NULL
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL},
+	{ai_turn, 0, NULL}
 };
 mmove_t actor_move_salute = {FRAME_salute01, FRAME_salute11, actor_frames_salute, actor_run};
 
@@ -1278,6 +1250,7 @@ void actor_salute (edict_t *self)
 {
 	self->monsterinfo.currentmove = &actor_move_salute;
 }
+
 /*QUAKED misc_actor (1 .5 0) (-16 -16 -24) (16 16 32)
 */
 
@@ -1296,95 +1269,101 @@ void actor_salute (edict_t *self)
 
 #define NUM_ACTORPAK_ACTORS 12
 char ActorNames[NUM_ACTORPAK_ACTORS][32] = 
-{ "alien",      "hunter",     "paranoid","ratamahatta",
-  "rhino",      "sas",        "slith",   "terran",
-  "walker",     "waste",      "xenoid",  "zumlin" };
+{
+	"alien", "hunter", "paranoid", "ratamahatta",
+	"rhino", "sas", "slith", "terran",
+	"walker", "waste", "xenoid", "zumlin",
+};
 
 void SP_misc_actor (edict_t *self)
 {
 	char	modelpath[256];
-	char	*p;
-	int		i;
 	int		ActorID = 0;
 
 	if (deathmatch->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
-	if(self->usermodel) {
-		p = strstr(self->usermodel,"/tris.md2");
-		if(p) *p = 0;
+	if (self->usermodel)
+	{
+		char *p = strstr(self->usermodel, "/tris.md2");
+		if (p) 
+			*p = 0;
 	}
-	else {
+	else
+	{
 		self->usermodel = gi.TagMalloc(5, TAG_LEVEL);
-	//	strncpy(self->usermodel,"male");
-		Q_strncpyz(self->usermodel,"male", 5);
+		Q_strncpyz(self->usermodel, "male", 5);
 	}
-	if( (!Q_stricmp(self->usermodel,"male")) ||
-		(!Q_stricmp(self->usermodel,"female")) ||
-		(!Q_stricmp(self->usermodel,"cyborg")) )
+
+	if (!Q_stricmp(self->usermodel,"male") || !Q_stricmp(self->usermodel, "female") || !Q_stricmp(self->usermodel, "cyborg"))
 	{
 		self->actor_id_model = true;
-		if(PatchPlayerModels(self->usermodel))
+		if (PatchPlayerModels(self->usermodel))
 			level.restart_for_actor_models = true;
 	}
 	else
-		self->actor_id_model = false;
-
-	Com_sprintf(modelpath, sizeof(modelpath), "players/%s/tris.md2",self->usermodel);
-	self->s.modelindex = gi.modelindex(modelpath);
-
-	for(i=0; i<NUM_ACTORPAK_ACTORS && !ActorID; i++)
 	{
-		if(!Q_stricmp(self->usermodel,ActorNames[i]))
-			ActorID = i+1;
+		self->actor_id_model = false;
 	}
 
-	if(!VectorLength(self->bleft) && !VectorLength(self->tright))
+	Com_sprintf(modelpath, sizeof(modelpath), "players/%s/tris.md2", self->usermodel);
+	self->s.modelindex = gi.modelindex(modelpath);
+
+	for (int i = 0; i < NUM_ACTORPAK_ACTORS; i++)
+	{
+		if (!Q_stricmp(self->usermodel, ActorNames[i]))
+		{
+			ActorID = i + 1;
+			break;
+		}
+	}
+
+	if (!VectorLength(self->bleft) && !VectorLength(self->tright))
 	{
 		switch(ActorID)
 		{
 		case ACTOR_ALIEN:
-			VectorSet (self->mins, -28, -28, -24);
-			VectorSet (self->maxs,  28,  28,  32);
+			VectorSet(self->mins, -28, -28, -24);
+			VectorSet(self->maxs,  28,  28,  32);
 			break;
 		case ACTOR_HUNTER:
-			VectorSet (self->mins, -24, -24, -24);
-			VectorSet (self->maxs,  24,  24,  32);
+			VectorSet(self->mins, -24, -24, -24);
+			VectorSet(self->maxs,  24,  24,  32);
 			break;
 		case ACTOR_RATAMAHATTA:
 		case ACTOR_TERRAN:
-			VectorSet (self->mins, -20, -20, -24);
-			VectorSet (self->maxs,  20,  20,  32);
+			VectorSet(self->mins, -20, -20, -24);
+			VectorSet(self->maxs,  20,  20,  32);
 			break;
 		case ACTOR_RHINO:
-			VectorSet (self->mins, -30, -30, -24);
-			VectorSet (self->maxs,  30,  30,  32);
+			VectorSet(self->mins, -30, -30, -24);
+			VectorSet(self->maxs,  30,  30,  32);
 			break;
 		case ACTOR_SAS:
 		case ACTOR_XENOID:
 		case ACTOR_ZUMLIN:
-			VectorSet (self->mins, -18, -18, -24);
-			VectorSet (self->maxs,  18,  18,  32);
+			VectorSet(self->mins, -18, -18, -24);
+			VectorSet(self->maxs,  18,  18,  32);
 			break;
 		case ACTOR_WALKER:
-			VectorSet (self->mins, -24, -24, -24);
-			VectorSet (self->maxs,  24,  24,  30);
+			VectorSet(self->mins, -24, -24, -24);
+			VectorSet(self->maxs,  24,  24,  30);
 			break;
 		default:
-			VectorSet (self->mins, -16, -16, -24);
-			VectorSet (self->maxs,  16,  16,  32);
+			VectorSet(self->mins, -16, -16, -24);
+			VectorSet(self->maxs,  16,  16,  32);
 		}
 	}
 	else
 	{
-		VectorCopy (self->bleft,  self->mins);
-		VectorCopy (self->tright, self->maxs);
+		VectorCopy(self->bleft,  self->mins);
+		VectorCopy(self->tright, self->maxs);
 	}
 
 	if (!self->health)
@@ -1394,146 +1373,147 @@ void SP_misc_actor (edict_t *self)
 	if (!self->mass)
 		self->mass = 200;
 
-	if(self->sounds < 0)
+	if (self->sounds < 0)
 	{
 		self->actor_weapon[0] = 0;
 		self->actor_weapon[1] = -self->sounds;
 	}
-	else if(self->sounds < 10)
+	else if (self->sounds < 10)
 	{
 		self->actor_weapon[0] = self->sounds;
 		self->actor_weapon[1] = 0;
 	}
 	else
 	{
-		self->actor_weapon[0] = self->sounds/100;
+		self->actor_weapon[0] = self->sounds / 100;
 		self->actor_weapon[1] = self->sounds % 100;
 	}
 
-	if(!VectorLength(self->muzzle))
+	if (!VectorLength(self->muzzle))
 	{
 		switch(ActorID)
 		{
 		case ACTOR_ALIEN:
-			VectorSet(self->muzzle,42,5,15);
+			VectorSet(self->muzzle, 42, 5, 15);
 			break;
 		case ACTOR_HUNTER:
 			switch(self->actor_weapon[0])
 			{
-			case  1: VectorSet(self->muzzle,32,5,15);break;
-			case  2: VectorSet(self->muzzle,36,5,15);break;
-			case  3: VectorSet(self->muzzle,36,5,15);break;
-			case  4: VectorSet(self->muzzle,38,4,19);break;
-			case  5: VectorSet(self->muzzle,45,4.5,15);break;
-			case  6: VectorSet(self->muzzle,32,5,15);break;
-			case  7: VectorSet(self->muzzle,40,5,15);break;
-			case  8: VectorSet(self->muzzle,41,4,19);break;
-			case  9: VectorSet(self->muzzle,40,4,19);break;
-			case 10: VectorSet(self->muzzle,42,5,20);break;
+			case  1: VectorSet(self->muzzle, 32, 5, 15); break;
+			case  2: VectorSet(self->muzzle, 36, 5, 15); break;
+			case  3: VectorSet(self->muzzle, 36, 5, 15); break;
+			case  4: VectorSet(self->muzzle, 38, 4, 19); break;
+			case  5: VectorSet(self->muzzle, 45, 4.5, 15); break;
+			case  6: VectorSet(self->muzzle, 32, 5, 15); break;
+			case  7: VectorSet(self->muzzle, 40, 5, 15); break;
+			case  8: VectorSet(self->muzzle, 41, 4, 19); break;
+			case  9: VectorSet(self->muzzle, 40, 4, 19); break;
+			case 10: VectorSet(self->muzzle, 42, 5, 20); break;
 			}
 			break;
 		case ACTOR_PARANOID:
 			switch(self->actor_weapon[0])
 			{
-			case  1: VectorSet(self->muzzle,18,7,10);break;
-			case  2: VectorSet(self->muzzle,22,7,10);break;
-			case  3: VectorSet(self->muzzle,22,7,10);break;
-			case  4: VectorSet(self->muzzle,18,7,12);break;
-			case  5: VectorSet(self->muzzle,26,7,16);break;
-			case  6: VectorSet(self->muzzle,24,7,10);break;
-			case  7: VectorSet(self->muzzle,26,7,10);break;
-			case  8: VectorSet(self->muzzle,18,7,14);break;
-			case  9: VectorSet(self->muzzle,28,7,10);break;
-			case 10: VectorSet(self->muzzle,28,7,10);break;
+			case  1: VectorSet(self->muzzle, 18, 7, 10); break;
+			case  2: VectorSet(self->muzzle, 22, 7, 10); break;
+			case  3: VectorSet(self->muzzle, 22, 7, 10); break;
+			case  4: VectorSet(self->muzzle, 18, 7, 12); break;
+			case  5: VectorSet(self->muzzle, 26, 7, 16); break;
+			case  6: VectorSet(self->muzzle, 24, 7, 10); break;
+			case  7: VectorSet(self->muzzle, 26, 7, 10); break;
+			case  8: VectorSet(self->muzzle, 18, 7, 14); break;
+			case  9: VectorSet(self->muzzle, 28, 7, 10); break;
+			case 10: VectorSet(self->muzzle, 28, 7, 10); break;
 			}
 			break;
 		case ACTOR_RATAMAHATTA:
-			VectorSet(self->muzzle,24,13,10);
+			VectorSet(self->muzzle, 24, 13, 10);
 			break;
 		case ACTOR_RHINO:
-			VectorSet(self->muzzle,29,7,10);
+			VectorSet(self->muzzle, 29, 7, 10);
 			break;
 		case ACTOR_SAS:
-			VectorSet(self->muzzle,17,6.5,17);
+			VectorSet(self->muzzle, 17, 6.5, 17);
 			break;
 		case ACTOR_SLITH:
 			switch(self->actor_weapon[0])
 			{
-			case  1: VectorSet(self->muzzle,32,7,10);break;
-			case  2: VectorSet(self->muzzle,32,7,10);break;
-			case  3: VectorSet(self->muzzle,32,7,10);break;
-			case  4: VectorSet(self->muzzle,25,5,-1);break;
-			case  5: VectorSet(self->muzzle,25,5,-1);break;
-			case  6: VectorSet(self->muzzle,32,7,10);break;
-			case  7: VectorSet(self->muzzle,32,7,10);break;
-			case  8: VectorSet(self->muzzle,12,6,-1);break;
-			case  9: VectorSet(self->muzzle,32,7,10);break;
-			case 10: VectorSet(self->muzzle,20,5,-1);break;
+			case  1: VectorSet(self->muzzle, 32, 7, 10); break;
+			case  2: VectorSet(self->muzzle, 32, 7, 10); break;
+			case  3: VectorSet(self->muzzle, 32, 7, 10); break;
+			case  4: VectorSet(self->muzzle, 25, 5, -1); break;
+			case  5: VectorSet(self->muzzle, 25, 5, -1); break;
+			case  6: VectorSet(self->muzzle, 32, 7, 10); break;
+			case  7: VectorSet(self->muzzle, 32, 7, 10); break;
+			case  8: VectorSet(self->muzzle, 12, 6, -1); break;
+			case  9: VectorSet(self->muzzle, 32, 7, 10); break;
+			case 10: VectorSet(self->muzzle, 20, 5, -1); break;
 			}
 			break;
 		case ACTOR_TERRAN:
-			VectorSet(self->muzzle,42,7,11.5);
+			VectorSet(self->muzzle, 42, 7, 11.5);
 			break;
 		case ACTOR_WALKER:
-			VectorSet(self->muzzle,9,16,7);
+			VectorSet(self->muzzle, 9, 16, 7);
 			break;
 		case ACTOR_WASTE:
 			switch(self->actor_weapon[0])
 			{
-			case  1: VectorSet(self->muzzle,12, 9,9);break;
-			case  2: VectorSet(self->muzzle,22, 9,9);break;
-			case  3: VectorSet(self->muzzle,20, 9,9);break;
-			case  4: VectorSet(self->muzzle,11,11,7);break;
-			case  5: VectorSet(self->muzzle,26, 8,8);break;
-			case  6: VectorSet(self->muzzle,18, 9,7);break;
-			case  7: VectorSet(self->muzzle,26, 9,7);break;
-			case  8: VectorSet(self->muzzle,26, 7.5,8);break;
-			case  9: VectorSet(self->muzzle,26, 9,7);break;
-			case 10: VectorSet(self->muzzle,22,11,7);break;
+			case  1: VectorSet(self->muzzle, 12, 9, 9); break;
+			case  2: VectorSet(self->muzzle, 22, 9, 9); break;
+			case  3: VectorSet(self->muzzle, 20, 9, 9); break;
+			case  4: VectorSet(self->muzzle, 11, 11, 7); break;
+			case  5: VectorSet(self->muzzle, 26, 8, 8); break;
+			case  6: VectorSet(self->muzzle, 18, 9, 7); break;
+			case  7: VectorSet(self->muzzle, 26, 9, 7); break;
+			case  8: VectorSet(self->muzzle, 26, 7.5, 8); break;
+			case  9: VectorSet(self->muzzle, 26, 9, 7); break;
+			case 10: VectorSet(self->muzzle, 22, 11, 7); break;
 			}
 			break;
 		case ACTOR_XENOID:
-			VectorSet(self->muzzle,20,12,7);
+			VectorSet(self->muzzle, 20, 12, 7);
 			break;
 		case ACTOR_ZUMLIN:
 			switch(self->actor_weapon[0])
 			{
-			case  1: VectorSet(self->muzzle,22, 3,8);break;
-			case  2: VectorSet(self->muzzle,20, 2,9);break;
-			case  3: VectorSet(self->muzzle,20, 2,9);break;
-			case  4: VectorSet(self->muzzle, 8, 5,4);break;
-			case  5: VectorSet(self->muzzle,22, 2,4);break;
-			case  6: VectorSet(self->muzzle,20, 2,7);break;
-			case  7: VectorSet(self->muzzle,30, 2,9);break;
-			case  8: VectorSet(self->muzzle,20, 3,2);break;
-			case  9: VectorSet(self->muzzle,26, 2,9);break;
-			case 10: VectorSet(self->muzzle,16, 5,-2);break;
+			case  1: VectorSet(self->muzzle, 22, 3, 8); break;
+			case  2: VectorSet(self->muzzle, 20, 2, 9); break;
+			case  3: VectorSet(self->muzzle, 20, 2, 9); break;
+			case  4: VectorSet(self->muzzle, 8, 5, 4); break;
+			case  5: VectorSet(self->muzzle, 22, 2, 4); break;
+			case  6: VectorSet(self->muzzle, 20, 2, 7); break;
+			case  7: VectorSet(self->muzzle, 30, 2, 9); break;
+			case  8: VectorSet(self->muzzle, 20, 3, 2); break;
+			case  9: VectorSet(self->muzzle, 26, 2, 9); break;
+			case 10: VectorSet(self->muzzle, 16, 5, -2); break;
 			}
 			break;
 		default:
 			switch(self->actor_weapon[0])
 			{
-			case 4: VectorSet(self->muzzle, 6  ,9  ,6  );break;
-			case 5: VectorSet(self->muzzle,20  ,9  ,8  );break;
-			case 8: VectorSet(self->muzzle,18  ,8  ,6  );break;
-			default:VectorSet(self->muzzle,18.4,7.4,9.6);break;
+			case 4: VectorSet(self->muzzle, 6, 9, 6); break;
+			case 5: VectorSet(self->muzzle, 20, 9, 8); break;
+			case 8: VectorSet(self->muzzle, 18, 8, 6); break;
+			default:VectorSet(self->muzzle, 18.4, 7.4, 9.6); break;
 			}
 		}
 	}
 
-	if(!VectorLength(self->muzzle2))
+	if (!VectorLength(self->muzzle2))
 	{
 		switch(ActorID)
 		{
 		case ACTOR_RHINO:
-			VectorSet(self->muzzle2,27,-15,13);
+			VectorSet(self->muzzle2, 27, -15, 13);
 			break;
 		case ACTOR_WALKER:
-			VectorSet(self->muzzle2,9,-11,7);
+			VectorSet(self->muzzle2, 9, -11, 7);
 			break;
 		}
 	}
-	if(VectorLength(self->muzzle2))
+
+	if (VectorLength(self->muzzle2))
 		self->monsterinfo.aiflags |= AI_TWO_GUNS;
 
 	self->pain = actor_pain;
@@ -1548,7 +1528,8 @@ void SP_misc_actor (edict_t *self)
 	self->monsterinfo.sight = NULL;
 	self->monsterinfo.idle = NULL;
 	self->monsterinfo.checkattack = actor_checkattack;
-	if(actorjump->value)
+
+	if (actorjump->value)
 	{
 		self->monsterinfo.jump = actor_jump;
 		self->monsterinfo.jumpup = 48;
@@ -1556,54 +1537,54 @@ void SP_misc_actor (edict_t *self)
 	}
 //	self->monsterinfo.blocked = actor_blocked;
 
-	// There are several actions (mainly following a player leader) that
-	// are only applicable to misc_actor (not other monsters)
+	// There are several actions (mainly following a player leader) that are only applicable to misc_actor (not other monsters)
 	self->monsterinfo.aiflags |= AI_ACTOR;
-	if(!(self->spawnflags & SF_ACTOR_BAD_GUY) || (self->spawnflags & SF_MONSTER_GOODGUY))
+	if (!(self->spawnflags & SF_ACTOR_BAD_GUY) || self->spawnflags & SF_MONSTER_GOODGUY)
 		self->monsterinfo.aiflags |= AI_GOOD_GUY;
 
-	if(self->powerarmor) {
+	if (self->powerarmor)
+	{
 		self->monsterinfo.power_armor_type = POWER_ARMOR_SHIELD;
 		self->monsterinfo.power_armor_power = self->powerarmor;
 	}
 
 	// Minimum distance
-	if(self->actor_weapon[1])
+	if (self->actor_weapon[1])
+	{
 		self->monsterinfo.min_range = 0;
+	}
 	else
 	{
-		int	weapon;
-		weapon = self->actor_weapon[0];
-		if(weapon == 6 || weapon == 7 || weapon == 10)
+		const int weapon = self->actor_weapon[0];
+		if (weapon == 6 || weapon == 7 || weapon == 10)
 			self->monsterinfo.min_range = 200;
 		else
 			self->monsterinfo.min_range = 0;
 	}
+
 	// Ideal range
 	actor_ideal_range(self);
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 
 	self->monsterinfo.currentmove = &actor_move_stand;
-	if(self->health < 0)
+	if (self->health < 0)
 	{
-		mmove_t	*deathmoves[] = {&actor_move_death1,
-			                     &actor_move_death2,
-								 NULL};
-		M_SetDeath(self,(mmove_t **)&deathmoves);
+		mmove_t	*deathmoves[] = { &actor_move_death1, &actor_move_death2, NULL };
+		M_SetDeath(self, (mmove_t **)&deathmoves);
 	}
-	self->monsterinfo.scale = 0.8;
-	walkmonster_start (self);
 
-	// We've built the misc_actor model to include the standard
-	// Q2 male skins, specified with the style key. Default=grunt
+	self->monsterinfo.scale = 0.8f;
+	walkmonster_start(self);
+
+	// We've built the misc_actor model to include the standard Q2 male skins, specified with the style key. Default=grunt
 	self->s.skinnum = self->style;
 
-	// actors always start in a dormant state, they *must* be used to get going
+	// Actors always start in a dormant state, they *must* be used to get going
 	self->use = actor_use;
 
 	// If health > 100000, actor is invulnerable
-	if(self->health >= 100000)
+	if (self->health >= 100000)
 		self->takedamage = DAMAGE_NO;
 
 	self->common_name = "Actor";
@@ -1612,13 +1593,15 @@ void SP_misc_actor (edict_t *self)
 	self->flash = G_Spawn();
 	self->flash->classname = "muzzleflash";
 	self->flash->model = "models/objects/flash/tris.md2";
-	gi.setmodel(self->flash,self->flash->model);
+	gi.setmodel(self->flash, self->flash->model);
+
 	self->flash->solid = SOLID_NOT;
 	self->flash->s.skinnum = 0;
 	self->flash->s.effects = EF_PLASMA;
 	self->flash->s.renderfx = RF_FULLBRIGHT;
 	self->flash->svflags |= SVF_NOCLIENT;
-	VectorCopy(self->s.origin,self->flash->s.origin);
+	VectorCopy(self->s.origin, self->flash->s.origin);
+
 	gi.linkentity(self->flash);
 }
 
@@ -1626,7 +1609,7 @@ void SP_misc_actor (edict_t *self)
 /*QUAKED target_actor (.5 .3 0) (-8 -8 -8) (8 8 8) JUMP SHOOT ATTACK x HOLD BRUTAL
 JUMP			jump in set direction upon reaching this target
 SHOOT			take a single shot at the pathtarget
-ATTACK		    attack pathtarget until it or actor is dead 
+ATTACK			attack pathtarget until it or actor is dead 
 
 "target"		next target_actor
 "pathtarget"	target of any action to be taken at this point
@@ -1637,19 +1620,14 @@ for JUMP only:
 "height"		speed thrown upwards (default 200)
 */
 
-void target_actor_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void target_actor_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	vec3_t	v;
-
-	if (other->movetarget != self)
-		return;
-	
-	if (other->enemy)
+	if (other->movetarget != self || other->enemy)
 		return;
 
 	other->goalentity = other->movetarget = NULL;
 
-	if (self->spawnflags & 1)		//jump
+	if (self->spawnflags & 1) //jump
 	{
 		other->velocity[0] = self->movedir[0] * self->speed;
 		other->velocity[1] = self->movedir[1] * self->speed;
@@ -1658,84 +1636,94 @@ void target_actor_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		{
 			other->groundentity = NULL;
 			other->velocity[2] = self->movedir[2];
-			if(other->monsterinfo.aiflags & AI_ACTOR)
-				gi.sound (self, CHAN_VOICE, other->actor_sound_index[ACTOR_SOUND_JUMP], 1, ATTN_NORM, 0);
+
+			if (other->monsterinfo.aiflags & AI_ACTOR)
+				gi.sound(self, CHAN_VOICE, other->actor_sound_index[ACTOR_SOUND_JUMP], 1, ATTN_NORM, 0);
 		}
+
 		// NOTE: The jump animation won't work UNLESS this target_actor has a target. If this
-		// is the last target_actor in a sequence, the actor's run takes over and prevents
-		// the jump.
+		// is the last target_actor in a sequence, the actor's run takes over and prevents the jump.
 //		if (!Q_stricmp(other->classname,"misc_actor"))
 //			other->monsterinfo.currentmove = &actor_move_jump;
 	}
 
 	if (self->spawnflags & 2)	//shoot
 	{
-		if(self->pathtarget) {
-			if( G_Find(NULL,FOFS(targetname),self->pathtarget) != NULL ) {
+		if (self->pathtarget)
+		{
+			if (G_Find(NULL, FOFS(targetname), self->pathtarget) != NULL)
+			{
 				other->enemy = G_PickTarget(self->pathtarget);
 				if (self->spawnflags & 8)
 				{
 					other->monsterinfo.aiflags |= AI_STAND_GROUND;
-					actor_stand (other);
-				} else
+					actor_stand(other);
+				}
+				else
+				{
 					actor_attack(other);
-			} 
+				}
+			}
 			else
+			{
 				other->enemy = NULL;
-		} else {
+			}
+		}
+		else
+		{
 			other->enemy = NULL;
 		}
 	}
 	else if (self->spawnflags & 4)	//attack
 	{
-		if(self->pathtarget) {
-			if( G_Find(NULL,FOFS(targetname),self->pathtarget) != NULL )
+		if (self->pathtarget)
+		{
+			if (G_Find(NULL, FOFS(targetname), self->pathtarget) != NULL)
 				other->enemy = G_PickTarget(self->pathtarget);
 			else
 				other->enemy = NULL;
-		} else {
+		}
+		else
+		{
 			other->enemy = NULL;
 		}
+
 		if (other->enemy)
 		{
 			other->goalentity = other->enemy;
 			if (self->spawnflags & 32)
 				other->monsterinfo.aiflags |= AI_BRUTAL;
+
 			if (self->spawnflags & 16)
 			{
 				other->monsterinfo.aiflags |= AI_STAND_GROUND;
-				actor_stand (other);
+				actor_stand(other);
 			}
 			else
 			{
-				actor_run (other);
+				actor_run(other);
 			}
 		}
 	}
 
-	if (!(self->spawnflags & 6) && (self->pathtarget))
+	if (!(self->spawnflags & 6) && self->pathtarget)
 	{
-		char *savetarget;
-
-		savetarget = self->target;
+		char *savetarget = self->target;
 		self->target = self->pathtarget;
-		G_UseTargets (self, other);
+		G_UseTargets(self, other);
 		self->target = savetarget;
 	}
 
 	// DWH: Allow blank target field
-	if(self->target)
-		other->movetarget = G_PickTarget(self->target);
-	else
-		other->movetarget = NULL;
+	other->movetarget = (self->target ? G_PickTarget(self->target) : NULL);
 
-	if(!other->goalentity)
+	if (!other->goalentity)
 		other->goalentity = other->movetarget;
 
 	if (self->wait)
 	{
 		other->monsterinfo.pausetime = level.time + self->wait;
-		other->monsterinfo.stand (other);
+		other->monsterinfo.stand(other);
 	}
 	else
 	{
@@ -1743,40 +1731,39 @@ void target_actor_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		if (!other->movetarget && !other->enemy)
 		{
 			other->monsterinfo.pausetime = level.time + 100000000;
-			other->monsterinfo.stand (other);
+			other->monsterinfo.stand(other);
 		}
-		else if (other->movetarget == other->goalentity)
+		else if (other->movetarget && other->movetarget == other->goalentity) // DWH: Bug fix here... possible to get here with NULL movetarget and goalentity
 		{
-			// DWH: Bug fix here... possible to get here with NULL movetarget and goalentity
-			if (other->movetarget) {
-				VectorSubtract (other->movetarget->s.origin, other->s.origin, v);
-				other->ideal_yaw = vectoyaw (v);
-			}
+			vec3_t v;
+			VectorSubtract(other->movetarget->s.origin, other->s.origin, v);
+			other->ideal_yaw = vectoyaw(v);
 		}
 	}
 
 	self->count--;
-	if(!self->count) {
+	if (!self->count)
+	{
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 1;
 	}
-
 }
 
 void SP_target_actor (edict_t *self)
 {
-	if (deathmatch->value) {
+	if (deathmatch->value)
+	{
 		G_FreeEdict(self);
 		return;
 	}
 
 	if (!self->targetname)
-		gi.dprintf ("%s with no targetname at %s\n", self->classname, vtos(self->s.origin));
+		gi.dprintf("%s with no targetname at %s\n", self->classname, vtos(self->s.origin));
 
 	self->solid = SOLID_TRIGGER;
 	self->touch = target_actor_touch;
-	VectorSet (self->mins, -8, -8, -8);
-	VectorSet (self->maxs, 8, 8, 8);
+	VectorSet(self->mins, -8, -8, -8);
+	VectorSet(self->maxs, 8, 8, 8);
 	self->svflags = SVF_NOCLIENT;
 
 	if (self->spawnflags & 1)
@@ -1787,27 +1774,19 @@ void SP_target_actor (edict_t *self)
 			st.height = 200;
 		if (self->s.angles[YAW] == 0)
 			self->s.angles[YAW] = 360;
-		G_SetMovedir (self->s.angles, self->movedir);
+
+		G_SetMovedir(self->s.angles, self->movedir);
 		self->movedir[2] = st.height;
 	}
-	gi.linkentity (self);
+
+	gi.linkentity(self);
 }
 
 qboolean InPak(char *basedir, char *gamedir, char *filename)
 {
-	char			pakfile[256];
-	int				k, kk;
-	int				num, numitems;
-	FILE			*f;
-	pak_header_t	pakheader;
-	pak_item_t		pakitem;
-	qboolean		found = false;
-	
 #ifdef KMQUAKE2_ENGINE_MOD // *.pak/pk3 support
-	char	*file_data;
-	int		file_size = 0;
-
-	file_size = gi.LoadFile(filename, (void **)&file_data);
+	char *file_data;
+	const int file_size = gi.LoadFile(filename, (void **)&file_data);
 
 	if (file_data)
 		gi.FreeFile(file_data);
@@ -1817,133 +1796,155 @@ qboolean InPak(char *basedir, char *gamedir, char *filename)
 #endif
 
 	// Search paks in game folder
-	for(k=9; k>=0 && !found; k--)
+	char pakfile[256];
+	pak_header_t pakheader;
+	pak_item_t pakitem;
+	qboolean found = false;
+
+	for (int k = 9; k >= 0 && !found; k--)
 	{
 		strncpy(pakfile, basedir, sizeof(pakfile));
-		if(strlen(gamedir))
+		if (strlen(gamedir))
 		{
 			strcat(pakfile, "/");
 			strcat(pakfile, gamedir);
 		}
-		strcat(pakfile, va("/pak%d.pak",k));
-		if (NULL != (f = fopen(pakfile, "rb")))
+
+		strcat(pakfile, va("/pak%d.pak", k));
+		FILE *f = fopen(pakfile, "rb");
+		if (f != NULL)
 		{
-			num=fread(&pakheader,1,sizeof(pak_header_t),f);
-			if(num >= sizeof(pak_header_t))
+			const int num = fread(&pakheader, 1, sizeof(pak_header_t), f);
+			if (num >= sizeof(pak_header_t))
 			{
-				if( pakheader.id[0] == 'P' &&
+				if (pakheader.id[0] == 'P' &&
 					pakheader.id[1] == 'A' &&
 					pakheader.id[2] == 'C' &&
-					pakheader.id[3] == 'K'     )
+					pakheader.id[3] == 'K')
 				{
-					numitems = pakheader.dsize/sizeof(pak_item_t);
-					fseek(f,pakheader.dstart,SEEK_SET);
-					for(kk=0; kk<numitems && !found; kk++)
+					const int numitems = pakheader.dsize / sizeof(pak_item_t);
+					fseek(f, pakheader.dstart, SEEK_SET);
+					for (int kk = 0; kk < numitems && !found; kk++)
 					{
-						fread(&pakitem,1,sizeof(pak_item_t),f);
-						if(!Q_stricmp(pakitem.name,filename))
+						fread(&pakitem, 1, sizeof(pak_item_t), f);
+
+						if (!Q_stricmp(pakitem.name, filename))
 							found = true;
 					}
 				}
 			}
+
 			fclose(f);
 		}
 	}
+
 	return found;
 }
 
 typedef struct
 {
-	int		index;
+	int index;
 } actorlist;
 
-void actor_files ()
+void actor_files()
 {
 	char			path[256];
 	char			filename[256];
-	int				s_match, w_match[2];
-	int				i, j, k;
+	int				w_match[2];
 	int				num_actors = 0;
 	actorlist		actors[MAX_EDICTS];
-	cvar_t			*basedir, *cddir, *gamedir;
-	edict_t			*e, *e0;
+	edict_t			*e0;
 	FILE			*f;
 
-	if(deathmatch->value)
+	if (deathmatch->value)
 		return;
 
-	basedir = gi.cvar("basedir", "", 0);
-	cddir   = gi.cvar("cddir",   "", 0);
-	gamedir = gi.cvar("gamedir", "", 0);
+	cvar_t *basedir = gi.cvar("basedir", "", 0);
+	cvar_t *cddir = gi.cvar("cddir", "", 0);
+	cvar_t *gamedir = gi.cvar("gamedir", "", 0);
 
-	memset(&actors,0,MAX_EDICTS*sizeof(actorlist));
+	memset(&actors, 0, MAX_EDICTS * sizeof(actorlist));
 
-	for(i=game.maxclients+1; i<globals.num_edicts; i++) {
-		e = &g_edicts[i];
-		if(!e->inuse) continue;
-		if(!e->classname) continue;
-		if(!(e->monsterinfo.aiflags & AI_ACTOR)) continue;
+	for (int i = game.maxclients + 1; i < globals.num_edicts; i++)
+	{
+		edict_t *e = &g_edicts[i];
+		if (!e->inuse || !e->classname || !(e->monsterinfo.aiflags & AI_ACTOR))
+			continue;
 
-		for(j=0; j<NUM_ACTOR_SOUNDS; j++)
+		for (int j = 0; j < NUM_ACTOR_SOUNDS; j++)
 			e->actor_sound_index[j] = 0;
 
-		s_match    = 0;
+		int s_match = 0;
 		w_match[0] = 0;
 		w_match[1] = 0;
-		if(num_actors > 0) {
-			for(j=0; j<num_actors && (s_match == 0 || w_match[0] == 0 || w_match[1] == 0); j++) {
+
+		if (num_actors > 0)
+		{
+			for (int j = 0; j<num_actors && (s_match == 0 || w_match[0] == 0 || w_match[1] == 0); j++)
+			{
 				e0 = &g_edicts[actors[j].index];
-				if(!Q_stricmp(e->usermodel,e0->usermodel)) {
-					s_match = j+1;
-					if(e->actor_weapon[0] == e0->actor_weapon[0])
-						w_match[0] = j*2+1;
-					else if(e->actor_weapon[0] == e0->actor_weapon[1])
-						w_match[0] = j*2+2;
-					if(e->actor_weapon[1] == e0->actor_weapon[0])
-						w_match[1] = j*2+1;
-					else if(e->actor_weapon[1] == e0->actor_weapon[1])
-						w_match[1] = j*2+2;
+				if (!Q_stricmp(e->usermodel,e0->usermodel))
+				{
+					s_match = j + 1;
+
+					if (e->actor_weapon[0] == e0->actor_weapon[0])
+						w_match[0] = j * 2 + 1;
+					else if (e->actor_weapon[0] == e0->actor_weapon[1])
+						w_match[0] = j * 2 + 2;
+
+					if (e->actor_weapon[1] == e0->actor_weapon[0])
+						w_match[1] = j * 2 + 1;
+					else if (e->actor_weapon[1] == e0->actor_weapon[1])
+						w_match[1] = j * 2 + 2;
 				}
 			}
-			if(s_match) {
-				// copy sound indices from previous actor
+
+			if (s_match)
+			{
+				// Copy sound indices from previous actor
 				e0 = &g_edicts[actors[s_match-1].index];
-				for(j=0; j<NUM_ACTOR_SOUNDS; j++)
+				for (int j = 0; j < NUM_ACTOR_SOUNDS; j++)
 					e->actor_sound_index[j] = e0->actor_sound_index[j];
 			}
-			if(w_match[0]) {
-				k = (w_match[0]-1) % 2;
-				e0 = &g_edicts[actors[ (w_match[0]-k-1)/2 ].index];
+
+			if (w_match[0])
+			{
+				const int k = (w_match[0]-1) % 2;
+				e0 = &g_edicts[actors[(w_match[0] - k - 1) / 2].index];
 				e->s.modelindex2 = e->actor_model_index[0] = e0->actor_model_index[k];
 			}
-			if(w_match[1]) {
-				k = (w_match[1]-1) % 2;
-				e0 = &g_edicts[actors[ (w_match[1]-k-1)/2 ].index];
+
+			if (w_match[1])
+			{
+				const int k = (w_match[1]-1) % 2;
+				e0 = &g_edicts[actors[(w_match[1] - k - 1) / 2].index];
 				e->actor_model_index[1] = e0->actor_model_index[k];
 			}
 		}
-		if(!s_match) {
-			// search for sounds on hard disk and in paks
+
+		if (!s_match)
+		{
+			// Search for sounds on hard disk and in paks
 			actors[num_actors].index  = i;
 			num_actors++;
 			
-			if(!Q_stricmp(e->usermodel,"male") || !Q_stricmp(e->usermodel,"female")) {
-				Com_sprintf(path, sizeof(path), "player/%s/",e->usermodel);
-			} else {
-				Com_sprintf(path, sizeof(path), "../players/%s/",e->usermodel);
-			}
+			if (!Q_stricmp(e->usermodel,"male") || !Q_stricmp(e->usermodel,"female")) 
+				Com_sprintf(path, sizeof(path), "player/%s/", e->usermodel);
+			else
+				Com_sprintf(path, sizeof(path), "../players/%s/", e->usermodel);
 			
-			for(j=0; j<NUM_ACTOR_SOUNDS; j++) {
-
-				if(e->actor_sound_index[j])
+			for (int j = 0; j < NUM_ACTOR_SOUNDS; j++)
+			{
+				if (e->actor_sound_index[j])
 					continue;
 
 				// If it's NOT a custom model, start by looking in game folder
-				if(strlen(gamedir->string))
+				if (strlen(gamedir->string))
 				{
-					Com_sprintf(filename, sizeof(filename), "%s/%s/sound/%s%s",basedir->string,gamedir->string,path,wavname[j]);
+					Com_sprintf(filename, sizeof(filename), "%s/%s/sound/%s%s", basedir->string, gamedir->string, path, wavname[j]);
 					f = fopen(filename,"r");
-					if(f) {
+					if (f)
+					{
 						fclose(f);
 						strncpy(filename, path, sizeof(filename));
 						strcat(filename, wavname[j]);
@@ -1953,7 +1954,8 @@ void actor_files ()
 					
 					// Search paks in game folder
 					Com_sprintf(filename, sizeof(filename), "sound/%s%s",path,wavname[j]);
-					if (InPak(basedir->string,gamedir->string,filename)) {
+					if (InPak(basedir->string,gamedir->string,filename))
+					{
 						strncpy(filename, path, sizeof(filename));
 						strcat(filename, wavname[j]);
 						e->actor_sound_index[j] = gi.soundindex(filename);
@@ -1962,9 +1964,10 @@ void actor_files ()
 				}
 				
 				// Search in baseq2 for external file
-				Com_sprintf(filename, sizeof(filename), "%s/baseq2/sound/%s%s",basedir->string,path,wavname[j]);
+				Com_sprintf(filename, sizeof(filename), "%s/baseq2/sound/%s%s", basedir->string, path, wavname[j]);
 				f = fopen(filename,"r");
-				if(f) {
+				if (f)
+				{
 					fclose(f);
 					strncpy(filename, path, sizeof(filename));
 					strcat(filename, wavname[j]);
@@ -1973,19 +1976,22 @@ void actor_files ()
 				}
 				
 				// Search paks in baseq2
-				Com_sprintf(filename, sizeof(filename), "sound/%s%s",path,wavname[j]);
-				if (InPak(basedir->string,"baseq2",filename)) {
+				Com_sprintf(filename, sizeof(filename), "sound/%s%s", path, wavname[j]);
+				if (InPak(basedir->string, "baseq2", filename))
+				{
 					strncpy(filename, path, sizeof(filename));
 					strcat(filename, wavname[j]);
 					e->actor_sound_index[j] = gi.soundindex(filename);
 					continue;
 				}
 
-				if (strlen(cddir->string)) {
+				if (strlen(cddir->string))
+				{
 					// Search in cddir (minimal installation)
 					Com_sprintf(filename, sizeof(filename), "%s/baseq2/sound/%s%s",cddir->string,path,wavname[j]);
 					f = fopen(filename,"r");
-					if(f) {
+					if (f)
+					{
 						fclose(f);
 						strncpy(filename, path, sizeof(filename));
 						strcat(filename, wavname[j]);
@@ -1994,8 +2000,9 @@ void actor_files ()
 					}
 					
 					// Search paks in baseq2
-					Com_sprintf(filename, sizeof(filename), "sound/%s%s",path,wavname[j]);
-					if (InPak(cddir->string,"baseq2",filename)) {
+					Com_sprintf(filename, sizeof(filename), "sound/%s%s", path, wavname[j]);
+					if (InPak(cddir->string, "baseq2", filename))
+					{
 						strncpy(filename, path, sizeof(filename));
 						strcat(filename, wavname[j]);
 						e->actor_sound_index[j] = gi.soundindex(filename);
@@ -2010,38 +2017,39 @@ void actor_files ()
 		}
 
 		// repeat this WHOLE DAMN THING for weapons
-
-		for(k=0; k<2; k++) {
-			if(w_match[k]) continue;
-			if(!e->actor_weapon[k]) continue;
-			if((k==1) && (e->actor_weapon[0] == e->actor_weapon[1])) {
+		for (int k = 0; k < 2; k++)
+		{
+			if (w_match[k] || !e->actor_weapon[k]) continue;
+			if (k == 1 && (e->actor_weapon[0] == e->actor_weapon[1]))
+			{
 				e->actor_model_index[1] = e->actor_model_index[0];
 				continue;
 			}
-			if(s_match)
+
+			if (s_match)
 			{
 				// Wasn't added to table on account of sounds
-				if(k==0 || w_match[0] > 0) {
-					// Either this is weapon 0, or weapon 0 was a match. Either
-					// way, this guy has something unique and hasn't been added
-					// to the table
+				if (k == 0 || w_match[0] > 0)
+				{
+					// Either this is weapon 0, or weapon 0 was a match. Either way, this guy has something unique and hasn't been added to the table
 					actors[num_actors].index  = i;
 					num_actors++;
 				}
 			}
 
 			Com_sprintf(filename, sizeof(filename), "players/%s/",e->usermodel);
-			switch (e->actor_weapon[k]) {
-			case 2: strcat(filename, "w_shotgun.md2");		break;
-			case 3:	strcat(filename, "w_sshotgun.md2");		break;
-			case 4:	strcat(filename, "w_machinegun.md2");	break;
-			case 5:	strcat(filename, "w_chaingun.md2");		break;
-			case 6:	strcat(filename, "w_glauncher.md2");		break;
-			case 7: strcat(filename, "w_rlauncher.md2");		break;
-			case 8: strcat(filename, "w_hyperblaster.md2");	break;
-			case 9: strcat(filename, "w_railgun.md2");		break;
-			case 10:strcat(filename, "w_bfg.md2");			break;
-			default:strcat(filename, "w_blaster.md2");		break;
+			switch (e->actor_weapon[k])
+			{
+				case 2: strcat(filename, "w_shotgun.md2");		break;
+				case 3:	strcat(filename, "w_sshotgun.md2");		break;
+				case 4:	strcat(filename, "w_machinegun.md2");	break;
+				case 5:	strcat(filename, "w_chaingun.md2");		break;
+				case 6:	strcat(filename, "w_glauncher.md2");	break;
+				case 7: strcat(filename, "w_rlauncher.md2");	break;
+				case 8: strcat(filename, "w_hyperblaster.md2");	break;
+				case 9: strcat(filename, "w_railgun.md2");		break;
+				case 10:strcat(filename, "w_bfg.md2");			break;
+				default:strcat(filename, "w_blaster.md2");		break;
 			}
 
 			if (strlen(gamedir->string))
@@ -2049,14 +2057,16 @@ void actor_files ()
 				// Start in game folder
 				Com_sprintf(path, sizeof(path), "%s/%s/%s",basedir->string,gamedir->string,filename);
 				f = fopen(path,"r");
-				if(f) {
+				if (f)
+				{
 					fclose(f);
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 				
 				// Search pak files in gamedir
-				if (InPak(basedir->string,gamedir->string,filename)) {
+				if (InPak(basedir->string,gamedir->string,filename))
+				{
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
@@ -2065,157 +2075,171 @@ void actor_files ()
 			// Search in baseq2 for external file
 			Com_sprintf(path, sizeof(path), "%s/baseq2/%s",basedir->string,filename);
 			f = fopen(path,"r");
-			if (f) {
+			if (f)
+			{
 				fclose(f);
 				e->actor_model_index[k] = gi.modelindex(filename);
 				continue;
 			}
 			
 			// Search paks in baseq2
-			if (InPak(basedir->string,"baseq2",filename)) {
+			if (InPak(basedir->string,"baseq2",filename))
+			{
 				e->actor_model_index[k] = gi.modelindex(filename);
 				continue;
 			}
 
-			if (strlen(cddir->string)) {
+			if (strlen(cddir->string))
+			{
 				// Search CD for minimal installations
 				Com_sprintf(path, sizeof(path), "%s/baseq2/%s",cddir->string,filename);
 				f = fopen(path,"r");
-				if (f) {
+				if (f)
+				{
 					fclose(f);
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 				
 				// Search paks in baseq2
-				if (InPak(cddir->string,"baseq2",filename)) {
+				if (InPak(cddir->string, "baseq2", filename))
+				{
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 			}
 
 			// If sound is STILL not found, start the fuck over and look for weapon.md2
-			Com_sprintf(filename, sizeof(filename), "players/%s/weapon.md2",e->usermodel);
+			Com_sprintf(filename, sizeof(filename), "players/%s/weapon.md2", e->usermodel);
 
 			if (strlen(gamedir->string))
 			{
 				// Start in game folder
-				Com_sprintf(path, sizeof(path), "%s/%s/%s",basedir->string,gamedir->string,filename);
-				f = fopen(path,"r");
-				if (f) {
+				Com_sprintf(path, sizeof(path), "%s/%s/%s", basedir->string, gamedir->string, filename);
+				f = fopen(path, "r");
+				if (f)
+				{
 					fclose(f);
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 				
 				// Search pak files in gamedir
-				if (InPak(basedir->string,gamedir->string,filename)) {
+				if (InPak(basedir->string, gamedir->string, filename))
+				{
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 			}
 				
 			// Search in baseq2 for external file
-			Com_sprintf(path, sizeof(path), "%s/baseq2/%s",basedir->string,filename);
+			Com_sprintf(path, sizeof(path), "%s/baseq2/%s", basedir->string, filename);
 			f = fopen(path,"r");
-			if (f) {
+			if (f)
+			{
 				fclose(f);
 				e->actor_model_index[k] = gi.modelindex(filename);
 				continue;
 			}
 			
 			// Search paks in baseq2
-			if (InPak(basedir->string,"baseq2",filename)) {
+			if (InPak(basedir->string,"baseq2",filename))
+			{
 				e->actor_model_index[k] = gi.modelindex(filename);
 				continue;
 			}
 
-			if (strlen(cddir->string)) {
+			if (strlen(cddir->string))
+			{
 				// Search CD for minimal installations
-				Com_sprintf(path, sizeof(path), "%s/baseq2/%s",cddir->string,filename);
-				f = fopen(path,"r");
-				if (f) {
+				Com_sprintf(path, sizeof(path), "%s/baseq2/%s", cddir->string, filename);
+				f = fopen(path, "r");
+				if (f)
+				{
 					fclose(f);
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 				
 				// Search paks in baseq2
-				if (InPak(cddir->string,"baseq2",filename)) {
+				if (InPak(cddir->string, "baseq2", filename))
+				{
 					e->actor_model_index[k] = gi.modelindex(filename);
 					continue;
 				}
 			}
 
 			// And if it's STILL not found, use 
-			Com_sprintf(filename,  sizeof(filename), "players/male/weapon.md2");
+			Com_sprintf(filename, sizeof(filename), "players/male/weapon.md2");
 			e->actor_model_index[k] = gi.modelindex(filename);
 		}
+
 		if (e->health > 0)
 			e->s.modelindex2 = e->actor_model_index[e->actor_current_weapon];
 		else
 			e->s.modelindex2 = 0;
+
 		gi.linkentity(e);
 	}
 }
 
 void actor_moveit (edict_t *player, edict_t *actor)
 {
-	edict_t	*thing;
-	trace_t	tr;
 	vec3_t	dir, end;
 	vec_t	d[3];
-	vec_t	temp;
-	vec_t	travel;
-	int	best=0;
+	int	best = 0;
 
-	if(!(actor->monsterinfo.aiflags & AI_FOLLOW_LEADER))
+	if (!(actor->monsterinfo.aiflags & AI_FOLLOW_LEADER) || actor->enemy || actor->health <= 0)
 		return;
-	if(actor->enemy)
-		return;
-	if(actor->health <= 0)
-		return;
-	travel = 256 + 128*crandom();
-	thing  = actor->vehicle;
-	if(!thing || !thing->inuse || Q_stricmp(thing->classname,"thing"))
+
+	const vec_t travel = 256 + 128 * crandom();
+	edict_t *thing = actor->vehicle;
+	if (!thing || !thing->inuse || Q_stricmp(thing->classname, "thing"))
 		thing = actor->vehicle = SpawnThing();
-	VectorSubtract(actor->s.origin,player->s.origin,dir);
+
+	VectorSubtract(actor->s.origin, player->s.origin, dir);
 	dir[2] = 0;
 	VectorNormalize(dir);
-	if(!VectorLength(dir))
-		VectorSet(dir,1.0,0.,0.);
-	VectorMA(actor->s.origin,travel,dir,end);
-	tr = gi.trace(actor->s.origin,NULL,NULL,end,actor,MASK_MONSTERSOLID);
+
+	if (!VectorLength(dir))
+		VectorSet(dir, 1.0f, 0.0f, 0.0f);
+
+	VectorMA(actor->s.origin, travel, dir, end);
+	trace_t tr = gi.trace(actor->s.origin, NULL, NULL, end, actor, MASK_MONSTERSOLID);
 	d[best] = tr.fraction * travel;
-	if(d[best] < 64)
+
+	if (d[best] < 64)
 	{
-		temp   = dir[0];
+		vec_t temp = dir[0];
 		dir[0] = -dir[1];
 		dir[1] = temp;
-		VectorMA(actor->s.origin,travel,dir,end);
-		tr = gi.trace(actor->s.origin,NULL,NULL,end,actor,MASK_MONSTERSOLID);
+		VectorMA(actor->s.origin, travel, dir, end);
+		tr = gi.trace(actor->s.origin, NULL, NULL, end, actor, MASK_MONSTERSOLID);
 		best = 1;
 		d[best] = tr.fraction * travel;
-		if(d[best] < 64)
+		
+		if (d[best] < 64)
 		{
 			dir[0] = -dir[0];
 			dir[1] = -dir[1];
-			VectorMA(actor->s.origin,travel,dir,end);
-			tr = gi.trace(actor->s.origin,NULL,NULL,end,actor,MASK_MONSTERSOLID);
+			VectorMA(actor->s.origin, travel, dir, end);
+			tr = gi.trace(actor->s.origin, NULL, NULL, end, actor, MASK_MONSTERSOLID);
 			best = 2;
 			d[best] = tr.fraction * travel;
-			if(d[best] < 64)
+			
+			if (d[best] < 64)
 			{
-				if(d[0] > d[1] && d[0] > d[2])
+				if (d[0] > d[1] && d[0] > d[2])
 					best = 0;
-				else if(d[1] > d[0] && d[1] > d[2])
+				else if (d[1] > d[0] && d[1] > d[2])
 					best = 1;
-				if(best==1)
+
+				if (best == 1)
 				{
 					dir[0] = -dir[0];
 					dir[1] = -dir[1];
 				}
-				else if(best==0)
+				else if (best == 0)
 				{
 					temp   = -dir[1];
 					dir[1] = dir[0];
@@ -2224,15 +2248,16 @@ void actor_moveit (edict_t *player, edict_t *actor)
 			}
 		}
 	}
+
 	VectorCopy(tr.endpos, thing->s.origin);
-	thing->touch_debounce_time = level.time + max(5.0,d[best]/50.);
+	thing->touch_debounce_time = level.time + max(5.0f, d[best] / 50.0f);
 	thing->target_ent = actor;
 	ED_CallSpawn(thing);
 	actor->monsterinfo.aiflags |= AI_CHASE_THING;
 	actor->movetarget = actor->goalentity = thing;
 	actor->monsterinfo.old_leader = player;
 	actor->monsterinfo.leader = thing;
-	VectorSubtract (thing->s.origin, actor->s.origin, dir);
+	VectorSubtract(thing->s.origin, actor->s.origin, dir);
 	actor->ideal_yaw = vectoyaw(dir);
 	actor->monsterinfo.run(actor);
 }
