@@ -755,33 +755,17 @@ void soldier_dodge (edict_t *self, edict_t *attacker, float eta)
 	if (skill->value == 0)
 	{
 		self->monsterinfo.currentmove = &soldier_move_duck;
-		return;
 	}
-
-	self->monsterinfo.pausetime = level.time + eta + 0.3;
-	const float r = random();
-
-	if (skill->value == 1)
+	else
 	{
-		if (r > 0.33f)
+		self->monsterinfo.pausetime = level.time + eta + 0.3;
+		const float chance = (skill->value == 1 ? 0.33f : 0.66f);
+
+		if (random() > chance)
 			self->monsterinfo.currentmove = &soldier_move_duck;
 		else
 			self->monsterinfo.currentmove = &soldier_move_attack3;
-
-		return;
 	}
-
-	if (skill->value >= 2)
-	{
-		if (r > 0.66f)
-			self->monsterinfo.currentmove = &soldier_move_duck;
-		else
-			self->monsterinfo.currentmove = &soldier_move_attack3;
-
-		return;
-	}
-
-	self->monsterinfo.currentmove = &soldier_move_attack3;
 }
 
 //

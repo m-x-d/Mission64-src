@@ -48,50 +48,55 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //			       3 : NO DROP - solid but not affected by gravity
 //                 4 : SOLID_NOT, but affect by gravity
 //
-//	NOTE : if you want the model to be solid then you must enter vector values into the following fields :
+//	NOTE : if you want the model to be solid then you must enter vector values into the following fields:
 //	"bleft" = the point that is at the bottom left of the models bounding box in a model editor
 //	"tright" = the point that is at the top left of the models bounding box in a model editor
 //
 
-#define	TOGGLE		    2
+#define	TOGGLE			2
 #define	PLAYER_MODEL	8
 #define	NO_MODEL		16
 #define ANIM_ONCE		32
 
-void model_spawn_use (edict_t *self, edict_t *other, edict_t *activator);
-void modelspawn_think (edict_t *self)
+void model_spawn_use(edict_t *self, edict_t *other, edict_t *activator);
+
+void modelspawn_think(edict_t *self)
 {
 	self->s.frame++;
+
 	if (self->s.frame >= self->framenumbers)
 	{
 		self->s.frame = self->startframe;
-		if(self->spawnflags & ANIM_ONCE)
+		if (self->spawnflags & ANIM_ONCE)
 		{
-			model_spawn_use(self,world,world);
+			model_spawn_use(self, world, world);
 			return;
 		}
 	}
+
 	self->nextthink = level.time + FRAMETIME;
 	gi.linkentity(self);
 }
 
-void model_spawn_use (edict_t *self, edict_t *other, edict_t *activator)
+void model_spawn_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->delay) //we started off
 	{
 		self->svflags &= ~SVF_NOCLIENT;
 		self->delay = 0;
-		if(self->framenumbers > 1)
+
+		if (self->framenumbers > 1)
 		{
 			self->think = modelspawn_think;
 			self->nextthink = level.time + FRAMETIME;
 		}
+
 		self->s.sound = self->noise_index;
 #ifdef LOOP_SOUND_ATTENUATION
 		self->s.attenuation = self->attenuation;
 #endif
 	}
-	else             //we started active
+	else //we started active
 	{
 		self->svflags |= SVF_NOCLIENT;
 		self->delay = 1;
@@ -102,18 +107,22 @@ void model_spawn_use (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void model_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void model_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	edict_t	*e, *next;
-
-	e = self->movewith_next;
-	while(e) {
-		next = e->movewith_next;
-		if(e->solid == SOLID_NOT) {
+	edict_t *e = self->movewith_next;
+	while(e)
+	{
+		edict_t *next = e->movewith_next;
+		if (e->solid == SOLID_NOT)
+		{
 			e->nextthink = 0;
 			G_FreeEdict(e);
-		} else
-			BecomeExplosion1 (e);
+		}
+		else
+		{
+			BecomeExplosion1(e);
+		}
+
 		e = next;
 	}
 
@@ -124,10 +133,10 @@ void model_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 
 void SP_model_spawn (edict_t *ent)
 {
-	char	modelname[256];
+	char modelname[256];
 
 	//paranoia checks
-	if ((!ent->usermodel) && !(ent->spawnflags & NO_MODEL) && !(ent->spawnflags & PLAYER_MODEL))
+	if (!ent->usermodel && !(ent->spawnflags & NO_MODEL) && !(ent->spawnflags & PLAYER_MODEL))
 	{
 		gi.dprintf("%s without a model at %s\n", ent->classname, vtos(ent->s.origin));
 		G_FreeEdict(ent);
@@ -136,17 +145,17 @@ void SP_model_spawn (edict_t *ent)
 
 	switch (ent->solidstate)
 	{
-		case 1 : ent->solid = SOLID_NOT; ent->movetype = MOVETYPE_NONE; break;
+		case 1 : ent->solid = SOLID_NOT;  ent->movetype = MOVETYPE_NONE; break;
 		case 2 : ent->solid = SOLID_BBOX; ent->movetype = MOVETYPE_TOSS; break;
 		case 3 : ent->solid = SOLID_BBOX; ent->movetype = MOVETYPE_NONE; break;
-		case 4 : ent->solid = SOLID_NOT; ent->movetype = MOVETYPE_TOSS; break;
-		default: ent->solid = SOLID_NOT; ent->movetype = MOVETYPE_NONE; break;
+		case 4 : ent->solid = SOLID_NOT;  ent->movetype = MOVETYPE_TOSS; break;
+		default: ent->solid = SOLID_NOT;  ent->movetype = MOVETYPE_NONE; break;
 	}
-	if (ent->solid != SOLID_NOT ) {
-		if (ent->health > 0) {
-			ent->die = model_die;
-			ent->takedamage = DAMAGE_YES;
-		}
+
+	if (ent->solid != SOLID_NOT && ent->health > 0)
+	{
+		ent->die = model_die;
+		ent->takedamage = DAMAGE_YES;
 	}
 
 	switch (ent->style)
@@ -157,9 +166,7 @@ void SP_model_spawn (edict_t *ent)
 		case 4 : ent->s.effects |= EF_ANIM_ALLFAST; break;
 	}
 
-	// DWH: Rather than use one value (renderfx) we use the
-	//      actual values for effects and renderfx. All may
-	//      be combined.
+	// DWH: Rather than use one value (renderfx) we use the actual values for effects and renderfx. All may be combined.
 	ent->s.effects  |= ent->effects;
 	ent->s.renderfx |= ent->renderfx;
 
@@ -167,84 +174,88 @@ void SP_model_spawn (edict_t *ent)
 		ent->startframe = 0;
 	if (!ent->framenumbers)
 		ent->framenumbers = 1;
+
 	// Change framenumbers to last frame to play
 	ent->framenumbers += ent->startframe;
 
-	if (ent->bleft)
+	if (VectorLength(ent->bleft))
 	{
-		VectorCopy (ent->bleft, ent->mins);
+		VectorCopy(ent->bleft, ent->mins);
 	}
-	else
+	else if (ent->solid != SOLID_NOT)
 	{
-		if (ent->solid != SOLID_NOT)
-		{
-			gi.dprintf("%s solid with no bleft vector at %s\n", ent->classname, vtos(ent->s.origin));
-			ent->solid = SOLID_NOT;
-		}
+		gi.dprintf("Solid %s with no bleft vector at %s\n", ent->classname, vtos(ent->s.origin));
+		ent->solid = SOLID_NOT;
 	}
 
-	if (ent->tright)
+	if (VectorLength(ent->tright))
 	{
-		VectorCopy (ent->tright, ent->maxs);
+		VectorCopy(ent->tright, ent->maxs);
 	}
-	else
+	else if (ent->solid != SOLID_NOT)
 	{
-		if (ent->solid != SOLID_NOT)
-		{
-			gi.dprintf("%s solid with no tright vector at %s\n", ent->classname, vtos(ent->s.origin));
-			ent->solid = SOLID_NOT;
-		}
+		gi.dprintf("Solid %s with no tright vector at %s\n", ent->classname, vtos(ent->s.origin));
+		ent->solid = SOLID_NOT;
 	}
 
-//	if(ent->movewith && (ent->solid == SOLID_BBOX))
-	if(ent->movewith)
+	if (ent->movewith)
 		ent->movetype = MOVETYPE_PUSH;
 
 	if (ent->solid != SOLID_NOT)
-		ent->clipmask = CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_MONSTERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER;
+		ent->clipmask = CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_MONSTERCLIP | CONTENTS_WINDOW | CONTENTS_MONSTER;
 
 	if (ent->spawnflags & NO_MODEL)
-	{	// For rendering effects to work, we MUST use a model
-		ent->s.modelindex = gi.modelindex ("sprites/point.sp2");
+	{
+		// For rendering effects to work, we MUST use a model
+		ent->s.modelindex = gi.modelindex("sprites/point.sp2");
 		ent->movetype = MOVETYPE_NOCLIP;
 	}
 	else
 	{
-		if (ent->spawnflags & PLAYER_MODEL) {
-			if(!ent->usermodel || !strlen(ent->usermodel))
-				ent->s.modelindex = MAX_MODELS-1;
+		if (ent->spawnflags & PLAYER_MODEL)
+		{
+			if (!ent->usermodel || !strlen(ent->usermodel))
+			{
+				ent->s.modelindex = MAX_MODELS - 1;
+			}
 			else
 			{
-				if (strstr(ent->usermodel,"tris.md2"))
+				if (strstr(ent->usermodel, "tris.md2"))
 					Com_sprintf(modelname, sizeof(modelname), "players/%s", ent->usermodel);
 				else
 					Com_sprintf(modelname, sizeof(modelname), "players/%s/tris.md2", ent->usermodel);
+
 				ent->s.modelindex = gi.modelindex(modelname);
 			}
 		}
 		else
 		{
-			if (strstr(ent->usermodel,".sp2")) {
+			if (strstr(ent->usermodel,".sp2"))
+			{
 				// Knightmare- check for "sprites/" already in path
-				if ( !strncmp(ent->usermodel, "sprites/", 8) )
+				if (!strncmp(ent->usermodel, "sprites/", 8))
 					Com_sprintf(modelname, sizeof(modelname), "%s", ent->usermodel);
 				else
 					Com_sprintf(modelname, sizeof(modelname), "sprites/%s", ent->usermodel);
 			}
-			else {
+			else
+			{
 				// Knightmare- check for "models/" already in path
-				if ( !strncmp(ent->usermodel, "models/", 7) )
+				if (!strncmp(ent->usermodel, "models/", 7))
 					Com_sprintf(modelname, sizeof(modelname), "%s", ent->usermodel);
 				else
 					Com_sprintf(modelname, sizeof(modelname), "models/%s", ent->usermodel);
 			}
-			ent->s.modelindex = gi.modelindex (modelname);
+
+			ent->s.modelindex = gi.modelindex(modelname);
 		}
+
 		ent->s.frame = ent->startframe;
 	}
 
 	if (st.noise)
-		ent->noise_index = gi.soundindex  (st.noise);
+		ent->noise_index = gi.soundindex(st.noise);
+
 	ent->s.sound = ent->noise_index;
 #ifdef LOOP_SOUND_ATTENUATION
 	ent->s.attenuation = ent->attenuation;
@@ -262,10 +273,11 @@ void SP_model_spawn (edict_t *ent)
 		ent->use = model_spawn_use;
 	}
 
-	if(!(ent->s.effects & ANIM_MASK) && (ent->framenumbers > 1))
+	if (!(ent->s.effects & ANIM_MASK) && ent->framenumbers > 1)
 	{
 		ent->think = modelspawn_think;
-		ent->nextthink = level.time + 2*FRAMETIME;
+		ent->nextthink = level.time + 2 * FRAMETIME;
 	}
-	gi.linkentity (ent);
+
+	gi.linkentity(ent);
 }
