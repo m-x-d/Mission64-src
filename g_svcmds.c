@@ -22,9 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 
 
-void	Svcmd_Test_f (void)
+void Svcmd_Test_f (void)
 {
-	safe_cprintf (NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
+	safe_cprintf(NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
 }
 
 /*
@@ -50,9 +50,8 @@ Dumps "addip <ip>" commands to listip.cfg so it can be execed at a later date.  
 
 filterban <0 or 1>
 
-If 1 (the default), then ip addresses matching the current list will be prohibited from entering the game.  This is the default setting.
-
-If 0, then only addresses matching the list will be allowed.  This lets you easily set up a private game, or a game that only allows players from your local network.
+If 1 (the default), then ip addresses matching the current list will be prohibited from entering the game. This is the default setting.
+If 0, then only addresses matching the list will be allowed. This lets you easily set up a private game, or a game that only allows players from your local network.
 
 
 ==============================================================================
@@ -77,17 +76,16 @@ StringToFilter
 static qboolean StringToFilter (char *s, ipfilter_t *f)
 {
 	char	num[128];
-	int		i, j;
 	byte	b[4];
 	byte	m[4];
 	
-	for (i=0 ; i<4 ; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		b[i] = 0;
 		m[i] = 0;
 	}
 	
-	for (i=0 ; i<4 ; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (*s < '0' || *s > '9')
 		{
@@ -95,11 +93,12 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 			return false;
 		}
 		
-		j = 0;
+		int j = 0;
 		while (*s >= '0' && *s <= '9')
 		{
 			num[j++] = *s++;
 		}
+
 		num[j] = 0;
 		b[i] = atoi(num);
 		if (b[i] != 0)
@@ -107,6 +106,7 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 
 		if (!*s)
 			break;
+
 		s++;
 	}
 	
@@ -123,28 +123,30 @@ SV_FilterPacket
 */
 qboolean SV_FilterPacket (char *from)
 {
-	int		i;
-	unsigned	in;
 	byte m[4];
-	char *p;
 
-	i = 0;
-	p = from;
-	while (*p && i < 4) {
+	int i = 0;
+	char *p = from;
+
+	while (*p && i < 4)
+	{
 		m[i] = 0;
-		while (*p >= '0' && *p <= '9') {
+		while (*p >= '0' && *p <= '9')
+		{
 			m[i] = m[i]*10 + (*p - '0');
 			p++;
 		}
+
 		if (!*p || *p == ':')
 			break;
+
 		i++, p++;
 	}
-	
-	in = *(unsigned *)m;
 
-	for (i=0 ; i<numipfilters ; i++)
-		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
+	const unsigned in = *(unsigned *)m;
+
+	for (i = 0; i < numipfilters; i++)
+		if ((in & ipfilters[i].mask) == ipfilters[i].compare)
 			return (int)filterban->value;
 
 	return (int)!filterban->value;
@@ -158,28 +160,30 @@ SV_AddIP_f
 */
 void SVCmd_AddIP_f (void)
 {
-	int		i;
-	
-	if (gi.argc() < 3) {
-		safe_cprintf(NULL, PRINT_HIGH, "Usage:  addip <ip-mask>\n");
+	if (gi.argc() < 3)
+	{
+		safe_cprintf(NULL, PRINT_HIGH, "Usage: addip <ip-mask>\n");
 		return;
 	}
 
-	for (i=0 ; i<numipfilters ; i++)
-		if (ipfilters[i].compare == 0xffffffff)
-			break;		// free spot
-	if (i == numipfilters)
+	int ipfilter;
+	for (ipfilter = 0; ipfilter < numipfilters; ipfilter++)
+		if (ipfilters[ipfilter].compare == 0xffffffff)
+			break; // free spot
+
+	if (ipfilter == numipfilters)
 	{
 		if (numipfilters == MAX_IPFILTERS)
 		{
-			safe_cprintf (NULL, PRINT_HIGH, "IP filter list is full\n");
+			safe_cprintf(NULL, PRINT_HIGH, "IP filter list is full\n");
 			return;
 		}
+
 		numipfilters++;
 	}
 	
-	if (!StringToFilter (gi.argv(2), &ipfilters[i]))
-		ipfilters[i].compare = 0xffffffff;
+	if (!StringToFilter(gi.argv(2), &ipfilters[ipfilter]))
+		ipfilters[ipfilter].compare = 0xffffffff;
 }
 
 /*
@@ -189,28 +193,31 @@ SV_RemoveIP_f
 */
 void SVCmd_RemoveIP_f (void)
 {
-	ipfilter_t	f;
-	int			i, j;
-
-	if (gi.argc() < 3) {
-		safe_cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
+	if (gi.argc() < 3)
+	{
+		safe_cprintf(NULL, PRINT_HIGH, "Usage: sv removeip <ip-mask>\n");
 		return;
 	}
 
-	if (!StringToFilter (gi.argv(2), &f))
+	ipfilter_t ipfilter;
+	if (!StringToFilter(gi.argv(2), &ipfilter))
 		return;
 
-	for (i=0 ; i<numipfilters ; i++)
-		if (ipfilters[i].mask == f.mask
-		&& ipfilters[i].compare == f.compare)
+	for (int i = 0; i < numipfilters; i++)
+	{
+		if (ipfilters[i].mask == ipfilter.mask	&& ipfilters[i].compare == ipfilter.compare)
 		{
-			for (j=i+1 ; j<numipfilters ; j++)
-				ipfilters[j-1] = ipfilters[j];
+			for (int j = i + 1; j < numipfilters; j++)
+				ipfilters[j - 1] = ipfilters[j];
+
 			numipfilters--;
-			safe_cprintf (NULL, PRINT_HIGH, "Removed.\n");
+			safe_cprintf(NULL, PRINT_HIGH, "Removed.\n");
+
 			return;
 		}
-	safe_cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
+	}
+
+	safe_cprintf(NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
 }
 
 /*
@@ -220,14 +227,13 @@ SV_ListIP_f
 */
 void SVCmd_ListIP_f (void)
 {
-	int		i;
 	byte	b[4];
 
-	safe_cprintf (NULL, PRINT_HIGH, "Filter list:\n");
-	for (i=0 ; i<numipfilters ; i++)
+	safe_cprintf(NULL, PRINT_HIGH, "Filter list:\n");
+	for (int i = 0; i < numipfilters; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
-		safe_cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
+		safe_cprintf(NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
 	}
 }
 
@@ -236,39 +242,36 @@ void SVCmd_ListIP_f (void)
 SV_WriteIP_f
 =================
 */
-void SVCmd_WriteIP_f (void)
+void SVCmd_WriteIP_f(void)
 {
-	FILE	*f;
 	char	name[MAX_OSPATH];
 	byte	b[4];
-	int		i;
-	cvar_t	*game;
 
-	game = gi.cvar("game", "", 0);
+	cvar_t *game = gi.cvar("game", "", 0);
 
 	if (!*game->string)
-		Com_sprintf (name, sizeof(name), "%s/listip.cfg", GAMEVERSION);
+		Com_sprintf(name, sizeof(name), "%s/listip.cfg", GAMEVERSION);
 	else
-		Com_sprintf (name, sizeof(name), "%s/listip.cfg", game->string);
+		Com_sprintf(name, sizeof(name), "%s/listip.cfg", game->string);
 
-	safe_cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
+	safe_cprintf(NULL, PRINT_HIGH, "Writing %s.\n", name);
 
-	f = fopen (name, "wb");
+	FILE *f = fopen(name, "wb");
 	if (!f)
 	{
-		safe_cprintf (NULL, PRINT_HIGH, "Couldn't open %s\n", name);
+		safe_cprintf(NULL, PRINT_HIGH, "Couldn't open %s\n", name);
 		return;
 	}
 	
 	fprintf(f, "set filterban %d\n", (int)filterban->value);
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (int i = 0; i < numipfilters; i++)
 	{
 		*(unsigned *)b = ipfilters[i].compare;
 		fprintf (f, "sv addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
 	}
 	
-	fclose (f);
+	fclose(f);
 }
 
 /*
@@ -276,85 +279,86 @@ void SVCmd_WriteIP_f (void)
 ServerCommand
 
 ServerCommand will be called when an "sv" command is issued.
-The game can issue gi.argc() / gi.argv() commands to get the rest
-of the parameters
+The game can issue gi.argc() / gi.argv() commands to get the rest of the parameters
 =================
 */
-void	ServerCommand (void)
+void ServerCommand (void)
 {
-	char	*cmd;
+	char *cmd = gi.argv(1);
 
-	cmd = gi.argv(1);
-	if (Q_stricmp (cmd, "test") == 0)
-		Svcmd_Test_f ();
-	else if (Q_stricmp (cmd, "addip") == 0)
-		SVCmd_AddIP_f ();
-	else if (Q_stricmp (cmd, "removeip") == 0)
-		SVCmd_RemoveIP_f ();
-	else if (Q_stricmp (cmd, "listip") == 0)
-		SVCmd_ListIP_f ();
-	else if (Q_stricmp (cmd, "writeip") == 0)
-		SVCmd_WriteIP_f ();
-
+	if (Q_stricmp(cmd, "test") == 0)
+		Svcmd_Test_f();
+	else if (Q_stricmp(cmd, "addip") == 0)
+		SVCmd_AddIP_f();
+	else if (Q_stricmp(cmd, "removeip") == 0)
+		SVCmd_RemoveIP_f();
+	else if (Q_stricmp(cmd, "listip") == 0)
+		SVCmd_ListIP_f();
+	else if (Q_stricmp(cmd, "writeip") == 0)
+		SVCmd_WriteIP_f();
 // ACEBOT_ADD
-	else if(Q_stricmp (cmd, "acedebug") == 0)
- 		if (strcmp(gi.argv(2),"on")==0)
+	else if (Q_stricmp(cmd, "acedebug") == 0)
+	{
+		if (strcmp(gi.argv(2), "on") == 0)
 		{
-			safe_bprintf (PRINT_MEDIUM, "ACE: Debug Mode On\n");
+			safe_bprintf(PRINT_MEDIUM, "ACE: Debug Mode On\n");
 			debug_mode = true;
 		}
 		else
 		{
-			safe_bprintf (PRINT_MEDIUM, "ACE: Debug Mode Off\n");
+			safe_bprintf(PRINT_MEDIUM, "ACE: Debug Mode Off\n");
 			debug_mode = false;
 		}
-
-	else if (Q_stricmp (cmd, "addbot") == 0)
+	}
+	else if (Q_stricmp(cmd, "addbot") == 0)
 	{
 		if (!deathmatch->value) // Knightmare added
 		{
-			safe_bprintf (PRINT_MEDIUM, "ACE: Can only spawn bots in deathmatch mode.\n");
+			safe_bprintf(PRINT_MEDIUM, "ACE: Can only spawn bots in deathmatch mode.\n");
 			return;
 		}
-		if(ctf->value) // name, skin, team
+
+		if (ctf->value) // name, skin, team
 			ACESP_SpawnBot (gi.argv(2), gi.argv(3), gi.argv(4), NULL);
 		else // name, skin
 			ACESP_SpawnBot (NULL, gi.argv(2), gi.argv(3), NULL);
 	}	
-
 	// removebot
-    else if(Q_stricmp (cmd, "removebot") == 0)
-    	ACESP_RemoveBot(gi.argv(2));
+	else if (Q_stricmp(cmd, "removebot") == 0)
+		ACESP_RemoveBot(gi.argv(2));
 	// Node saving
-	else if(Q_stricmp (cmd, "savenodes") == 0)
-    	ACEND_SaveNodes();
+	else if (Q_stricmp(cmd, "savenodes") == 0)
+		ACEND_SaveNodes();
 // ACEBOT_END
 	// Knightmare added- DM pause
-    else if(Q_stricmp (cmd, "dmpause") == 0)
+	else if (Q_stricmp(cmd, "dmpause") == 0)
 	{
-		if (!deathmatch->value) {
-			safe_cprintf (NULL, PRINT_HIGH, "Dmpause only works in deathmatch.\n", cmd);
+		if (!deathmatch->value)
+		{
+			safe_cprintf(NULL, PRINT_HIGH, "Dmpause only works in deathmatch.\n", cmd);
 			paused = false;
 			return;
 		}
+
 		paused = !paused;
+
 		if (!paused) // unfreeze players
 		{
-			int	i;
-			edict_t *player;
-			for (i=0; i<game.maxclients; i++)
+			for (int i = 0; i < game.maxclients; i++)
 			{
-				player = &g_edicts[1+i];
-				if (!player->inuse || !player->client)
+				edict_t *player = &g_edicts[1 + i];
+
+				if (!player->inuse || !player->client || player->is_bot || player->client->ctf_grapple)
 					continue;
-				if (player->is_bot || player->client->ctf_grapple)
-					continue;
+
 				player->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 			}
-			safe_bprintf (PRINT_HIGH, "Game unpaused\n");
+
+			safe_bprintf(PRINT_HIGH, "Game unpaused\n");
 		}
 	}
 	else
-		safe_cprintf (NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
+	{
+		safe_cprintf(NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
+	}
 }
-

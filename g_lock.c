@@ -264,7 +264,6 @@ void lock_clue_think(edict_t *self)
 void lock_clue_initialize(edict_t *self)
 {
 	// Randomize the revealed digits so spinning display doesn't show the same numbers across the board.
-
 	if (self->team)
 	{
 		for (edict_t *e = self->teammaster; e; e = e->teamchain)

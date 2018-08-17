@@ -33,12 +33,12 @@ void SP_info_player_coop (edict_t *ent);
 void SP_info_player_intermission (edict_t *ent);
 
 void SP_func_plat (edict_t *ent);
-void SP_func_rotating (edict_t *ent);
+void SP_func_rotating(edict_t *ent);
 void SP_func_button (edict_t *ent);
 void SP_func_door (edict_t *ent);
 void SP_func_door_dh (edict_t *ent); //mxd
 void SP_func_door_secret (edict_t *ent);
-void SP_func_door_rotating (edict_t *ent);
+void SP_func_door_rotating(edict_t *ent);
 void SP_func_water (edict_t *ent);
 void SP_func_train (edict_t *ent);
 void SP_func_conveyor (edict_t *self);
@@ -146,7 +146,7 @@ void SP_crane_beam (edict_t *self);
 void SP_crane_hoist (edict_t *self);
 void SP_crane_hook (edict_t *self);
 void SP_crane_control (edict_t *self);
-void SP_crane_reset (edict_t *self);
+void SP_crane_reset(edict_t *self);
 void SP_hint_path (edict_t *self);
 void SP_func_bobbingwater (edict_t *self);
 void SP_func_door_rot_dh (edict_t *self);
@@ -474,47 +474,48 @@ ED_CallSpawn
 Finds the spawn function for the entity and calls it
 ===============
 */
-void ED_CallSpawn (edict_t *ent)
+void ED_CallSpawn(edict_t *ent)
 {
-	spawn_t	*s;
 	gitem_t	*item;
 	int		i;
 
 	// Lazarus: if this fails, edict is freed.
-
 	if (!ent->classname)
 	{
-		gi.dprintf ("ED_CallSpawn: NULL classname\n");
+		gi.dprintf("ED_CallSpawn: NULL classname\n");
 		G_FreeEdict(ent);
 		return;
 	}
 
-	// Lazarus: Preserve original angles for movewith stuff 
-	//          before G_SetMoveDir wipes 'em out
+	// Lazarus: Preserve original angles for movewith stuff before G_SetMoveDir wipes 'em out
 	VectorCopy(ent->s.angles, ent->org_angles);
 
 	// check item spawn functions
-	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
+	for (i = 0, item = itemlist; i < game.num_items; i++,item++)
 	{
 		if (!item->classname)
 			continue;
+
 		if (!strcmp(item->classname, ent->classname))
-		{	// found it
-			SpawnItem (ent, item);
+		{	
+			// found it
+			SpawnItem(ent, item);
 			return;
 		}
 	}
 
 	// check normal spawn functions
-	for (s=spawns ; s->name ; s++)
+	for (spawn_t *s = spawns; s->name; s++)
 	{
 		if (!strcmp(s->name, ent->classname))
-		{	// found it
-			s->spawn (ent);
+		{	
+			// found it
+			s->spawn(ent);
 			return;
 		}
 	}
-	gi.dprintf ("%s doesn't have a spawn function\n", ent->classname);
+
+	gi.dprintf("%s doesn't have a spawn function\n", ent->classname);
 	G_FreeEdict(ent);
 }
 
@@ -525,18 +526,13 @@ ED_NewString
 */
 char *ED_NewString (char *string)
 {
-	char	*newb, *new_p;
-	int		i,l;
-	
-	l = strlen(string) + 1;
+	const int l = strlen(string) + 1;
+	char *newb = gi.TagMalloc(l, TAG_LEVEL);
+	char *new_p = newb;
 
-	newb = gi.TagMalloc (l, TAG_LEVEL);
-
-	new_p = newb;
-
-	for (i=0 ; i< l ; i++)
+	for (int i = 0; i < l; i++)
 	{
-		if (string[i] == '\\' && i < l-1)
+		if (string[i] == '\\' && i < l - 1)
 		{
 			i++;
 			if (string[i] == 'n')
@@ -551,9 +547,6 @@ char *ED_NewString (char *string)
 	return newb;
 }
 
-
-
-
 /*
 ===============
 ED_ParseField
@@ -564,15 +557,15 @@ in an edict
 */
 void ED_ParseField (char *key, char *value, edict_t *ent)
 {
-	field_t	*f;
 	byte	*b;
 	float	v;
 	vec3_t	vec;
 
-	for (f=fields ; f->name ; f++)
+	for (field_t *f = fields; f->name; f++)
 	{
 		if (!(f->flags & FFL_NOSPAWN) && !Q_stricmp(f->name, key))
-		{	// found it
+		{	
+			// found it
 			if (f->flags & FFL_SPAWNTEMP)
 				b = (byte *)&st;
 			else
@@ -604,10 +597,12 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 			case F_IGNORE:
 				break;
 			}
+
 			return;
 		}
 	}
-	gi.dprintf ("%s is not a field\n", key);
+
+	gi.dprintf("%s is not a field\n", key);
 }
 
 /*
@@ -701,7 +696,7 @@ qboolean LoadAliasFile (char *name)
 			if (NULL != (fpak = fopen(pakfile, "rb")))
 			{
 				num=fread(&pakheader,1,sizeof(pak_header_t),fpak);
-				if(num >= sizeof(pak_header_t))
+				if (num >= sizeof(pak_header_t))
 				{
 					if (pakheader.id[0] == 'P' &&
 						pakheader.id[1] == 'A' &&
@@ -710,7 +705,7 @@ qboolean LoadAliasFile (char *name)
 					{
 						numitems = pakheader.dsize/sizeof(pak_item_t);
 						fseek(fpak,pakheader.dstart,SEEK_SET);
-						for(k=0; k<numitems && !in_pak; k++)
+						for (k=0; k<numitems && !in_pak; k++)
 						{
 							fread(&pakitem,1,sizeof(pak_item_t),fpak);
 							if (!Q_stricmp(pakitem.name,textname))
@@ -778,28 +773,27 @@ Returns true if an alias was loaded for the given entity.
 */
 qboolean ED_ParseEntityAlias (char *data, edict_t *ent)
 {
-	qboolean	classname_found, alias_found, alias_loaded;
-	char		*search_data;
 	char		*search_token;
 	char		entclassname[256];
 	char		keyname[256];
-	int			braceLevel;
 
-	classname_found = false;
-	alias_found	= false;
-	alias_loaded = false;
-	braceLevel = 0;
+	qboolean classname_found = false;
+	qboolean alias_found = false;
+	qboolean alias_loaded = false;
+	int braceLevel = 0;
 
 	if (!alias_data) // If no alias file was loaded, don't bother
 		return false;
 
-	search_data = data;  // copy entity data postion
+	char *search_data = data;  // copy entity data postion
+	
 	// go through all the dictionary pairs looking for the classname
-	while (1)
-	{	//parse keyname
+	while (true)
+	{	
+		//parse keyname
 		search_token = COM_Parse (&search_data);
 		if (!search_data)
-			gi.error ("ED_ParseEntityAlias: end of entity data without closing brace");
+			gi.error("ED_ParseEntityAlias: end of entity data without closing brace");
 		if (search_token[0] == '}')
 			break;
 		if (!strcmp(search_token, "classname"))
@@ -808,80 +802,101 @@ qboolean ED_ParseEntityAlias (char *data, edict_t *ent)
 		// parse value	
 		search_token = COM_Parse (&search_data);
 		if (!search_data)
-			gi.error ("ED_ParseEntityAlias: end of entity data without closing brace");
+			gi.error("ED_ParseEntityAlias: end of entity data without closing brace");
 		if (search_token[0] == '}')
-			gi.error ("ED_ParseEntityAlias: closing brace without entity data");
+			gi.error("ED_ParseEntityAlias: closing brace without entity data");
+		
 		// if we've found the classname, exit loop
-		if (classname_found) {
-			strncpy (entclassname, search_token, sizeof(entclassname)-1);
+		if (classname_found)
+		{
+			strncpy(entclassname, search_token, sizeof(entclassname)-1);
 			break;
 		}
 	}
+
 	// then search the entalias.def file for that classname
 	if (classname_found)
 	{
 		search_data = alias_data;	// copy alias data postion
  		while (search_data < (alias_data + alias_data_size))
 		{
-			search_token = COM_Parse (&search_data);
+			search_token = COM_Parse(&search_data);
 			if (!search_data)
 				return false;
 			if (!search_token)
 				break;
+
 			// see if we're inside the braces of an alias definition
 			if (search_token[0] == '{') braceLevel++;
 			else if (search_token[0] == '}') braceLevel--;
-			if (braceLevel < 0) {
-				gi.dprintf ("ED_ParseEntityAlias: closing brace without matching opening brace\n");
+
+			if (braceLevel < 0)
+			{
+				gi.dprintf("ED_ParseEntityAlias: closing brace without matching opening brace\n");
 				return false;
 			}
+
 			// matching classname must be outside braces
-			if (!strcmp(search_token, entclassname) && (braceLevel == 0)) {
-				//gi.dprintf ("Alias for %s found in alias script file.\n", search_token);
+			if (!strcmp(search_token, entclassname) && (braceLevel == 0))
+			{
+				//gi.dprintf("Alias for %s found in alias script file.\n", search_token);
 				alias_found = true;
 				break;
 			}
 		}
+
 		// then if that classname is found, load the fields from that alias
 		if (alias_found)
 		{	// get the opening curly brace
-			search_token = COM_Parse (&search_data);
-			if (!search_data) {
-				gi.dprintf ("ED_ParseEntityAlias: unexpected EOF\n");
+			search_token = COM_Parse(&search_data);
+			if (!search_data)
+			{
+				gi.dprintf("ED_ParseEntityAlias: unexpected EOF\n");
 				return false;
 			}
-			if (search_token[0] != '{') {
-				gi.dprintf ("ED_ParseEntityAlias: found %s when expecting {\n", search_token);
+
+			if (search_token[0] != '{')
+			{
+				gi.dprintf("ED_ParseEntityAlias: found %s when expecting {\n", search_token);
 				return false;
 			}
+
 			// go through all the dictionary pairs
 			while (search_data < (alias_data + alias_data_size))
 			{	
-			// parse key
-				search_token = COM_Parse (&search_data);
-				if (!search_data) {
-					gi.dprintf ("ED_ParseEntityAlias: EOF without closing brace\n");
+				// parse key
+				search_token = COM_Parse(&search_data);
+				if (!search_data)
+				{
+					gi.dprintf("ED_ParseEntityAlias: EOF without closing brace\n");
 					return false;
 				}
+
 				if (search_token[0] == '}')
 					break;
-				strncpy (keyname, search_token, sizeof(keyname)-1);
+
+				strncpy(keyname, search_token, sizeof(keyname) - 1);
 				
-			// parse value	
-				search_token = COM_Parse (&search_data);
-				if (!search_data) {
-					gi.dprintf ("ED_ParseEntityAlias: EOF without closing brace\n");
+				// parse value	
+				search_token = COM_Parse(&search_data);
+				if (!search_data)
+				{
+					gi.dprintf("ED_ParseEntityAlias: EOF without closing brace\n");
 					return false;
 				}
-				if (search_token[0] == '}') {
-					gi.dprintf ("ED_ParseEntityAlias: closing brace without data\n");
+
+				if (search_token[0] == '}')
+				{
+					gi.dprintf("ED_ParseEntityAlias: closing brace without data\n");
 					return false;
 				}
-				ED_ParseField (keyname, search_token, ent);
+
+				ED_ParseField(keyname, search_token, ent);
 				alias_loaded = true;
 			}
 		}
 	}
+
 	return alias_loaded;
 }
 /*
@@ -900,54 +915,49 @@ ed should be a properly initialized empty edict.
 */
 char *ED_ParseEdict (char *data, edict_t *ent)
 {
-	qboolean	init;
-	char		keyname[256];
-	char		*com_token;
-	//Knightmare added
-	qboolean	alias_loaded = false;
+	char keyname[256];
 
-	init = false;
-	memset (&st, 0, sizeof(st));
+	qboolean init = false;
+	memset(&st, 0, sizeof(st));
 
 	// Knightmare- look for and load an alias for this ent
-	alias_loaded = ED_ParseEntityAlias (data, ent);
+	const qboolean alias_loaded = ED_ParseEntityAlias(data, ent);
 
 // go through all the dictionary pairs
-	while (1)
+	while (true)
 	{	
-	// parse key
-		com_token = COM_Parse (&data);
+		// parse key
+		char *com_token = COM_Parse(&data);
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			gi.error ("ED_ParseEntity: EOF without closing brace");
+			gi.error("ED_ParseEntity: EOF without closing brace");
 
 		strncpy (keyname, com_token, sizeof(keyname)-1);
 		
-	// parse value	
-		com_token = COM_Parse (&data);
+		// parse value	
+		com_token = COM_Parse(&data);
 		if (!data)
-			gi.error ("ED_ParseEntity: EOF without closing brace");
+			gi.error("ED_ParseEntity: EOF without closing brace");
 
 		if (com_token[0] == '}')
-			gi.error ("ED_ParseEntity: closing brace without data");
+			gi.error("ED_ParseEntity: closing brace without data");
 
 		init = true;
 
-	// Knightmare: check for _clientonly here
+		// Knightmare: check for _clientonly here
 		if (!strcmp(keyname, "_clientonly"))
 		{
-			int val = atoi(com_token);
+			const int val = atoi(com_token);
 
 			// value of 2 or higher = remove, 1 = server-side bbox clip only
 			if (val > 1)
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 			else if (val == 1)
 				ent->svflags |= SVF_NOCLIENT;
 		}
 
-	// keynames with a leading underscore are used for utility comments,
-	// and are immediately discarded by quake
+		// keynames with a leading underscore are used for utility comments, and are immediately discarded by quake
 		if (keyname[0] == '_')
 			continue;
 
@@ -959,7 +969,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 	}
 
 	if (!init)
-		memset (ent, 0, sizeof(*ent));
+		memset(ent, 0, sizeof(*ent));
 
 	return data;
 }
@@ -977,20 +987,16 @@ All but the last will have the teamchain field set to the next one
 */
 void G_FindTeams (void)
 {
-	edict_t	*e, *e2, *chain;
+	edict_t	*e, *e2;
 	int		i, j;
-	int		c, c2;
 
-	c = 0;
-	c2 = 0;
-	for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
+	int c = 0;
+	int c2 = 0;
+	for (i = 1, e = g_edicts + i; i < globals.num_edicts ; i++, e++)
 	{
-		if (!e->inuse)
+		if (!e->inuse || !e->team || e->flags & FL_TEAMSLAVE)
 			continue;
-		if (!e->team)
-			continue;
-		if (e->flags & FL_TEAMSLAVE)
-			continue;
+
 		// Lazarus: some entities may have psuedo-teams that shouldn't be handled here
 		if (e->classname && !Q_stricmp(e->classname,"target_change"))
 			continue;
@@ -998,18 +1004,16 @@ void G_FindTeams (void)
 			continue;
 		if (e->classname && !Q_stricmp(e->classname,"target_clone"))
 			continue;
-		chain = e;
+
+		edict_t *chain = e;
 		e->teammaster = e;
 		c++;
 		c2++;
-		for (j=i+1, e2=e+1 ; j < globals.num_edicts ; j++,e2++)
+		for (j = i+1, e2 = e+1; j < globals.num_edicts; j++,e2++)
 		{
-			if (!e2->inuse)
+			if (!e2->inuse || !e2->team || e2->flags & FL_TEAMSLAVE)
 				continue;
-			if (!e2->team)
-				continue;
-			if (e2->flags & FL_TEAMSLAVE)
-				continue;
+
 			if (!strcmp(e->team, e2->team))
 			{
 				c2++;
@@ -1021,8 +1025,8 @@ void G_FindTeams (void)
 		}
 	}
 
-	if(level.time < 2)
-		gi.dprintf ("%i teams with %i entities\n", c, c2);
+	if (level.time < 2)
+		gi.dprintf("%i teams with %i entities\n", c, c2);
 }
 
 void trans_ent_filename (char *);
@@ -1031,42 +1035,41 @@ void LoadTransitionEnts (void)
 {
 	if (developer->value)
 		gi.dprintf("==== LoadTransitionEnts ====\n");
+
 	if (game.transition_ents)
 	{
 		char		t_file[MAX_QPATH];
-		int			i, j;
-		FILE		*f;
 		vec3_t		v_spawn;
-		edict_t		*ent;
-		edict_t		*spawn;
-		
+
 		VectorClear(v_spawn);
 		if (strlen(game.spawnpoint))
 		{
-			spawn = G_Find(NULL,FOFS(targetname),game.spawnpoint);
+			edict_t *spawn = G_Find(NULL, FOFS(targetname), game.spawnpoint);
 			while (spawn)
 			{
-				if (!Q_stricmp(spawn->classname,"info_player_start"))
+				if (!Q_stricmp(spawn->classname, "info_player_start"))
 				{
-					VectorCopy(spawn->s.origin,v_spawn);
+					VectorCopy(spawn->s.origin, v_spawn);
 					break;
 				}
-				spawn = G_Find(spawn,FOFS(targetname),game.spawnpoint);
+
+				spawn = G_Find(spawn, FOFS(targetname), game.spawnpoint);
 			}
 		}
-		trans_ent_filename (t_file);
-		f = fopen(t_file,"rb");
+
+		trans_ent_filename(t_file);
+		FILE *f = fopen(t_file, "rb");
 		if (!f)
-			gi.error("LoadTransitionEnts: Cannot open %s\n",t_file);
+			gi.error("LoadTransitionEnts: Cannot open %s\n", t_file);
 		else
 		{
-			for (i=0; i<game.transition_ents; i++)
+			for (int i = 0; i < game.transition_ents; i++)
 			{
-				ent = G_Spawn();
-				ReadEdict(f,ent);
+				edict_t *ent = G_Spawn();
+				ReadEdict(f, ent);
+
 				// Correction for monsters with health EXACTLY 0
-				// If we don't do this, spawn function will bring
-				// 'em back to life
+				// If we don't do this, spawn function will bring 'em back to life
 				if (ent->svflags & SVF_MONSTER)
 				{
 					if (!ent->health)
@@ -1079,9 +1082,10 @@ void LoadTransitionEnts (void)
 						ent->health = min(ent->health,-1);
 					}
 				}
-				VectorAdd(ent->s.origin,v_spawn,ent->s.origin);
-				VectorCopy(ent->s.origin,ent->s.old_origin);
-				ED_CallSpawn (ent);
+
+				VectorAdd(ent->s.origin, v_spawn, ent->s.origin);
+				VectorCopy(ent->s.origin, ent->s.old_origin);
+				ED_CallSpawn(ent);
 				if (ent->owner_id)
 				{
 					if (ent->owner_id < 0)
@@ -1090,19 +1094,21 @@ void LoadTransitionEnts (void)
 					}
 					else
 					{
-						// We KNOW owners precede owned ents in the 
-						// list because of the way it was constructed
+						// We KNOW owners precede owned ents in the list because of the way it was constructed
 						ent->owner = NULL;
-						for (j=game.maxclients+1; j<globals.num_edicts && !ent->owner; j++)
+						for (int j = game.maxclients + 1; j < globals.num_edicts && !ent->owner; j++)
 						{
 							if (ent->owner_id == g_edicts[j].id)
 								ent->owner = &g_edicts[j];
 						}
 					}
+
 					ent->owner_id = 0;
 				}
+
 				ent->s.renderfx |= RF_IR_VISIBLE;
 			}
+
 			fclose(f);
 		}
 	}
@@ -1121,18 +1127,15 @@ parsing textual entity definitions out of an ent file.
 */
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 {
-	edict_t		*ent;
-	int			inhibit;
-	char		*com_token;
 	int			i;
-	float		skill_level;
-	extern int	max_modelindex;
-	extern int	max_soundindex;
-	extern int	lastgibframe;
+	//extern int	max_modelindex;
+	//extern int	max_soundindex;
+	//extern int	lastgibframe;
 
 	if (developer->value)
 		gi.dprintf("====== SpawnEntities ========\n");
-	skill_level = floor (skill->value);
+
+	float skill_level = floorf(skill->value);
 	if (skill_level < 0)
 		skill_level = 0;
 	if (skill_level > 3)
@@ -1140,49 +1143,51 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	if (skill->value != skill_level)
 		gi.cvar_forceset("skill", va("%f", skill_level));
 
-	SaveClientData ();
+	SaveClientData();
 
-	gi.FreeTags (TAG_LEVEL);
+	gi.FreeTags(TAG_LEVEL);
 
-	memset (&level, 0, sizeof(level));
-	memset (g_edicts, 0, game.maxentities * sizeof (g_edicts[0]));
-	// Lazarus: these are used to track model and sound indices
-	//          in g_main.c:
+	memset(&level, 0, sizeof(level));
+	memset(g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
+
+	// Lazarus: these are used to track model and sound indices in g_main.c:
 	max_modelindex = 0;
 	max_soundindex = 0;
 
 	// Lazarus: last frame a gib was spawned in
 	lastgibframe = 0;
 
-	strncpy (level.mapname, mapname, sizeof(level.mapname)-1);
-	strncpy (game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
+	strncpy(level.mapname, mapname, sizeof(level.mapname)-1);
+	strncpy(game.spawnpoint, spawnpoint, sizeof(game.spawnpoint)-1);
 
-	// set client fields on player ents
+	// Set client fields on player ents
 	for (i=0 ; i<game.maxclients ; i++)
 		g_edicts[i+1].client = game.clients + i;
 
-	ent = NULL;
-	inhibit = 0;
+	edict_t *ent = NULL;
+	int inhibit = 0;
 
 	// Knightamre- load the entity alias script file
 	LoadAliasData();
-	//gi.dprintf ("Size of alias data: %i\n", alias_data_size);
+	//gi.dprintf("Size of alias data: %i\n", alias_data_size);
 
 // parse ents
-	while (1)
+	while (true)
 	{
 		// parse the opening brace	
-		com_token = COM_Parse (&entities);
+		char *com_token = COM_Parse(&entities);
 		if (!entities)
 			break;
+
 		if (com_token[0] != '{')
-			gi.error ("ED_LoadFromFile: found %s when expecting {",com_token);
+			gi.error("ED_LoadFromFile: found %s when expecting {",com_token);
 
 		if (!ent)
 			ent = g_edicts;
 		else
-			ent = G_Spawn ();
-		entities = ED_ParseEdict (entities, ent);
+			ent = G_Spawn();
+
+		entities = ED_ParseEdict(entities, ent);
 
 		// yet another map hack
 		if (!Q_stricmp(level.mapname, "command") && !Q_stricmp(ent->classname, "trigger_once") && !Q_stricmp(ent->model, "*27"))
@@ -1195,7 +1200,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 			{
 				if ( ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH )
 				{
-					G_FreeEdict (ent);	
+					G_FreeEdict(ent);	
 					inhibit++;
 					continue;
 				}
@@ -1204,7 +1209,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 			{
 				if ( ent->spawnflags & SPAWNFLAG_NOT_COOP )
 				{
-					G_FreeEdict (ent);	
+					G_FreeEdict(ent);	
 					inhibit++;
 					continue;
 				}
@@ -1216,37 +1221,39 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 					&& (ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH) )
 					goto removeflags;
 
-				if( ((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+				if ( ((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
 					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
 					((skill->value >= 2) && (ent->spawnflags & SPAWNFLAG_NOT_HARD)) )
-					{
-						G_FreeEdict (ent);	
-						inhibit++;
-						continue;
-					}
+				{
+					G_FreeEdict(ent);	
+					inhibit++;
+					continue;
+				}
 			}
 			else // single player
 			{
-				if( ((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+				if ( ((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
 					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
 					((skill->value >= 2) && (ent->spawnflags & SPAWNFLAG_NOT_HARD)) )
-					{
-						G_FreeEdict (ent);	
-						inhibit++;
-						continue;
-					}
+				{
+					G_FreeEdict(ent);	
+					inhibit++;
+					continue;
+				}
 			}
 removeflags:
 			// Knightmare- remove no coop flag
 			ent->spawnflags &= ~(SPAWNFLAG_NOT_EASY|SPAWNFLAG_NOT_MEDIUM|SPAWNFLAG_NOT_HARD|SPAWNFLAG_NOT_DEATHMATCH|SPAWNFLAG_NOT_COOP);
 		}
 
-		ED_CallSpawn (ent);
+		ED_CallSpawn(ent);
 		ent->s.renderfx |= RF_IR_VISIBLE; // ir goggles flag
 	}	
 
 	// Knightmare- unload the alias script file
-	if (alias_data) { // If no alias file was loaded, don't bother
+	if (alias_data)
+	{ 
+		// If no alias file was loaded, don't bother
 #ifdef KMQUAKE2_ENGINE_MOD // use new engine function instead
 		gi.FreeFile(alias_data);
 #else
@@ -1265,7 +1272,7 @@ removeflags:
 		free(&newents);
 #endif*/
 
-	gi.dprintf ("%i entities inhibited\n", inhibit);
+	gi.dprintf("%i entities inhibited\n", inhibit);
 
 #ifdef DEBUG
 	i = 1;
@@ -1277,13 +1284,13 @@ removeflags:
 	}
 #endif
 
-	G_FindTeams ();
+	G_FindTeams();
 
 	// DWH
-	G_FindCraneParts ();
+	G_FindCraneParts();
 
 	// Get origin offsets (mainly for brush models w/o origin brushes)
-	for (i=1, ent=g_edicts+i ; i < globals.num_edicts ; i++,ent++)
+	for (i = 1, ent = g_edicts + i; i < globals.num_edicts ; i++, ent++)
 	{
 		VectorAdd(ent->absmin,ent->absmax,ent->origin_offset);
 		VectorScale(ent->origin_offset,0.5,ent->origin_offset);
@@ -1292,25 +1299,25 @@ removeflags:
 
 	// end DWH
 
-	PlayerTrail_Init ();
+	PlayerTrail_Init();
 
 //ZOID
 	CTFSpawn();
 	// Knightmare added
 	if (deathmatch->value && !ctf->value)
-		CTFSetupTechSpawn ();	
+		CTFSetupTechSpawn();	
 //ZOID
 
 	if (!deathmatch->value)
 		SetupHintPaths();
 
-	for (i=1, ent=g_edicts+i; i < globals.num_edicts; i++, ent++)
+	for (i = 1, ent = g_edicts + i; i < globals.num_edicts; i++, ent++)
 	{
-		if (!ent->movewith)
+		if (!ent->movewith || ent->movewith_ent)
 			continue;
-		if (ent->movewith_ent)
-			continue;
+
 		ent->movewith_ent = G_Find(NULL, FOFS(targetname), ent->movewith);
+		
 		// Make sure that we can really "movewith" this guy. This check
 		// allows us to have movewith parent with same targetname as
 		// other entities
@@ -1320,12 +1327,15 @@ removeflags:
 			 Q_stricmp(ent->movewith_ent->classname,"func_door")      &&
 			 Q_stricmp(ent->movewith_ent->classname,"func_vehicle")   &&
 			 Q_stricmp(ent->movewith_ent->classname,"func_tracktrain")  ))
-			 ent->movewith_ent = G_Find (ent->movewith_ent, FOFS(targetname), ent->movewith);
+		{
+			ent->movewith_ent = G_Find(ent->movewith_ent, FOFS(targetname), ent->movewith);
+		}
+		
 		if (ent->movewith_ent)
 			movewith_init (ent->movewith_ent);
 	}
 
-/*	for(i=1, ent=g_edicts+i; i < globals.num_edicts; i++, ent++)
+/*	for (i=1, ent=g_edicts+i; i < globals.num_edicts; i++, ent++)
 	{
 		gi.dprintf("%s:%s - movewith=%s, movewith_ent=%s:%s, movewith_next=%s:%s\n====================\n",
 			ent->classname, (ent->targetname ? ent->targetname : "noname"),
@@ -1338,10 +1348,9 @@ removeflags:
 	} */
 
 	if (game.transition_ents)
-		LoadTransitionEnts ();
+		LoadTransitionEnts();
 
-	actor_files ();
-
+	actor_files();
 }
 
 
@@ -1575,35 +1584,35 @@ void SP_worldspawn (edict_t *ent)
 	SetItemNames ();
 
 	if (st.nextmap)
-		Q_strncpyz (level.nextmap, st.nextmap, sizeof(level.nextmap));
+		Q_strncpyz(level.nextmap, st.nextmap, sizeof(level.nextmap));
 
 	// make some data visible to the server
 
 	if (ent->message && ent->message[0])
 	{
-		gi.configstring (CS_NAME, ent->message);
+		gi.configstring(CS_NAME, ent->message);
 		strncpy (level.level_name, ent->message, sizeof(level.level_name));
 	}
 	else
 		strncpy (level.level_name, level.mapname, sizeof(level.level_name));
 
 	if (st.sky && st.sky[0])
-		gi.configstring (CS_SKY, st.sky);
+		gi.configstring(CS_SKY, st.sky);
 	else
-		gi.configstring (CS_SKY, "unit1_");
+		gi.configstring(CS_SKY, "unit1_");
 
-	gi.configstring (CS_SKYROTATE, va("%f", st.skyrotate) );
+	gi.configstring(CS_SKYROTATE, va("%f", st.skyrotate) );
 
-	gi.configstring (CS_SKYAXIS, va("%f %f %f",
+	gi.configstring(CS_SKYAXIS, va("%f %f %f",
 		st.skyaxis[0], st.skyaxis[1], st.skyaxis[2]) );
 
 	// Knightmare- if a named soundtrack is specified, play it instead of from CD
 	if (ent->musictrack && strlen(ent->musictrack))
-		gi.configstring (CS_CDTRACK, ent->musictrack);
+		gi.configstring(CS_CDTRACK, ent->musictrack);
 	else
-		gi.configstring (CS_CDTRACK, va("%i", ent->sounds) );
+		gi.configstring(CS_CDTRACK, va("%i", ent->sounds) );
 
-	gi.configstring (CS_MAXCLIENTS, va("%i", (int)(maxclients->value) ) );
+	gi.configstring(CS_MAXCLIENTS, va("%i", (int)(maxclients->value) ) );
 
 	// Knightmare added
 	if (ttctf->value)
@@ -1620,16 +1629,16 @@ void SP_worldspawn (edict_t *ent)
 //ZOID
 		if (ctf->value) {
 			if (ttctf->value) // Knightmare added
-				gi.configstring (CS_STATUSBAR, ttctf_statusbar);
+				gi.configstring(CS_STATUSBAR, ttctf_statusbar);
 			else
-				gi.configstring (CS_STATUSBAR, ctf_statusbar);
+				gi.configstring(CS_STATUSBAR, ctf_statusbar);
 			CTFPrecache();
 		} else
-			gi.configstring (CS_STATUSBAR, dm_statusbar);
+			gi.configstring(CS_STATUSBAR, dm_statusbar);
 	}
 //ZOID
 	else
-		gi.configstring (CS_STATUSBAR, single_statusbar);
+		gi.configstring(CS_STATUSBAR, single_statusbar);
 	//---------------
 
 // ACEBOT_ADD
@@ -1646,125 +1655,120 @@ void SP_worldspawn (edict_t *ent)
 // ACEBOT_END
 
 	// help icon for statusbar
-	gi.imageindex ("i_help");
-	level.pic_health = gi.imageindex ("i_health");
-	gi.imageindex ("help");
-	gi.imageindex ("field_3");
+	gi.imageindex("i_help");
+	level.pic_health = gi.imageindex("i_health");
+	gi.imageindex("help");
+	gi.imageindex("field_3");
 
 	//mxd. Only when custom gravity wasn't already loaded from the savefile.
 	if (sv_gravity->integer == 800 && st.gravity)
 		gi.cvar_set("sv_gravity", st.gravity);
 
-	snd_fry = gi.soundindex ("player/fry.wav");	// standing in lava / slime
+	snd_fry = gi.soundindex("player/fry.wav");	// standing in lava / slime
 
-	PrecacheItem (FindItem ("Blaster"));
+	PrecacheItem(FindItem("Blaster"));
 
-	gi.soundindex ("player/lava1.wav");
-	gi.soundindex ("player/lava2.wav");
+	gi.soundindex("player/lava1.wav");
+	gi.soundindex("player/lava2.wav");
 
-	gi.soundindex ("misc/pc_up.wav");
-	gi.soundindex ("misc/talk1.wav");
+	gi.soundindex("misc/pc_up.wav");
+	gi.soundindex("misc/talk1.wav");
 
-	gi.soundindex ("misc/udeath.wav");
+	gi.soundindex("misc/udeath.wav");
 
 	// gibs
-	gi.soundindex ("items/respawn1.wav");
+	gi.soundindex("items/respawn1.wav");
 
 	// sexed sounds
-	gi.soundindex ("*death1.wav");
-	gi.soundindex ("*death2.wav");
-	gi.soundindex ("*death3.wav");
-	gi.soundindex ("*death4.wav");
-	gi.soundindex ("*fall1.wav");
-	gi.soundindex ("*fall2.wav");	
-	gi.soundindex ("*gurp1.wav");		// drowning damage
-	gi.soundindex ("*gurp2.wav");	
-	gi.soundindex ("*jump1.wav");		// player jump
-	gi.soundindex ("*pain25_1.wav");
-	gi.soundindex ("*pain25_2.wav");
-	gi.soundindex ("*pain50_1.wav");
-	gi.soundindex ("*pain50_2.wav");
-	gi.soundindex ("*pain75_1.wav");
-	gi.soundindex ("*pain75_2.wav");
-	gi.soundindex ("*pain100_1.wav");
-	gi.soundindex ("*pain100_2.wav");
+	gi.soundindex("*death1.wav");
+	gi.soundindex("*death2.wav");
+	gi.soundindex("*death3.wav");
+	gi.soundindex("*death4.wav");
+	gi.soundindex("*fall1.wav");
+	gi.soundindex("*fall2.wav");	
+	gi.soundindex("*gurp1.wav");		// drowning damage
+	gi.soundindex("*gurp2.wav");	
+	gi.soundindex("*jump1.wav");		// player jump
+	gi.soundindex("*pain25_1.wav");
+	gi.soundindex("*pain25_2.wav");
+	gi.soundindex("*pain50_1.wav");
+	gi.soundindex("*pain50_2.wav");
+	gi.soundindex("*pain75_1.wav");
+	gi.soundindex("*pain75_2.wav");
+	gi.soundindex("*pain100_1.wav");
+	gi.soundindex("*pain100_2.wav");
 
 	// sexed models
 	// THIS ORDER MUST MATCH THE DEFINES IN g_local.h
 	// you can add more, max 64
 	if (use_vwep->value || deathmatch->value)
 	{
-		gi.modelindex ("#w_blaster.md2");
-		gi.modelindex ("#w_shotgun.md2");
-		gi.modelindex ("#w_sshotgun.md2");
-		gi.modelindex ("#w_machinegun.md2");
-		gi.modelindex ("#w_chaingun.md2");
-		gi.modelindex ("#a_grenades.md2");
-		gi.modelindex ("#w_glauncher.md2");
-		gi.modelindex ("#w_rlauncher.md2");
-		gi.modelindex ("#w_hyperblaster.md2");
-		gi.modelindex ("#w_railgun.md2");
-		gi.modelindex ("#w_bfg.md2");
+		gi.modelindex("#w_blaster.md2");
+		gi.modelindex("#w_shotgun.md2");
+		gi.modelindex("#w_sshotgun.md2");
+		gi.modelindex("#w_machinegun.md2");
+		gi.modelindex("#w_chaingun.md2");
+		gi.modelindex("#a_grenades.md2");
+		gi.modelindex("#w_glauncher.md2");
+		gi.modelindex("#w_rlauncher.md2");
+		gi.modelindex("#w_hyperblaster.md2");
+		gi.modelindex("#w_railgun.md2");
+		gi.modelindex("#w_bfg.md2");
+
 		if (ctf->value)
-			gi.modelindex ("#w_grapple.md2");
+			gi.modelindex("#w_grapple.md2");
 	}
 
 	//-------------------
 
-	gi.soundindex ("player/gasp1.wav");		// gasping for air
-	gi.soundindex ("player/gasp2.wav");		// head breaking surface, not gasping
+	gi.soundindex("player/gasp1.wav");		// gasping for air
+	gi.soundindex("player/gasp2.wav");		// head breaking surface, not gasping
 
-	gi.soundindex ("player/watr_in.wav");	// feet hitting water
-	gi.soundindex ("player/watr_out.wav");	// feet leaving water
+	gi.soundindex("player/watr_in.wav");	// feet hitting water
+	gi.soundindex("player/watr_out.wav");	// feet leaving water
 
-	gi.soundindex ("player/watr_un.wav");	// head going underwater
+	gi.soundindex("player/watr_un.wav");	// head going underwater
 	
-	gi.soundindex ("player/u_breath1.wav");
-	gi.soundindex ("player/u_breath2.wav");
+	gi.soundindex("player/u_breath1.wav");
+	gi.soundindex("player/u_breath2.wav");
 
-	gi.soundindex ("items/pkup.wav");		// bonus item pickup
-	gi.soundindex ("world/land.wav");		// landing thud
-	gi.soundindex ("misc/h2ohit1.wav");		// landing splash
+	gi.soundindex("items/pkup.wav");		// bonus item pickup
+	gi.soundindex("world/land.wav");		// landing thud
+	gi.soundindex("misc/h2ohit1.wav");		// landing splash
 
-	gi.soundindex ("items/damage.wav");
-	gi.soundindex ("items/protect.wav");
-	gi.soundindex ("items/protect4.wav");
-	gi.soundindex ("weapons/noammo.wav");
+	gi.soundindex("items/damage.wav");
+	gi.soundindex("items/protect.wav");
+	gi.soundindex("items/protect4.wav");
+	gi.soundindex("weapons/noammo.wav");
 
-	gi.soundindex ("infantry/inflies1.wav");
+	gi.soundindex("infantry/inflies1.wav");
 
-	sm_meat_index = gi.modelindex ("models/objects/gibs/sm_meat/tris.md2");
-	gi.modelindex ("models/objects/gibs/arm/tris.md2");
-	gi.modelindex ("models/objects/gibs/bone/tris.md2");
-	gi.modelindex ("models/objects/gibs/bone2/tris.md2");
-	gi.modelindex ("models/objects/gibs/chest/tris.md2");
-	gi.modelindex ("models/objects/gibs/skull/tris.md2");
-	gi.modelindex ("models/objects/gibs/head2/tris.md2");
+	sm_meat_index = gi.modelindex("models/objects/gibs/sm_meat/tris.md2");
+	gi.modelindex("models/objects/gibs/arm/tris.md2");
+	gi.modelindex("models/objects/gibs/bone/tris.md2");
+	gi.modelindex("models/objects/gibs/bone2/tris.md2");
+	gi.modelindex("models/objects/gibs/chest/tris.md2");
+	gi.modelindex("models/objects/gibs/skull/tris.md2");
+	gi.modelindex("models/objects/gibs/head2/tris.md2");
 
-	gi.soundindex ("mud/mud_in2.wav");
-	gi.soundindex ("mud/mud_out1.wav");
-	gi.soundindex ("mud/mud_un1.wav");
-	gi.soundindex ("mud/wade_mud1.wav");
-	gi.soundindex ("mud/wade_mud2.wav");
+	gi.soundindex("mud/mud_in2.wav");
+	gi.soundindex("mud/mud_out1.wav");
+	gi.soundindex("mud/mud_un1.wav");
+	gi.soundindex("mud/wade_mud1.wav");
+	gi.soundindex("mud/wade_mud2.wav");
 
 	Lights();
 
-	// Fog clipping - if "fogclip" is non-zero, force gl_clear to a good
-	// value for obscuring HOM with fog... "good" is driver-dependent
-	if(ent->fogclip)
-	{
-		if(gl_driver && !Q_stricmp(gl_driver->string,"3dfxgl"))
-			gi.cvar_forceset("gl_clear", "0");
-		else
-			gi.cvar_forceset("gl_clear", "1");
-	}
+	// Fog clipping - if "fogclip" is non-zero, force-enable gl_clear to obscure HOM with fog...
+	if (ent->fogclip)
+		gi.cvar_forceset("gl_clear", "1");
 
 	// cvar overrides for effects flags:
-	if(alert_sounds->value)
+	if (alert_sounds->value)
 		world->effects |= FX_WORLDSPAWN_ALERTSOUNDS;
-	if(corpse_fade->value)
+	if (corpse_fade->value)
 		world->effects |= FX_WORLDSPAWN_CORPSEFADE;
-	if(jump_kick->value)
+	if (jump_kick->value)
 		world->effects |= FX_WORLDSPAWN_JUMPKICK;
 }
 
@@ -1775,15 +1779,15 @@ int nohud = 0;
 void Hud_On()
 {
 	if (deathmatch->value)
-		gi.configstring (CS_STATUSBAR, dm_statusbar);
+		gi.configstring(CS_STATUSBAR, dm_statusbar);
 	else
-		gi.configstring (CS_STATUSBAR, single_statusbar);
+		gi.configstring(CS_STATUSBAR, single_statusbar);
 	nohud = 0;
 }
 
 void Hud_Off()
 {
-	gi.configstring (CS_STATUSBAR, NULL);
+	gi.configstring(CS_STATUSBAR, NULL);
 	nohud = 1;
 }
 
@@ -1791,7 +1795,8 @@ void Cmd_ToggleHud ()
 {
 	if (deathmatch->value)
 		return;
-  if (nohud)
+
+	if (nohud)
 		Hud_On();
 	else
 		Hud_Off();

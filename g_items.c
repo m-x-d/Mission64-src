@@ -39,9 +39,9 @@ void Weapon_BFG (edict_t *ent);
 //void Weapon_HomingMissileLauncher (edict_t *ent); //mxd. No HML ples
 void Weapon_Null(edict_t *ent);
 
-gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
-gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};
-gitem_armor_t bodyarmor_info	= {100, 200, .80, .60, ARMOR_BODY};
+gitem_armor_t jacketarmor_info	= {  25,  50, .30, .00, ARMOR_JACKET };
+gitem_armor_t combatarmor_info	= {  50, 100, .60, .30, ARMOR_COMBAT };
+gitem_armor_t bodyarmor_info	= { 100, 200, .80, .60, ARMOR_BODY };
 
 int	noweapon_index;
 int	jacket_armor_index;
@@ -69,48 +69,51 @@ int	rl_index;
 
 void Use_Quad (edict_t *ent, gitem_t *item);
 void Use_Stasis (edict_t *ent, gitem_t *item);
-void Use_Invisibility(edict_t *ent, gitem_t *item); //mxd
-static int	quad_drop_timeout_hack;
+void Use_Invisibility (edict_t *ent, gitem_t *item); //mxd
+static int quad_drop_timeout_hack;
 
 
 //======================================================================
 
 // Lazarus: damageable pickups
-void item_die(edict_t *self,edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void item_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 //ZOID
 	//flags are important
-	if (strcmp(self->classname, "item_flag_team1") == 0) {
+	if (strcmp(self->classname, "item_flag_team1") == 0)
+	{
 		CTFResetFlag(CTF_TEAM1); // this will free self!
-		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",
-			CTFTeamName(CTF_TEAM1));
+		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n", CTFTeamName(CTF_TEAM1));
 		return;
 	}
-	if (strcmp(self->classname, "item_flag_team2") == 0) {
+
+	if (strcmp(self->classname, "item_flag_team2") == 0)
+	{
 		CTFResetFlag(CTF_TEAM2); // this will free self!
-		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n",
-			CTFTeamName(CTF_TEAM1));
+		safe_bprintf(PRINT_HIGH, "The %s flag has returned!\n", CTFTeamName(CTF_TEAM1));
 		return;
 	}
+
 	// techs are important too
-	if (self->item && (self->item->flags & IT_TECH)) {
+	if (self->item && (self->item->flags & IT_TECH))
+	{
 		CTFRespawnTech(self); // this frees self!
 		return;
 	}
 //ZOID
 	
-	gi.WriteByte (svc_temp_entity);
-	gi.WriteByte (TE_EXPLOSION1);
-	gi.WritePosition (self->s.origin);
-	gi.multicast (self->s.origin, MULTICAST_PVS);
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_EXPLOSION1);
+	gi.WritePosition(self->s.origin);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
 	if (level.num_reflectors)
-		ReflectExplosion (TE_EXPLOSION1, self->s.origin);
+		ReflectExplosion(TE_EXPLOSION1, self->s.origin);
 
-	if (!(self->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (self, 30);
+	if (!(self->spawnflags & DROPPED_ITEM) && deathmatch->value)
+		SetRespawn(self, 30);
 	else
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 }
 
 /*
@@ -118,7 +121,7 @@ void item_die(edict_t *self,edict_t *inflictor, edict_t *attacker, int damage, v
 GetItemByIndex
 ===============
 */
-gitem_t	*GetItemByIndex (int index)
+gitem_t	*GetItemByIndex(int index)
 {
 	if (index == 0 || index >= game.num_items)
 		return NULL;
@@ -131,7 +134,7 @@ gitem_t	*GetItemByIndex (int index)
 GetMaxAmmoByIndex
 ===============
 */
-int GetMaxAmmoByIndex (gclient_t *client, int item_index)
+int GetMaxAmmoByIndex(gclient_t *client, int item_index)
 {
 	int value;
 
@@ -165,7 +168,7 @@ int GetMaxAmmoByIndex (gclient_t *client, int item_index)
 GetMaxArmorByIndex
 ===============
 */
-int GetMaxArmorByIndex (int item_index)
+int GetMaxArmorByIndex(int item_index)
 {
 	int value;
 
@@ -188,14 +191,12 @@ FindItemByClassname
 */
 gitem_t	*FindItemByClassname (char *classname)
 {
-	int		i;
-	gitem_t	*it;
-
-	it = itemlist;
-	for (i=0 ; i<game.num_items ; i++, it++)
+	gitem_t *it = itemlist;
+	for (int i = 0; i < game.num_items; i++, it++)
 	{
 		if (!it->classname)
 			continue;
+
 		if (!Q_stricmp(it->classname, classname))
 			return it;
 	}
@@ -208,13 +209,10 @@ gitem_t	*FindItemByClassname (char *classname)
 FindItem
 ===============
 */
-gitem_t	*FindItem (char *pickup_name)
+gitem_t	*FindItem(char *pickup_name)
 {
-	int		i;
-	gitem_t	*it;
-
-	it = itemlist;
-	for (i=0 ; i<game.num_items ; i++, it++)
+	gitem_t *it = itemlist;
+	for (int i = 0; i < game.num_items; i++, it++)
 	{
 		if (!it->pickup_name)
 			continue;
@@ -235,29 +233,26 @@ gitem_t	*FindItem (char *pickup_name)
 
 //======================================================================
 
-void DoRespawn (edict_t *ent)
+void DoRespawn(edict_t *ent)
 {
 	if (ent->team)
 	{
-		edict_t	*master;
-		int	count;
-		int choice;
-
-		master = ent->teammaster;
+		edict_t *master = ent->teammaster;
 
 //ZOID
-//in ctf, when we are weapons stay, only the master of a team of weapons
-//is spawned
-		if (ctf->value &&
-			((int)dmflags->value & DF_WEAPONS_STAY) &&
-			master->item && (master->item->flags & IT_WEAPON))
+//in ctf, when we are weapons stay, only the master of a team of weapons is spawned
+		if (ctf->value && ((int)dmflags->value & DF_WEAPONS_STAY) && master->item && (master->item->flags & IT_WEAPON))
+		{
 			ent = master;
-		else {
+		}
+		else
+		{
 //ZOID
+			int	count;
 			for (count = 0, ent = master; ent; ent = ent->chain, count++)
 				;
 
-			choice = count ? rand() % count : 0; //mxd. https://github.com/yquake2/yquake2/commit/36a41f9746237b4aff681e05f28fa4853064ca9d
+			const int choice = (count ? rand() % count : 0); //mxd. https://github.com/yquake2/yquake2/commit/36a41f9746237b4aff681e05f28fa4853064ca9d
 
 			for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
 				;
@@ -265,29 +260,34 @@ void DoRespawn (edict_t *ent)
 	}
 
 	ent->svflags &= ~SVF_NOCLIENT;
-	if(ent->spawnflags & SHOOTABLE) {
+	if (ent->spawnflags & SHOOTABLE)
+	{
 		ent->solid = SOLID_BBOX;
 		ent->clipmask |= MASK_MONSTERSOLID;
-		if(!ent->health)
+
+		if (!ent->health)
 			ent->health = 20;
+
 		ent->takedamage = DAMAGE_YES;
 		ent->die = item_die;
-	} else
+	}
+	else
 		ent->solid = SOLID_TRIGGER;
-	gi.linkentity (ent);
+
+	gi.linkentity(ent);
 
 	// send an effect
 	ent->s.event = EV_ITEM_RESPAWN;
 }
 
-void SetRespawn (edict_t *ent, float delay)
+void SetRespawn(edict_t *ent, float delay)
 {
 	ent->flags |= FL_RESPAWN;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_NOT;
 	ent->nextthink = level.time + delay;
 	ent->think = DoRespawn;
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 
@@ -295,37 +295,35 @@ void SetRespawn (edict_t *ent, float delay)
 
 qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 {
-	int		quantity;
-
-	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
-	if ((skill->value == 1 && quantity >= sk_powerup_max->value) || (skill->value >= 2 && quantity >= (sk_powerup_max->value - 1)))
+	const int quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+	if ((skill->value == 1 && quantity >= sk_powerup_max->value) || (skill->value >= 2 && quantity >= sk_powerup_max->value - 1))
 		return false;
 
-	if ((coop->value) && (ent->item->flags & IT_STAY_COOP) && (quantity > 0))
+	if (coop->value && (ent->item->flags & IT_STAY_COOP) && quantity > 0)
 		return false;
 
 	// Lazarus: Don't allow more than one of some items
 #ifdef FLASHLIGHT_MOD
-	if( !Q_stricmp(ent->classname,"item_flashlight")   && quantity >= 1 ) return false;
+	if (!Q_stricmp(ent->classname,"item_flashlight") && quantity >= 1)
+		return false;
 #endif
-#ifdef JETPACK_MOD
-	if( !Q_stricmp(ent->classname,"item_jetpack") )
-	{
-		gitem_t *fuel;
 
-		if( quantity >= 1 )
+#ifdef JETPACK_MOD
+	if (!Q_stricmp(ent->classname, "item_jetpack"))
+	{
+		if (quantity >= 1)
 			return false;
 
-		fuel = FindItem("fuel");
-		if(ent->count < 0)
+		gitem_t *fuel = FindItem("fuel");
+		if (ent->count < 0)
 		{
 			other->client->jetpack_infinite = true;
-			Add_Ammo(other,fuel,10000);
+			Add_Ammo(other, fuel, 10000);
 		}
 		else
 		{
 			other->client->jetpack_infinite = false;
-			Add_Ammo(other,fuel,ent->count);
+			Add_Ammo(other, fuel, ent->count);
 		}
 	}
 #endif
@@ -333,18 +331,19 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
 
 #ifdef FLASHLIGHT_MOD
-		// DON'T Instant-use flashlight
-		if (ent->item->use == Use_Flashlight) return true;
+	// DON'T Instant-use flashlight
+	if (ent->item->use == Use_Flashlight)
+		return true;
 #endif
 
 	if (deathmatch->value)
 	{
 		if (!(ent->spawnflags & DROPPED_ITEM) )
-			SetRespawn (ent, ent->item->quantity);
+			SetRespawn(ent, ent->item->quantity);
 
 #ifdef JETPACK_MOD
 		// DON'T Instant-use Jetpack
-		if(ent->item->use == Use_Jet) return true;
+		if (ent->item->use == Use_Jet) return true;
 #endif
 
 		if (((int)dmflags->value & DF_INSTANT_ITEMS) || ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM))
@@ -352,36 +351,34 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 		{
 			if ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM))
 				quad_drop_timeout_hack = (ent->nextthink - level.time) / FRAMETIME;
-			ent->item->use (other, ent->item);
+			ent->item->use(other, ent->item);
 		}
 	}
 	else
 	{
 		//mxd. Insta-use all powerups
-		ent->item->use (other, ent->item);
+		ent->item->use(other, ent->item);
 	}
 
 	return true;
 }
 
-void Drop_General (edict_t *ent, gitem_t *item)
+void Drop_General(edict_t *ent, gitem_t *item)
 {
-	Drop_Item (ent, item);
+	Drop_Item(ent, item);
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 }
 
 #ifdef JETPACK_MOD
 void Drop_Jetpack (edict_t *ent, gitem_t *item)
 {
-	if(ent->client->jetpack)
+	if (ent->client->jetpack)
 		safe_cprintf(ent,PRINT_HIGH,"Cannot drop jetpack in use\n");
 	else
 	{
-		edict_t	*dropped;
-
-		dropped = Drop_Item (ent, item);
-		if(ent->client->jetpack_infinite)
+		edict_t *dropped = Drop_Item(ent, item);
+		if (ent->client->jetpack_infinite)
 		{
 			dropped->count = -1;
 			ent->client->pers.inventory[fuel_index] = 0;
@@ -390,12 +387,13 @@ void Drop_Jetpack (edict_t *ent, gitem_t *item)
 		else
 		{
 			dropped->count = ent->client->pers.inventory[fuel_index];
-			if(dropped->count > 500)
+			if (dropped->count > 500)
 				dropped->count = 500;
 			ent->client->pers.inventory[fuel_index] -= dropped->count;
 		}
+
 		ent->client->pers.inventory[ITEM_INDEX(item)]--;
-		ValidateSelectedItem (ent);
+		ValidateSelectedItem(ent);
 	}
 }
 #endif
@@ -411,7 +409,7 @@ qboolean Pickup_Adrenaline (edict_t *ent, edict_t *other)
 		other->health = other->max_health;
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, ent->item->quantity);
+		SetRespawn(ent, ent->item->quantity);
 
 	return true;
 }
@@ -421,17 +419,15 @@ qboolean Pickup_AncientHead (edict_t *ent, edict_t *other)
 	other->max_health += 2;
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, ent->item->quantity);
+		SetRespawn(ent, ent->item->quantity);
 
 	return true;
 }
 
 qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
 {
-	gitem_t	*item;
-
 	//Knightmare- override ammo pickup values with cvars
-	SetAmmoPickupValues ();
+	SetAmmoPickupValues();
 
 	if (other->client->pers.max_bullets < sk_bando_bullets->value)
 		other->client->pers.max_bullets = sk_bando_bullets->value;
@@ -444,26 +440,24 @@ qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
 	if (other->client->pers.max_fuel  < sk_bando_fuel->value)
 		other->client->pers.max_fuel  = sk_bando_fuel->value;
 
-	item = FindItem("Bullets");
+	gitem_t *item = FindItem("Bullets");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Shells");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, ent->item->quantity);
+		SetRespawn(ent, ent->item->quantity);
 
 	return true;
 }
 
 qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 {
-	gitem_t	*item;
-
 	//Knightmare- override ammo pickup values with cvars
-	SetAmmoPickupValues ();
+	SetAmmoPickupValues();
 
 	if (other->client->pers.max_bullets < sk_pack_bullets->value)
 		other->client->pers.max_bullets = sk_pack_bullets->value;
@@ -482,32 +476,32 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 	if (other->client->pers.max_fuel  < sk_pack_fuel->value)
 		other->client->pers.max_fuel  = sk_pack_fuel->value;
 
-	item = FindItem("Bullets");
+	gitem_t *item = FindItem("Bullets");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Shells");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Cells");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Grenades");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Rockets");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Slugs");
 	if (item)
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, ent->item->quantity);
+		SetRespawn(ent, ent->item->quantity);
 
 	return true;
 }
@@ -515,45 +509,43 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 // Knightmare added- Ammogen tech-spawned backpack
 qboolean Pickup_AmmogenPack (edict_t *ent, edict_t *other)
 {
-	gitem_t	*item;
-
 	if (!ent || !other)
 		return false;
 
 	//Knightmare- override ammo pickup values with cvars
-	SetAmmoPickupValues ();
+	SetAmmoPickupValues();
 
-	item = FindItem("Bullets");
+	gitem_t *item = FindItem("Bullets");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Shells");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Cells");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Grenades");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Rockets");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Slugs");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("Homing Rockets");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	item = FindItem("fuel");
 	if (item && other->client->pers.inventory[ITEM_INDEX(item)])
-		Add_Ammo (other, item, item->quantity);
+		Add_Ammo(other, item, item->quantity);
 
 	return true;
 }
@@ -565,7 +557,7 @@ void Use_Quad (edict_t *ent, gitem_t *item)
 	int		timeout;
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
 	if (quad_drop_timeout_hack)
 	{
@@ -590,7 +582,7 @@ void Use_Quad (edict_t *ent, gitem_t *item)
 void Use_Breather (edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
 	if (ent->client->breather_framenum > level.framenum)
 		ent->client->breather_framenum += (sk_breather_time->value * 10);
@@ -605,7 +597,7 @@ void Use_Breather (edict_t *ent, gitem_t *item)
 void Use_Envirosuit (edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
 	if (ent->client->enviro_framenum > level.framenum)
 		ent->client->enviro_framenum += (sk_enviro_time->value * 10);
@@ -617,10 +609,10 @@ void Use_Envirosuit (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-void	Use_Invulnerability (edict_t *ent, gitem_t *item)
+void Use_Invulnerability (edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
 	if (ent->client->invincible_framenum > level.framenum)
 		ent->client->invincible_framenum += (sk_inv_time->value * 10);
@@ -635,7 +627,7 @@ void	Use_Invulnerability (edict_t *ent, gitem_t *item)
 void	Use_Silencer (edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 	ent->client->silencer_shots += sk_silencer_shots->value;
 
 //	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
@@ -644,12 +636,10 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 //mxd. ======================================================================
 void Use_Invisibility(edict_t *ent, gitem_t *item)
 {
-	int timeout;
-	
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
-	timeout = (sk_invisibility_time->value * 10);
+	const int timeout = (sk_invisibility_time->value * 10);
 
 	if (ent->client->invisibility_framenum > level.framenum)
 		ent->client->invisibility_framenum += timeout;
@@ -686,9 +676,8 @@ qboolean Pickup_Key (edict_t *ent, edict_t *other)
 
 //======================================================================
 
-qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
+qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count)
 {
-	int			index;
 	int			max;
 
 	if (!ent->client)
@@ -713,7 +702,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 	else
 		return false;
 
-	index = ITEM_INDEX(item);
+	const int index = ITEM_INDEX(item);
 
 	if (ent->client->pers.inventory[index] >= max)
 		return false;
@@ -727,11 +716,9 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 }
 
 //Knightmare- this function overrides ammo pickup values with cvars
-void SetAmmoPickupValues (void)
+void SetAmmoPickupValues(void)
 {
-	gitem_t		*item;
-
-	item = FindItem("Shells");
+	gitem_t *item = FindItem("Shells");
 	if (item)
 		item->quantity = sk_box_shells->value;
 
@@ -768,46 +755,42 @@ void SetAmmoPickupValues (void)
 		item->quantity = sk_health_bonus_value->value;
 }
 
-qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
+qboolean Pickup_Ammo(edict_t *ent, edict_t *other)
 {
-	int			oldcount;
-	int			count;
-	qboolean	weapon;
-
 	//Knightmare- override ammo pickup values with cvars
-	SetAmmoPickupValues ();
+	SetAmmoPickupValues();
 
-	weapon = (ent->item->flags & IT_WEAPON);
-	if ( (weapon) && ( (int)dmflags->value & DF_INFINITE_AMMO ) )
+	int count;
+	const qboolean weapon = (ent->item->flags & IT_WEAPON);
+	if (weapon && (int)dmflags->value & DF_INFINITE_AMMO)
 		count = 1000;
 	else if (ent->count)
 		count = ent->count;
 	else
 		count = ent->item->quantity;
 
-	oldcount = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+	const int oldcount = other->client->pers.inventory[ITEM_INDEX(ent->item)];
 
-	if (!Add_Ammo (other, ent->item, count))
+	if (!Add_Ammo(other, ent->item, count))
 		return false;
 
 	if (weapon && !oldcount)
 	{
-		if (other->client->pers.weapon != ent->item && ( !deathmatch->value || other->client->pers.weapon == FindItem("blaster") || other->client->pers.weapon == FindItem("No weapon") ) )
+		if (other->client->pers.weapon != ent->item 
+			&& (!deathmatch->value || other->client->pers.weapon == FindItem("blaster") || other->client->pers.weapon == FindItem("No weapon")))
 			other->client->newweapon = ent->item;
 	}
 
-	if (!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) && (deathmatch->value))
-		SetRespawn (ent, 30);
+	if (!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) && deathmatch->value)
+		SetRespawn(ent, 30);
+
 	return true;
 }
 
-void Drop_Ammo (edict_t *ent, gitem_t *item)
+void Drop_Ammo(edict_t *ent, gitem_t *item)
 {
-	edict_t	*dropped;
-	int		index;
-
-	index = ITEM_INDEX(item);
-	dropped = Drop_Item (ent, item);
+	const int index = ITEM_INDEX(item);
+	edict_t *dropped = Drop_Item(ent, item);
 	if (ent->client->pers.inventory[index] >= item->quantity)
 		dropped->count = item->quantity;
 	else
@@ -816,20 +799,21 @@ void Drop_Ammo (edict_t *ent, gitem_t *item)
 	if (ent->client->pers.weapon && 
 		ent->client->pers.weapon->tag == AMMO_GRENADES &&
 		item->tag == AMMO_GRENADES &&
-		ent->client->pers.inventory[index] - dropped->count <= 0) {
-		safe_cprintf (ent, PRINT_HIGH, "Can't drop current weapon\n");
+		ent->client->pers.inventory[index] - dropped->count <= 0)
+	{
+		safe_cprintf(ent, PRINT_HIGH, "Can't drop current weapon\n");
 		G_FreeEdict(dropped);
 		return;
 	}
 
 	ent->client->pers.inventory[index] -= dropped->count;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 }
 
 
 //======================================================================
 
-void MegaHealth_think (edict_t *self)
+void MegaHealth_think(edict_t *self)
 {
 	if (self->owner->health > self->owner->max_health
 //ZOID
@@ -842,16 +826,15 @@ void MegaHealth_think (edict_t *self)
 	}
 
 	if (!(self->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (self, 20);
+		SetRespawn(self, 20);
 	else
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 }
 
 qboolean Pickup_Health (edict_t *ent, edict_t *other)
 {
-	if (!(ent->style & HEALTH_IGNORE_MAX))
-		if (other->health >= other->max_health)
-			return false;
+	if (!(ent->style & HEALTH_IGNORE_MAX) && other->health >= other->max_health)
+		return false;
 
 //ZOID
 	if (ctf->value && other->health >= 250 && ent->count > 25)
@@ -865,11 +848,8 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 		other->health = 250;
 //ZOID
 
-	if (!(ent->style & HEALTH_IGNORE_MAX))
-	{
-		if (other->health > other->max_health)
-			other->health = other->max_health;
-	}
+	if (!(ent->style & HEALTH_IGNORE_MAX) && other->health > other->max_health)
+		other->health = other->max_health;
 
 //ZOID
 	if (ent->style & HEALTH_TIMED
@@ -883,10 +863,9 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 		ent->svflags |= SVF_NOCLIENT;
 		ent->solid = SOLID_NOT;
 	}
-	else
+	else if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 	{
-		if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-			SetRespawn (ent, 30);
+		SetRespawn(ent, 30);
 	}
 
 	return true;
@@ -894,7 +873,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 
 //======================================================================
 
-int ArmorIndex (edict_t *ent)
+int ArmorIndex(edict_t *ent)
 {
 	if (!ent->client)
 		return 0;
@@ -911,11 +890,9 @@ int ArmorIndex (edict_t *ent)
 	return 0;
 }
 
-qboolean Pickup_Armor (edict_t *ent, edict_t *other)
+qboolean Pickup_Armor(edict_t *ent, edict_t *other)
 {
-	int				old_armor_index;
 	gitem_armor_t	*oldinfo;
-	gitem_armor_t	*newinfo;
 	int				newcount;
 	float			salvage;
 	int				salvagecount;
@@ -930,9 +907,8 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 		armor_maximum = sk_max_armor_body->value;
 
 	// get info on new armor
-	newinfo = (gitem_armor_t *)ent->item->info;
-
-	old_armor_index = ArmorIndex (other);
+	gitem_armor_t *newinfo = (gitem_armor_t *)ent->item->info;
+	const int old_armor_index = ArmorIndex(other);
 
 	// handle armor shards specially
 	if (ent->item->tag == ARMOR_SHARD)
@@ -942,13 +918,11 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 		else
 			other->client->pers.inventory[old_armor_index] += sk_armor_bonus_value->value;
 	}
-
 	// if player has no armor, just use it
 	else if (!old_armor_index)
 	{
 		other->client->pers.inventory[ITEM_INDEX(ent->item)] = newinfo->base_count;
 	}
-
 	// use the better armor
 	else
 	{
@@ -966,6 +940,7 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 			salvage = oldinfo->normal_protection / newinfo->normal_protection;
 			salvagecount = salvage * other->client->pers.inventory[old_armor_index];
 			newcount = newinfo->base_count + salvagecount;
+
 			if (newcount > armor_maximum)
 				newcount = armor_maximum;
 
@@ -981,6 +956,7 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 			salvage = newinfo->normal_protection / oldinfo->normal_protection;
 			salvagecount = salvage * newinfo->base_count;
 			newcount = other->client->pers.inventory[old_armor_index] + salvagecount;
+
 			if (newcount > armor_maximum)
 				newcount = armor_maximum;
 
@@ -994,7 +970,7 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 	}
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, 20);
+		SetRespawn(ent, 20);
 
 	return true;
 }
@@ -1022,7 +998,7 @@ int PowerArmorType (edict_t *ent)
 }
 
 //Knightmare- rewrote this to differentiate between power shield and power screen
-void Use_PowerArmor (edict_t *ent, gitem_t *item)
+void Use_PowerArmor(edict_t *ent, gitem_t *item)
 {
 	int		index;
 
@@ -1033,7 +1009,7 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 			index = ITEM_INDEX(FindItem("cells"));
 			if (!ent->client->pers.inventory[index])
 			{
-				safe_cprintf (ent, PRINT_HIGH, "No cells for power screen.\n");
+				safe_cprintf(ent, PRINT_HIGH, "No cells for power screen.\n");
 				return;
 			}
 			ent->flags &= ~FL_POWER_SHIELD;
@@ -1052,24 +1028,26 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 			index = ITEM_INDEX(FindItem("cells"));
 			if (!ent->client->pers.inventory[index])
 			{
-				safe_cprintf (ent, PRINT_HIGH, "No cells for power screen.\n");
+				safe_cprintf(ent, PRINT_HIGH, "No cells for power screen.\n");
 				return;
 			}
+
 			ent->flags |= FL_POWER_SCREEN;
 			gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/power1.wav"), 1, ATTN_NORM, 0);
-
 		}
 	}
 	else if (item == FindItemByClassname("item_power_shield"))
-	{	//if player has an active power screen, deacivate that and activate power shield
+	{	
+		//if player has an active power screen, deacivate that and activate power shield
 		if (ent->flags & FL_POWER_SCREEN)
 		{
 			index = ITEM_INDEX(FindItem("cells"));
 			if (!ent->client->pers.inventory[index])
 			{
-				safe_cprintf (ent, PRINT_HIGH, "No cells for power shield.\n");
+				safe_cprintf(ent, PRINT_HIGH, "No cells for power shield.\n");
 				return;
 			}
+
 			ent->flags &= ~FL_POWER_SCREEN;
 			ent->flags |= FL_POWER_SHIELD;
 			gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/power2.wav"), 1, ATTN_NORM, 0);
@@ -1086,49 +1064,45 @@ void Use_PowerArmor (edict_t *ent, gitem_t *item)
 			index = ITEM_INDEX(FindItem("cells"));
 			if (!ent->client->pers.inventory[index])
 			{
-				safe_cprintf (ent, PRINT_HIGH, "No cells for power shield.\n");
+				safe_cprintf(ent, PRINT_HIGH, "No cells for power shield.\n");
 				return;
 			}
+
 			ent->flags |= FL_POWER_SHIELD;
 			gi.sound(ent, CHAN_AUTO, gi.soundindex("misc/power1.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 }
 
-qboolean Pickup_PowerArmor (edict_t *ent, edict_t *other)
+qboolean Pickup_PowerArmor(edict_t *ent, edict_t *other)
 {
-	int		quantity;
-
-	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+	const int quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
 
 	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
 
 	if (deathmatch->value)
 	{
 		if (!(ent->spawnflags & DROPPED_ITEM) )
-			SetRespawn (ent, ent->item->quantity);
+			SetRespawn(ent, ent->item->quantity);
+
 		// auto-use for DM only if we didn't already have one
 		if (!quantity
 			//Knightmare- don't switch to power screen if we already have a power shield active
 			&& !(ent->item == FindItemByClassname("item_power_screen") && (other->flags & FL_POWER_SHIELD)))
-			ent->item->use (other, ent->item);
+			ent->item->use(other, ent->item);
 	}
 
 	return true;
 }
 
 // Knightmare- rewrote this so it's handled properly
-void Drop_PowerArmor (edict_t *ent, gitem_t *item)
+void Drop_PowerArmor(edict_t *ent, gitem_t *item)
 {
-	if (item == FindItemByClassname("item_power_shield"))
-	{
-		if ((ent->flags & FL_POWER_SHIELD) && (ent->client->pers.inventory[ITEM_INDEX(item)] == 1))
-			Use_PowerArmor (ent, item);
-	}
-	else
-		if ((ent->flags & FL_POWER_SCREEN) && (ent->client->pers.inventory[ITEM_INDEX(item)] == 1))
-			Use_PowerArmor (ent, item);
-	Drop_General (ent, item);
+	const int flag = (item == FindItemByClassname("item_power_shield") ? FL_POWER_SHIELD : FL_POWER_SCREEN);
+	if ((ent->flags & flag) && (ent->client->pers.inventory[ITEM_INDEX(item)] == 1))
+		Use_PowerArmor(ent, item);
+
+	Drop_General(ent, item);
 }
 
 //======================================================================
@@ -1138,10 +1112,8 @@ void Drop_PowerArmor (edict_t *ent, gitem_t *item)
 Touch_Item
 ===============
 */
-void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	qboolean	taken;
-
 	if (!other->client)
 		return;
 	if (other->health < 1)
@@ -1149,12 +1121,11 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	if (!ent->item->pickup)
 		return;		// not a grabbable item?
 
-	taken = ent->item->pickup(ent, other);
-
+	const qboolean taken = ent->item->pickup(ent, other);
 	if (taken)
 	{
 		// flash the screen
-		other->client->bonus_alpha = 0.25;	
+		other->client->bonus_alpha = 0.25f;	
 
 		// show icon and name on status bar
 		other->client->ps.stats[STAT_PICKUP_ICON] = gi.imageindex(ent->item->icon);
@@ -1184,32 +1155,32 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 	if (!(ent->spawnflags & ITEM_TARGETS_USED))
 	{
-		G_UseTargets (ent, other);
+		G_UseTargets(ent, other);
 		ent->spawnflags |= ITEM_TARGETS_USED;
 	}
 
 	if (!taken)
 		return;
 
-	DeleteReflection(ent,-1);
+	DeleteReflection(ent, -1);
 
 	if (!((coop->value) &&  (ent->item->flags & IT_STAY_COOP)) || (ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)))
 	{
 		if (ent->flags & FL_RESPAWN)
 			ent->flags &= ~FL_RESPAWN;
 		else
-			G_FreeEdict (ent);
+			G_FreeEdict(ent);
 	}
 }
 
 //======================================================================
 
-/*static*/ void drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+/*static*/ void drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;
 
-	Touch_Item (ent, other, plane, surf);
+	Touch_Item(ent, other, plane, surf);
 }
 
 /*static*/ void drop_make_touchable (edict_t *ent)
@@ -1222,13 +1193,12 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	}
 }
 
-edict_t *Drop_Item (edict_t *ent, gitem_t *item)
+edict_t *Drop_Item(edict_t *ent, gitem_t *item)
 {
-	edict_t	*dropped;
 	vec3_t	forward, right;
 	vec3_t	offset;
 
-	dropped = G_Spawn();
+	edict_t *dropped = G_Spawn();
 
 	dropped->classname = item->classname;
 	dropped->item = item;
@@ -1245,11 +1215,11 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	//mxd. Actually ranomize it a bit (and not in 0 .. 32767 range like rand() does)
 	dropped->s.angles[1] += crandom() * 45;
 
-//	VectorSet (dropped->mins, -15, -15, -15);
-//	VectorSet (dropped->maxs, 15, 15, 15);
-	VectorSet (dropped->mins, -16, -16, -16);
-	VectorSet (dropped->maxs, 16, 16, 16);
-	gi.setmodel (dropped, dropped->item->world_model);
+//	VectorSet(dropped->mins, -15, -15, -15);
+//	VectorSet(dropped->maxs, 15, 15, 15);
+	VectorSet(dropped->mins, -16, -16, -16);
+	VectorSet(dropped->maxs, 16, 16, 16);
+	gi.setmodel(dropped, dropped->item->world_model);
 	dropped->solid = SOLID_TRIGGER;
 	dropped->movetype = MOVETYPE_TOSS;  
 	dropped->touch = drop_temp_touch;
@@ -1265,43 +1235,29 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 			dropped->style |= HEALTH_IGNORE_MAX | HEALTH_TIMED;
 	}
 
+	// Lazarus: throw the dropped item a bit farther than the default
 	if (ent->client)
-	{
-		trace_t	trace;
-
-		AngleVectors (ent->client->v_angle, forward, right, NULL);
-		VectorSet(offset, 24, 0, -16);
-		G_ProjectSource (ent->s.origin, offset, forward, right, dropped->s.origin);
-		trace = gi.trace (ent->s.origin, dropped->mins, dropped->maxs,
-			dropped->s.origin, ent, CONTENTS_SOLID);
-		VectorCopy (trace.endpos, dropped->s.origin);
-	}
+		AngleVectors(ent->client->v_angle, forward, right, NULL);
 	else
-	{
-// Lazarus: throw the dropped item a bit farther than the default
-		trace_t	trace;
+		AngleVectors(ent->s.angles, forward, right, NULL); 
 
-		AngleVectors (ent->s.angles, forward, right, NULL);
-//		VectorCopy (ent->s.origin, dropped->s.origin);
-		VectorSet(offset, 24, 0, -16);
-		G_ProjectSource (ent->s.origin, offset, forward, right, dropped->s.origin);
-		trace = gi.trace (ent->s.origin, dropped->mins, dropped->maxs,
-			dropped->s.origin, ent, CONTENTS_SOLID);
-		VectorCopy (trace.endpos, dropped->s.origin);
-	}
+	VectorSet(offset, 24, 0, -16);
+	G_ProjectSource(ent->s.origin, offset, forward, right, dropped->s.origin);
+	const trace_t trace = gi.trace(ent->s.origin, dropped->mins, dropped->maxs, dropped->s.origin, ent, CONTENTS_SOLID);
+	VectorCopy(trace.endpos, dropped->s.origin);
 
-	VectorScale (forward, 100, dropped->velocity);
+	VectorScale(forward, 100, dropped->velocity);
 	dropped->velocity[2] = 300;
 
 	dropped->think = drop_make_touchable;
 	dropped->nextthink = level.time + 1;
 
-	gi.linkentity (dropped);
+	gi.linkentity(dropped);
 
 	return dropped;
 }
 
-void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
+void Use_Item(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	ent->svflags &= ~SVF_NOCLIENT;
 	ent->use = NULL;
@@ -1314,19 +1270,24 @@ void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
 	else
 	{
 		// Lazarus:
-		if(ent->spawnflags & SHOOTABLE) {
+		if (ent->spawnflags & SHOOTABLE)
+		{
 			ent->solid = SOLID_BBOX;
 			ent->clipmask |= MASK_MONSTERSOLID;
-			if(!ent->health)
+
+			if (!ent->health)
 				ent->health = 20;
+
 			ent->takedamage = DAMAGE_YES;
 			ent->die = item_die;
-		} else
+		}
+		else
 			ent->solid = SOLID_TRIGGER;
+
 		ent->touch = Touch_Item;
 	}
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 //======================================================================
@@ -1338,59 +1299,62 @@ droptofloor
 */
 void droptofloor (edict_t *ent)
 {
-	trace_t		tr;
 	vec3_t		dest;
-	float		*v;
 
-	v = tv(-15,-15,-15);
-	VectorCopy (v, ent->mins);
-	v = tv(15,15,15);
-	VectorCopy (v, ent->maxs);
+	float *v = tv(-15, -15, -15);
+	VectorCopy(v, ent->mins);
+	v = tv(15, 15, 15);
+	VectorCopy(v, ent->maxs);
 
 	if (ent->model)
-		gi.setmodel (ent, ent->model);
+		gi.setmodel(ent, ent->model);
 	else
-		gi.setmodel (ent, ent->item->world_model);
+		gi.setmodel(ent, ent->item->world_model);
 
 	// Lazarus:
-	// origin_offset is wrong - absmin and absmax weren't set soon enough.
-	// Fortunately we KNOW what the "offset" is - nada.
+	// origin_offset is wrong - absmin and absmax weren't set soon enough. Fortunately we KNOW what the "offset" is - nada.
 	VectorClear(ent->origin_offset);
 
-	if(ent->spawnflags & SHOOTABLE) {
+	if (ent->spawnflags & SHOOTABLE)
+	{
 		ent->solid = SOLID_BBOX;
 		ent->clipmask |= MASK_MONSTERSOLID;
-		if(!ent->health)
+
+		if (!ent->health)
 			ent->health = 20;
+
 		ent->takedamage = DAMAGE_YES;
 		ent->die = item_die;
-	} else
+	}
+	else
 		ent->solid = SOLID_TRIGGER;
 
 	// Lazarus:
-	if(ent->movewith)
+	if (ent->movewith)
 		ent->movetype = MOVETYPE_PUSH;
-	else if(ent->spawnflags & NO_DROPTOFLOOR)
+	else if (ent->spawnflags & NO_DROPTOFLOOR)
 		ent->movetype = MOVETYPE_NONE;
 	else
 		ent->movetype = MOVETYPE_TOSS;  
 	ent->touch = Touch_Item;
 
 	// Lazarus:
-	if(!(ent->spawnflags & NO_DROPTOFLOOR)) {
-		v = tv(0,0,-128);
+	if (!(ent->spawnflags & NO_DROPTOFLOOR))
+	{
+		v = tv(0, 0, -128);
 		VectorAdd (ent->s.origin, v, dest);
 
-		tr = gi.trace (ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
+		trace_t tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		if (tr.startsolid)
 		{
-			gi.dprintf ("droptofloor: %s startsolid at %s\n", ent->classname, vtos(ent->s.origin));
-			G_FreeEdict (ent);
+			gi.dprintf("droptofloor: %s startsolid at %s\n", ent->classname, vtos(ent->s.origin));
+			G_FreeEdict(ent);
 			return;
 		}
+
 		tr.endpos[2] += 1;
 		ent->mins[2] -= 1;
-		VectorCopy (tr.endpos, ent->s.origin);
+		VectorCopy(tr.endpos, ent->s.origin);
 	}
 
 	if (ent->team)
@@ -1401,6 +1365,7 @@ void droptofloor (edict_t *ent)
 
 		ent->svflags |= SVF_NOCLIENT;
 		ent->solid = SOLID_NOT;
+
 		if (ent == ent->teammaster)
 		{
 			ent->nextthink = level.time + FRAMETIME;
@@ -1423,7 +1388,7 @@ void droptofloor (edict_t *ent)
 		ent->use = Use_Item;
 	}
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 
@@ -1432,65 +1397,63 @@ void droptofloor (edict_t *ent)
 PrecacheItem
 
 Precaches all data needed for a given item.
-This will be called for each item spawned in a level,
-and for each item in each client's inventory.
+This will be called for each item spawned in a level, and for each item in each client's inventory.
 ===============
 */
-void PrecacheItem (gitem_t *it)
+void PrecacheItem(gitem_t *it)
 {
-	char	*s, *start;
 	char	data[MAX_QPATH];
-	int		len;
-	gitem_t	*ammo;
 
 	if (!it)
 		return;
 
 	if (it->pickup_sound)
-		gi.soundindex (it->pickup_sound);
+		gi.soundindex(it->pickup_sound);
 	if (it->world_model)
-		gi.modelindex (it->world_model);
+		gi.modelindex(it->world_model);
 	if (it->view_model)
-		gi.modelindex (it->view_model);
+		gi.modelindex(it->view_model);
 	if (it->icon)
-		gi.imageindex (it->icon);
+		gi.imageindex(it->icon);
 
 	// parse everything for its ammo
 	if (it->ammo && it->ammo[0])
 	{
-		ammo = FindItem (it->ammo);
+		gitem_t *ammo = FindItem(it->ammo);
 		if (ammo != it)
-			PrecacheItem (ammo);
+			PrecacheItem(ammo);
 	}
 
 	// parse the space seperated precache string for other items
-	s = it->precaches;
+	char *s = it->precaches;
 	if (!s || !s[0])
 		return;
 
 	while (*s)
 	{
-		start = s;
+		char *start = s;
 		while (*s && *s != ' ')
 			s++;
 
-		len = s-start;
+		int len = s-start;
 		if (len >= MAX_QPATH || len < 5)
-			gi.error ("PrecacheItem: %s has bad precache string", it->classname);
+			gi.error("PrecacheItem: %s has bad precache string", it->classname);
+
 		memcpy (data, start, len);
 		data[len] = 0;
 		if (*s)
 			s++;
 
 		// determine type based on extension
-		if (!strcmp(data+len-3, "md2"))
-			gi.modelindex (data);
-		else if (!strcmp(data+len-3, "sp2"))
-			gi.modelindex (data);
-		else if (!strcmp(data+len-3, "wav"))
-			gi.soundindex (data);
-		if (!strcmp(data+len-3, "pcx"))
-			gi.imageindex (data);
+		if (!strcmp(data + len - 3, "md2"))
+			gi.modelindex(data);
+		else if (!strcmp(data + len - 3, "sp2"))
+			gi.modelindex(data);
+		else if (!strcmp(data + len - 3, "wav"))
+			gi.soundindex(data);
+
+		if (!strcmp(data + len - 3, "pcx"))
+			gi.imageindex(data);
 	}
 }
 
@@ -1500,16 +1463,14 @@ SpawnItem
 
 Sets the clipping size and plants the object on the floor.
 
-Items can't be immediately dropped to floor, because they might
-be on an entity that hasn't spawned yet.
+Items can't be immediately dropped to floor, because they might be on an entity that hasn't spawned yet.
 ============
 */
-void SpawnItem (edict_t *ent, gitem_t *item)
+void SpawnItem(edict_t *ent, gitem_t *item)
 {
-	PrecacheItem (item);
+	PrecacheItem(item);
 
-	// Lazarus: added several spawnflags, plus gave ALL keys trigger_spawn and no_touch
-	// capabilities
+	// Lazarus: added several spawnflags, plus gave ALL keys trigger_spawn and no_touch capabilities
 	if ( ( (item->flags & IT_KEY) && (ent->spawnflags & ~31) ) ||
 		 (!(item->flags & IT_KEY) && (ent->spawnflags & ~28) )    ) 
 //	if (ent->spawnflags)
@@ -1531,31 +1492,34 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 		{
 			if (item->pickup == Pickup_Armor || item->pickup == Pickup_PowerArmor)
 			{
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 				return;
 			}
 		}
+
 		if ( (int)dmflags->value & DF_NO_ITEMS )
 		{
 			if (item->pickup == Pickup_Powerup)
 			{
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 				return;
 			}
 		}
+
 		if ( (int)dmflags->value & DF_NO_HEALTH )
 		{
 			if (item->pickup == Pickup_Health || item->pickup == Pickup_Adrenaline || item->pickup == Pickup_AncientHead)
 			{
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 				return;
 			}
 		}
+
 		if ( (int)dmflags->value & DF_INFINITE_AMMO )
 		{
 			if ( (item->flags == IT_AMMO) || (strcmp(ent->classname, "weapon_bfg") == 0) )
 			{
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 				return;
 			}
 		}
@@ -1569,19 +1533,18 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 
 	// don't let them drop items that stay in a coop game
 	if ((coop->value) && (item->flags & IT_STAY_COOP))
-	{
 		item->drop = NULL;
-	}
 
 	// Lazarus: flashlight - get level-wide cost for use
-	if(strcmp(ent->classname, "item_flashlight") == 0)
+	if (strcmp(ent->classname, "item_flashlight") == 0)
 		level.flashlight_cost = ent->count;
 
 //ZOID
 //Don't spawn the flags unless enabled
 	if (!ctf->value &&
 		(strcmp(ent->classname, "item_flag_team1") == 0 ||
-		strcmp(ent->classname, "item_flag_team2") == 0)) {
+		 strcmp(ent->classname, "item_flag_team2") == 0))
+	{
 		G_FreeEdict(ent);
 		return;
 	}
@@ -1600,16 +1563,18 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 			ent->count = sk_health_bonus_value->value;
 		else
 			ent->count = item->quantity;
+
 		ent->style = item->tag;
 	}
-	if (ent->spawnflags & NO_STUPID_SPINNING) {
+
+	if (ent->spawnflags & NO_STUPID_SPINNING)
+	{
 		ent->s.effects &= ~EF_ROTATE;
 		ent->s.renderfx &= ~RF_GLOW;
 	}
 
 	if (ent->model)
-		gi.modelindex (ent->model);
-
+		gi.modelindex(ent->model);
 
 //ZOID
 //flags are server animated and have special handling
@@ -3217,15 +3182,15 @@ void SP_item_health (edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
 	self->model = "models/items/healing/medium/tris.md2";
 	self->count = 10;
-//	SpawnItem (self, FindItem ("Health"));
-	SpawnItem (self, FindItemByClassname ("item_health"));
-	gi.soundindex ("items/n_health.wav");
+//	SpawnItem(self, FindItem("Health"));
+	SpawnItem(self, FindItemByClassname ("item_health"));
+	gi.soundindex("items/n_health.wav");
 }
 
 // QUAKED item_health_small (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -3234,7 +3199,7 @@ void SP_item_health_small (edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
@@ -3242,10 +3207,10 @@ void SP_item_health_small (edict_t *self)
 
 	self->model = "models/items/healing/stimpack/tris.md2";
 	self->count = sk_health_bonus_value->value;
-//	SpawnItem (self, FindItem ("Health"));
-	SpawnItem (self, FindItemByClassname ("item_health_small"));
+//	SpawnItem(self, FindItem("Health"));
+	SpawnItem(self, FindItemByClassname ("item_health_small"));
 	self->style = HEALTH_IGNORE_MAX;
-	gi.soundindex ("items/s_health.wav");
+	gi.soundindex("items/s_health.wav");
 }
 
 // QUAKED item_health_large (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -3254,15 +3219,15 @@ void SP_item_health_large (edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
 	self->model = "models/items/healing/large/tris.md2";
 	self->count = 25;
-//	SpawnItem (self, FindItem ("Health"));
-	SpawnItem (self, FindItemByClassname ("item_health_large"));
-	gi.soundindex ("items/l_health.wav");
+//	SpawnItem(self, FindItem("Health"));
+	SpawnItem(self, FindItemByClassname ("item_health_large"));
+	gi.soundindex("items/l_health.wav");
 }
 
 // QUAKED item_health_mega (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -3271,15 +3236,15 @@ void SP_item_health_mega (edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
 	self->model = "models/items/mega_h/tris.md2";
 	self->count = 100;
-//	SpawnItem (self, FindItem ("Health"));
-	SpawnItem (self, FindItemByClassname ("item_health_mega"));
-	gi.soundindex ("items/m_health.wav");
+//	SpawnItem(self, FindItem("Health"));
+	SpawnItem(self, FindItemByClassname ("item_health_mega"));
+	gi.soundindex("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
 }
 
@@ -3300,13 +3265,10 @@ Called by worldspawn
 */
 void SetItemNames (void)
 {
-	int		i;
-	gitem_t	*it;
-
-	for (i=0 ; i<game.num_items ; i++)
+	for (int i = 0; i < game.num_items; i++)
 	{
-		it = &itemlist[i];
-		gi.configstring (CS_ITEMS+i, it->pickup_name);
+		gitem_t *it = &itemlist[i];
+		gi.configstring(CS_ITEMS+i, it->pickup_name);
 	}
 
 	noweapon_index     = ITEM_INDEX(FindItem("No Weapon"));
@@ -3335,9 +3297,9 @@ Use_Flashlight
 */
 void Use_Flashlight ( edict_t *ent, gitem_t *item )
 {
-	if(!ent->client->flashlight)
+	if (!ent->client->flashlight)
 	{
-		if(ent->client->pers.inventory[ITEM_INDEX(FindItem(FLASHLIGHT_ITEM))] < level.flashlight_cost)
+		if (ent->client->pers.inventory[ITEM_INDEX(FindItem(FLASHLIGHT_ITEM))] < level.flashlight_cost)
 		{
 			safe_cprintf(ent,PRINT_HIGH,"Flashlight requires %s\n",FLASHLIGHT_ITEM);
 			return;
@@ -3345,10 +3307,11 @@ void Use_Flashlight ( edict_t *ent, gitem_t *item )
 #if FLASHLIGHT_USE != POWERUP_USE_ITEM
 	/*  Lazarus: We never "use up" the flashlight
 		ent->client->pers.inventory[ITEM_INDEX(item)]--; */
-		ValidateSelectedItem (ent);
+		ValidateSelectedItem(ent);
 #endif
 	}
-	if(ent->client->flashlight ^= 1)
+
+	if (ent->client->flashlight ^= 1)
 		ent->client->flashlight_time = level.time + FLASHLIGHT_DRAIN;
 }
 
@@ -3356,7 +3319,7 @@ void Use_Flashlight ( edict_t *ent, gitem_t *item )
 //==============================================================================
 void Use_Jet ( edict_t *ent, gitem_t *item )
 {
-	if(ent->client->jetpack)
+	if (ent->client->jetpack)
 	{
 		// Currently on... turn it off and store remaining time
 		ent->client->jetpack = false;
@@ -3380,16 +3343,16 @@ void Use_Jet ( edict_t *ent, gitem_t *item )
 
 		// Currently off. Turn it on, and add time, if any, remaining
 		// from last jetpack.
-		if( ent->client->pers.inventory[ITEM_INDEX(item)] )
+		if ( ent->client->pers.inventory[ITEM_INDEX(item)] )
 		{
 			ent->client->jetpack = true;
 			// Lazarus: Never remove jetpack from inventory (unless dropped)
 			// ent->client->pers.inventory[ITEM_INDEX(item)]--;
-			ValidateSelectedItem (ent);
+			ValidateSelectedItem(ent);
 			ent->client->jetpack_framenum = level.framenum;
 			ent->client->jetpack_activation = level.framenum;
 		}
-		else if(ent->client->pers.inventory[fuel_index] > 0)
+		else if (ent->client->pers.inventory[fuel_index] > 0)
 		{
 			ent->client->jetpack = true;
 			ent->client->jetpack_framenum = level.framenum;
@@ -3397,7 +3360,8 @@ void Use_Jet ( edict_t *ent, gitem_t *item )
 		}
 		else
 			return;  // Shouldn't have been able to get here, but I'm a pessimist
-		gi.sound( ent, CHAN_GIZMO, gi.soundindex("jetpack/activate.wav"), 1, ATTN_NORM, 0);
+
+		gi.sound(ent, CHAN_GIZMO, gi.soundindex("jetpack/activate.wav"), 1, ATTN_NORM, 0);
 	}
 }
 #endif
@@ -3405,13 +3369,14 @@ void Use_Jet ( edict_t *ent, gitem_t *item )
 // Lazarus: Stasis field generator
 void Use_Stasis ( edict_t *ent, gitem_t *item )
 {
-	if(ent->client->jetpack)
+	if (ent->client->jetpack)
 	{
 		gi.dprintf("Cannot use stasis generator while using jetpack\n");
 		return;
 	}
+
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 	level.freeze = true;
 	level.freezeframes = 0;
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/stasis_start.wav"), 1, ATTN_NORM, 0);

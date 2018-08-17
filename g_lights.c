@@ -93,9 +93,10 @@ void use_target_lightswitch (edict_t *self, edict_t *other, edict_t *activator)
 void SP_target_lightswitch (edict_t *self)
 {
 	// Ensure this is the only target_lightswitch in the map
-	edict_t *e = g_edicts + 1;
-	for (int i = 1; i < globals.num_edicts; i++, e++)
+	for (int i = 1; i < globals.num_edicts; i++)
 	{
+		edict_t *e = g_edicts + i;
+		
 		if (!e->inuse || !e->classname || e == self)
 			continue;
 

@@ -1301,7 +1301,7 @@ void SP_misc_actor (edict_t *self)
 		Q_strncpyz(self->usermodel, "male", 5);
 	}
 
-	if (!Q_stricmp(self->usermodel,"male") || !Q_stricmp(self->usermodel, "female") || !Q_stricmp(self->usermodel, "cyborg"))
+	if (!Q_stricmp(self->usermodel, "male") || !Q_stricmp(self->usermodel, "female") || !Q_stricmp(self->usermodel, "cyborg"))
 	{
 		self->actor_id_model = true;
 		if (PatchPlayerModels(self->usermodel))

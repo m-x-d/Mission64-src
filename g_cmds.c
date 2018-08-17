@@ -2019,9 +2019,9 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "id") == 0)
 		CTFID_f(ent);
 	else if (Q_stricmp(cmd, "yes") == 0)
-		CTFVoteYes(ent);
+		CTFVote(ent, true);
 	else if (Q_stricmp(cmd, "no") == 0)
-		CTFVoteNo(ent);
+		CTFVote(ent, false);
 	else if (Q_stricmp(cmd, "ready") == 0)
 		CTFReady(ent);
 	else if (Q_stricmp(cmd, "notready") == 0)

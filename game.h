@@ -31,25 +31,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	SVF_DEADMONSTER			0x00000002	// treat as CONTENTS_DEADMONSTER for collision
 #define	SVF_MONSTER				0x00000004	// treat as CONTENTS_MONSTER for collision
 #define SVF_DAMAGEABLE			0x00000008
-#define SVF_TRIGGER_CAMOWNER    0x00000010
-#define SVF_MUD                 0x00000020
+#define SVF_TRIGGER_CAMOWNER	0x00000010
+#define SVF_MUD					0x00000020
 #define	SVF_GIB					0x00000040	//Knightmare- gib flag
 
 // edict->solid values
 
 typedef enum
 {
-SOLID_NOT,			// no interaction with other objects
-SOLID_TRIGGER,		// only touch when inside, after moving
-SOLID_BBOX,			// touch on edge
-SOLID_BSP			// bsp clip, touch on edge
+	SOLID_NOT,			// no interaction with other objects
+	SOLID_TRIGGER,		// only touch when inside, after moving
+	SOLID_BBOX,			// touch on edge
+	SOLID_BSP			// bsp clip, touch on edge
 } solid_t;
 
 // Filesytem data types
 #ifdef GAME_INCLUDE
 typedef int fileHandle_t;
 
-typedef enum {
+typedef enum
+{
 	FS_READ,
 	FS_WRITE,
 	FS_APPEND

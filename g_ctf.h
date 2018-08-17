@@ -162,8 +162,8 @@ void SetCTFStats(edict_t *ent);
 gitem_t *CTFWhat_Flag(edict_t *ent);
 void CTFDeadDropFlag(edict_t *self);
 void CTFScoreboardMessage (edict_t *ent, edict_t *killer);
-void CTFTeam_f (edict_t *ent);
-void CTFID_f (edict_t *ent);
+void CTFTeam_f(edict_t *ent);
+void CTFID_f(edict_t *ent);
 void CTFSay_Team(edict_t *who, char *msg);
 void CTFFlagSetup (edict_t *ent);
 void CTFResetFlag(int ctf_team);
@@ -199,8 +199,9 @@ void CTFResetTech(void);
 void CTFOpenJoinMenu(edict_t *ent);
 void TTCTFOpenJoinMenu(edict_t *ent); // Knightmare added
 qboolean CTFStartClient(edict_t *ent);
-void CTFVoteYes(edict_t *ent);
-void CTFVoteNo(edict_t *ent);
+//void CTFVoteYes(edict_t *ent);
+//void CTFVoteNo(edict_t *ent);
+void CTFVote(edict_t *ent, qboolean yes); //mxd
 void CTFReady(edict_t *ent);
 void CTFNotReady(edict_t *ent);
 qboolean CTFNextMap(void);
@@ -222,9 +223,9 @@ void SP_misc_ctf_small_banner (edict_t *ent);
 extern char *ctf_statusbar;
 extern char *ttctf_statusbar; // Knightmare added
 
-void UpdateChaseCam(edict_t *ent);
-void ChaseNext(edict_t *ent);
-void ChasePrev(edict_t *ent);
+//void UpdateChaseCam(edict_t *ent);
+//void ChaseNext(edict_t *ent);
+//void ChasePrev(edict_t *ent);
 
 void CTFObserver(edict_t *ent);
 
