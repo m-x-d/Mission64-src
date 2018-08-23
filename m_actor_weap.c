@@ -553,7 +553,7 @@ void actorGrenadeLauncher (edict_t *self)
 				tr.endpos[1] += aim[1];
 				int contents = gi.pointcontents(tr.endpos);
 
-				while(contents & MASK_SOLID && target[2] > self->enemy->s.origin[2])
+				while (contents & MASK_SOLID && target[2] > self->enemy->s.origin[2])
 				{
 					target[2] -= 8.0;
 					VectorSubtract(target, start, forward);

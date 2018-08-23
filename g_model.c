@@ -110,7 +110,7 @@ void model_spawn_use(edict_t *self, edict_t *other, edict_t *activator)
 void model_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	edict_t *e = self->movewith_next;
-	while(e)
+	while (e)
 	{
 		edict_t *next = e->movewith_next;
 		if (e->solid == SOLID_NOT)

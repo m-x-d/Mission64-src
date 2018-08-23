@@ -496,7 +496,7 @@ void pendulum_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	{
 		count = min(8, mass / 100);
 
-		while(count--)
+		while (count--)
 		{
 			for (int i = 0; i < 3; i++)
 				chunkorigin[i] = origin[i] + crandom() * size[i];
@@ -508,7 +508,7 @@ void pendulum_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	// small chunks
 	count = min(16, mass / 25);
 
-	while(count--)
+	while (count--)
 	{
 		for(int i = 0; i < 3; i++)
 			chunkorigin[i] = origin[i] + crandom() * size[i];

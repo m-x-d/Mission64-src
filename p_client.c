@@ -46,7 +46,7 @@ void SP_FixCoopSpots (edict_t *self)
 	vec3_t d;
 	edict_t *spot = NULL;
 
-	while(true)
+	while (true)
 	{
 		spot = G_Find(spot, FOFS(classname), "info_player_start");
 
@@ -729,7 +729,7 @@ void TossClientWeapon (edict_t *self)
 	if (quad)
 	{
 		self->client->v_angle[YAW] += spread;
-		drop = Drop_Item(self, FindItemByClassname ("item_quad"));
+		drop = Drop_Item(self, FindItemByClassname("item_quad"));
 		self->client->v_angle[YAW] -= spread;
 		drop->spawnflags |= DROPPED_PLAYER_ITEM;
 
@@ -1327,7 +1327,7 @@ edict_t *SelectRandomDeathmatchSpawnPoint(void)
 		spot = G_Find(spot, FOFS(classname), "info_player_deathmatch");
 		if (spot == spot1 || spot == spot2)
 			selection++;
-	} while(selection--);
+	} while (selection--);
 
 	return spot;
 }

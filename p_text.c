@@ -76,7 +76,7 @@ void Text_BuildDisplay(texthnd_t *hnd)
 	{
 		// Scan for hnd->curline'th 0 byte, point to following character
 		int n = hnd->curline;
-		while(p1 < p3 && n)
+		while (p1 < p3 && n)
 		{
 			if (*p1 == 0)
 				n--;
@@ -93,7 +93,7 @@ void Text_BuildDisplay(texthnd_t *hnd)
 	else
 		imax = hnd->page_length - 1;
 
-	while(p2 <= p3 && i < imax)
+	while (p2 <= p3 && i < imax)
 	{
 		if (*p2 == 0 && p2 < p3)
 		{
@@ -420,7 +420,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 	if (*p1 == '$')
 	{
 		p3 = p1;
-		while((p3 < hnd->buffer+hnd->size) && (*p3 != 13))
+		while ((p3 < hnd->buffer+hnd->size) && (*p3 != 13))
 			p3++;
 
 		p2 = strstr(p1, "L=");
@@ -455,7 +455,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 
 	// Eliminate all <CR>'s so lines are delineated with <LF>'s only
 	p1 = hnd->buffer + hnd->start_char;
-	while(p1 < hnd->buffer + hnd->size)
+	while (p1 < hnd->buffer + hnd->size)
 	{
 		if (*p1 == 13)
 		{
@@ -490,7 +490,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 	qboolean centered = false;
 	qboolean right_justified = false;
 
-	while(p1 < hnd->buffer + hnd->size)
+	while (p1 < hnd->buffer + hnd->size)
 	{
 		// Don't count control characters
 		if (line_length == 0)
@@ -554,7 +554,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 			{
 				// back up from current position to last space character and replace with a 0 (but don't go past previous 0)
 				p2 = p1;
-				while(p1 > hnd->buffer + hnd->start_char && *p1 != 0)
+				while (p1 > hnd->buffer + hnd->start_char && *p1 != 0)
 				{
 					if (*p1 == 32)
 					{
@@ -596,7 +596,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 					p2 = hnd->buffer + hnd->size;
 					p3 = p2 - 2;
 
-					while(p3 >= p1)
+					while (p3 >= p1)
 					{
 						*p2 = *p3;
 						p2--;
@@ -639,7 +639,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 			p2 = hnd->buffer + hnd->size;
 			p3 = p2 - 1;
 
-			while(p3 >= p1)
+			while (p3 >= p1)
 			{
 				*p2 = *p3;
 				p2--;
@@ -677,7 +677,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 			p2 = hnd->buffer + hnd->size;
 			p3 = p2 - 2;
 
-			while(p3 >= p1)
+			while (p3 >= p1)
 			{
 				*p2 = *p3;
 				p2--;
@@ -702,7 +702,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 				*p1 = 0;
 				p3 = p2 + 1;
 
-				while(p3 < hnd->buffer + hnd->size)
+				while (p3 < hnd->buffer + hnd->size)
 				{
 					*p2 = *p3;
 					p2++;
@@ -731,7 +731,7 @@ void Do_Text_Display(edict_t *activator, int flags, char *message)
 				if (*p2 != 0 && *p2 != '*' && *p2 != '\\' && p2 < hnd->buffer + hnd->size)
 				{
 					int new_line_length = line_length + 2;
-					while(p2 < hnd->buffer + hnd->size && *p2 != 32 && *p2 != 0)
+					while (p2 < hnd->buffer + hnd->size && *p2 != 32 && *p2 != 0)
 					{
 						new_line_length++;
 						p2++;
@@ -757,7 +757,7 @@ done_linebreaks:
 
 	// Finally, scan for a \a code (embedded audio). If present remove that line and play the sound
 	p1 = hnd->buffer + hnd->start_char;
-	while(p1 < hnd->buffer + hnd->size)
+	while (p1 < hnd->buffer + hnd->size)
 	{
 		if (*p1 == 0 || p1 == hnd->buffer + hnd->start_char)
 		{
@@ -773,7 +773,7 @@ done_linebreaks:
 					p1--;
 					p2 = p1;
 
-					while(*p2 != 0)
+					while (*p2 != 0)
 						p2++;
 
 					p2++;

@@ -1311,7 +1311,7 @@ void target_laser_think(edict_t *self)
 	VectorCopy(self->s.origin, start);
 	VectorMA(start, 2048, self->movedir, end);
 
-	while(true)
+	while (true)
 	{
 		tr = gi.trace(start, NULL, NULL, end, ignore, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER);
 		if (!tr.ent)
@@ -2249,7 +2249,7 @@ void use_target_rocks (edict_t *self, edict_t *other, edict_t *activator)
 	Com_sprintf(modelname, sizeof(modelname), "models/objects/rock%d/tris.md2", self->style * 2 + 2);
 	VectorSet(size, 4, 4, 4);
 	
-	while(count--)
+	while (count--)
 	{
 		for (int i = 0; i < 3; i++)
 			chunkorigin[i] = self->s.origin[i] + crandom() * source[i];
@@ -2328,7 +2328,7 @@ void use_target_rotation (edict_t *self, edict_t *other, edict_t *activator)
 			return;	// should never happen
 	}
 
-	while(*p1 != 0 && *p1 != ',')
+	while (*p1 != 0 && *p1 != ',')
 	{
 		*p2 = *p1;
 		p1++;
@@ -2990,7 +2990,7 @@ void target_attractor_think_single (edict_t *self)
 		{
 			// fire pathtarget when close
 			ent = G_Find(NULL, FOFS(targetname), self->pathtarget);
-			while(ent)
+			while (ent)
 			{
 				if (ent->use)
 					ent->use(ent, self, self);
@@ -4267,7 +4267,7 @@ void use_target_movewith (edict_t *self, edict_t *other, edict_t *activator)
 
 				edict_t *e = parent->movewith_next;
 				edict_t *previous = parent;
-				while(e)
+				while (e)
 				{
 					previous = e;
 					e = previous->movewith_next;

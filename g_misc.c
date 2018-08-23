@@ -626,7 +626,7 @@ void ThrowClientHead (edict_t *self, int damage)
 	self->svflags |= SVF_GIB; //Knightmare- gib flag
 	self->movetype = MOVETYPE_BOUNCE;
 	VelocityForDamage(damage, vd);
-	VectorAdd (self->velocity, vd, self->velocity);
+	VectorAdd(self->velocity, vd, self->velocity);
 
 	if (self->client)	// bodies in the queue don't have a client anymore
 	{
@@ -653,7 +653,7 @@ void debris_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 	G_FreeEdict(self);
 }
 
-void ThrowDebris (edict_t *self, char *modelname, float speed, const vec3_t origin, int skin, int effects)
+void ThrowDebris(edict_t *self, char *modelname, float speed, const vec3_t origin, int skin, int effects)
 {
 	vec3_t v;
 
@@ -1289,7 +1289,7 @@ void func_explosive_explode (edict_t *self)
 
 	// bmodel origins are (0 0 0), we need to adjust that here
 	VectorScale(self->size, 0.5, size);
-	VectorAdd (self->absmin, size, origin);
+	VectorAdd(self->absmin, size, origin);
 	VectorCopy(origin, self->s.origin);
 
 	self->takedamage = DAMAGE_NO;
@@ -1319,7 +1319,7 @@ void func_explosive_explode (edict_t *self)
 	{
 		count = min(16, mass / 25);
 
-		while(count--)
+		while (count--)
 		{
 			const int r = (rand() % 5) + 1;
 
@@ -1357,7 +1357,7 @@ void func_explosive_explode (edict_t *self)
 		{
 			count = min(8, mass / 100);
 
-			while(count--)
+			while (count--)
 			{
 				for (int i = 0; i < 3; i++)
 					chunkorigin[i] = origin[i] + crandom() * size[i];
@@ -1369,12 +1369,12 @@ void func_explosive_explode (edict_t *self)
 		// small chunks
 		count = min(16, mass / 25);
 
-		while(count--)
+		while (count--)
 		{
 			for (int i = 0; i < 3; i++)
 				chunkorigin[i] = origin[i] + crandom() * size[i];
 
-			ThrowDebris (self, "models/objects/debris2/tris.md2", 2, chunkorigin, 0, 0);
+			ThrowDebris(self, "models/objects/debris2/tris.md2", 2, chunkorigin, 0, 0);
 		}
 	}
 
@@ -1945,16 +1945,16 @@ void barrel_explode (edict_t *self)
 		spd = 1.75 * (float)self->dmg / 200.0;
 		VectorCopy(self->absmin, org);
 		org[1] += self->size[1];
-		ThrowDebris (self, "models/objects/barrel_gibs/gib1.md2",  spd, org, 0, 0);
+		ThrowDebris(self, "models/objects/barrel_gibs/gib1.md2",  spd, org, 0, 0);
 		org[0] += self->size[0] * 2;
-		ThrowDebris (self, "models/objects/barrel_gibs/gib1.md2",  spd, org, 0, 0);
+		ThrowDebris(self, "models/objects/barrel_gibs/gib1.md2",  spd, org, 0, 0);
 
 		// top corners
 		VectorCopy(self->absmax, org);
 		org[1] += self->size[1];
-		ThrowDebris (self, "models/objects/barrel_gibs/gib3.md2",  spd, org, 0, 0);
+		ThrowDebris(self, "models/objects/barrel_gibs/gib3.md2",  spd, org, 0, 0);
 		org[0] += self->size[0] * 2;
-		ThrowDebris (self, "models/objects/barrel_gibs/gib3.md2",  spd, org, 0, 0);
+		ThrowDebris(self, "models/objects/barrel_gibs/gib3.md2",  spd, org, 0, 0);
 
 		// a bunch of little chunks
 		spd = 2.0f * self->dmg / 200.0f; //mxd. Changed ints to floats
@@ -1963,7 +1963,7 @@ void barrel_explode (edict_t *self)
 			for (int c = 0; c < 3; c++)
 				org[c] = self->s.origin[c] + crandom() * size[c];
 
-			ThrowDebris (self, "models/objects/barrel_gibs/gib5.md2",  spd, org, 0, 0);
+			ThrowDebris(self, "models/objects/barrel_gibs/gib5.md2",  spd, org, 0, 0);
 		}
 	}
 	else
@@ -2499,7 +2499,7 @@ void viper_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	}
 
 	edict_t *e = self->movewith_next;
-	while(e)
+	while (e)
 	{
 		edict_t *next = e->movewith_next;
 		if (e->solid == SOLID_NOT)
@@ -3755,7 +3755,7 @@ void drop_add_to_chain(edict_t *drop)
 	}
 
 	edict_t *parent = owner;
-	while(parent->child)
+	while (parent->child)
 		parent = parent->child;
 
 	parent->child = drop;
@@ -4011,7 +4011,7 @@ void target_precipitation_use(edict_t *ent, edict_t *other, edict_t *activator)
 			edict_t *child = ent->child;
 			ent->child = NULL;
 
-			while(child)
+			while (child)
 			{
 				edict_t *parent = child;
 				child = parent->child;
@@ -4212,7 +4212,7 @@ void target_fountain_use(edict_t *ent, edict_t *other, edict_t *activator)
 			edict_t *child = ent->child;
 			ent->child = NULL;
 
-			while(child)
+			while (child)
 			{
 				edict_t *parent = child;
 				child = parent->child;

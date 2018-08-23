@@ -265,7 +265,7 @@ void medic_NextPatrolPoint(edict_t *self, edict_t *hint)
 	if (self->monsterinfo.pathdir == -1)
 	{
 		e = hint_chain_starts[hint->hint_chain_id];
-		while(e)
+		while (e)
 		{
 			if (e->hint_chain == hint)
 			{

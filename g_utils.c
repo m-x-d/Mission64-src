@@ -129,7 +129,7 @@ edict_t *G_PickTarget(char *targetname)
 		return NULL;
 	}
 
-	while(true)
+	while (true)
 	{
 		ent = G_Find(ent, FOFS(targetname), targetname);
 		if (!ent)

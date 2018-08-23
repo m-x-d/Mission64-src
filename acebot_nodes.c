@@ -113,7 +113,7 @@ int ACEND_FindCost(int from, int to)
 	curnode = path_table[from][to];
 
 	// Find a path (linear time, very fast)
-	while(curnode != to)
+	while (curnode != to)
 	{
 		curnode = path_table[curnode][to];
 		if (curnode == INVALID) // something has corrupted the path abort
@@ -528,7 +528,7 @@ void ACEND_DrawPath()
 	next_node = path_table[current_node][goal_node];
 
 	// Now set up and display the path
-	while(current_node != goal_node && current_node != -1)
+	while (current_node != goal_node && current_node != -1)
 	{
 		gi.WriteByte(svc_temp_entity);
 		gi.WriteByte(TE_BFG_LASER);

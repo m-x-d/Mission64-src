@@ -991,29 +991,30 @@ void Fog_Off();
 #define TRAIN_SPLINE			8192
 #define TRAIN_ORIGIN			16384
 
-qboolean box_walkmove (edict_t *ent, float yaw, float dist);
+qboolean box_walkmove(edict_t *ent, float yaw, float dist);
 void button_use(edict_t *self, edict_t *other, edict_t *activator);
 void trainbutton_use(edict_t *self, edict_t *other, edict_t *activator);
-void movewith_init (edict_t *self);
+void movewith_init(edict_t *self);
 void set_child_movement(edict_t *self);
+float GetAngularVelocity(float velocity, float angle, float idealangle); //mxd
 
 //
 // g_items.c
 //
 void PrecacheItem(gitem_t *it);
-void InitItems (void);
-void SetItemNames (void);
+void InitItems(void);
+void SetItemNames(void);
 void SetAmmoPickupValues(void);
 gitem_t	*FindItem(char *pickup_name);
-gitem_t	*FindItemByClassname (char *classname);
+gitem_t	*FindItemByClassname(char *classname);
 #define	ITEM_INDEX(x) ((x)-itemlist)
 edict_t *Drop_Item(edict_t *ent, gitem_t *item);
 void SetRespawn(edict_t *ent, float delay);
-void ChangeWeapon (edict_t *ent);
+void ChangeWeapon(edict_t *ent);
 void SpawnItem(edict_t *ent, gitem_t *item);
-void Think_Weapon (edict_t *ent);
+void Think_Weapon(edict_t *ent);
 int ArmorIndex(edict_t *ent);
-int PowerArmorType (edict_t *ent);
+int PowerArmorType(edict_t *ent);
 gitem_t	*GetItemByIndex(int index);
 int GetMaxAmmoByIndex(gclient_t *client, int item_index); // Knightmare added
 int GetMaxArmorByIndex(int item_index); // Knightmare added
@@ -1021,14 +1022,14 @@ qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count);
 void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
 
 #ifdef JETPACK_MOD
-void Use_Jet (edict_t *ent, gitem_t *item);
+void Use_Jet(edict_t *ent, gitem_t *item);
 
 //
 // g_jetpack.c
 //
-void Jet_ApplyJet( edict_t *ent, usercmd_t *ucmd );
-qboolean Jet_AvoidGround( edict_t *ent );
-void Jet_BecomeExplosion( edict_t *ent, int damage );
+void Jet_ApplyJet(edict_t *ent, usercmd_t *ucmd);
+qboolean Jet_AvoidGround(edict_t *ent);
+void Jet_BecomeExplosion(edict_t *ent, int damage);
 #endif
 
 //
@@ -1040,26 +1041,26 @@ void ToggleLights();
 //
 // g_lock.c
 //
-void lock_digit_increment (edict_t *digit, edict_t *activator);
+void lock_digit_increment(edict_t *digit, edict_t *activator);
 //
 // g_main.c
 //
-void SaveClientData (void);
-void FetchClientEntData (edict_t *ent);
+void SaveClientData(void);
+void FetchClientEntData(edict_t *ent);
 void EndDMLevel(void);
 
 //
 // g_misc.c
 //
 void ThrowHead(edict_t *self, char *gibname, int damage, int type);
-void ThrowClientHead (edict_t *self, int damage);
+void ThrowClientHead(edict_t *self, int damage);
 edict_t* ThrowGib(edict_t *self, char *gibname, int damage, int type); //mxd. void -> edict_t
-edict_t* ThrowGibEx (edict_t *self, char *gibname, int damage, int type, const vec3_t position, vec3_t direction, const vec3_t velocity_scale, const vec3_t angular_velocity_scale); //mxd
+edict_t* ThrowGibEx(edict_t *self, char *gibname, int damage, int type, const vec3_t position, vec3_t direction, const vec3_t velocity_scale, const vec3_t angular_velocity_scale); //mxd
 void BecomeExplosion1(edict_t *self);
-void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void barrel_explode (edict_t *self);
+void barrel_delay(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void barrel_explode(edict_t *self);
 void func_explosive_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void PrecacheDebris (int style);
+void PrecacheDebris(int style);
 
 //
 // g_monster.c
@@ -1216,7 +1217,7 @@ void vectoangles2 (vec3_t vec, vec3_t angles);
 #define BLASTER_GREEN	2
 #define BLASTER_BLUE	3
 #define BLASTER_RED		4
-void ThrowDebris (edict_t *self, char *modelname, float speed, const vec3_t origin, int skin, int effects);
+void ThrowDebris(edict_t *self, char *modelname, float speed, const vec3_t origin, int skin, int effects);
 qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick);
 void fire_bullet(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod);
 void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);

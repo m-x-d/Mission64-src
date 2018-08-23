@@ -127,7 +127,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 
 	// try the move	
 	VectorCopy(ent->s.origin, oldorg);
-	VectorAdd (ent->s.origin, move, neworg);
+	VectorAdd(ent->s.origin, move, neworg);
 
 	AngleVectors(ent->s.angles, forward, NULL, up);
 
@@ -337,7 +337,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 	if (!(ent->monsterinfo.aiflags & AI_CHASE_THING))
 	{
 		edict_t *grenade = NULL;
-		while((grenade = findradius(grenade, neworg, 128)) != NULL)
+		while ((grenade = findradius(grenade, neworg, 128)) != NULL)
 		{
 			if (!grenade->inuse || !grenade->classname)
 				continue;
@@ -408,7 +408,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 			// Shift psuedo laser towards monster's current position up to the total distance he's proposing moving.
 			vec_t delta = min(16, dist);
 			VectorNormalize2(move, dir);
-			while(delta < dist + 15.875)
+			while (delta < dist + 15.875)
 			{
 				delta = min(dist, delta);
 				VectorMA(e->s.origin,     -delta, dir, laser_start);

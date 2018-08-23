@@ -68,7 +68,7 @@ qboolean M_SetDeath(edict_t *self, mmove_t **deathmoves)
 	if (self->health > 0)
 		return false;
 
-	while(*deathmoves && !move)
+	while (*deathmoves && !move)
 	{
 		mmove_t *dmove = *deathmoves;
 		if ( (self->s.frame >= dmove->firstframe) &&
@@ -908,7 +908,7 @@ qboolean monster_start(edict_t *self)
 
 	if (st.item)
 	{
-		self->item = FindItemByClassname (st.item);
+		self->item = FindItemByClassname(st.item);
 		if (!self->item)
 			gi.dprintf("%s at %s has bad item: %s\n", self->classname, vtos(self->s.origin), st.item);
 	}
@@ -1389,7 +1389,7 @@ void HintTestNext(edict_t *self, edict_t *hint)
 	if (self->monsterinfo.pathdir == -1)
 	{
 		edict_t *e = hint_chain_starts[hint->hint_chain_id];
-		while(e)
+		while (e)
 		{
 			if (e->hint_chain == hint)
 			{

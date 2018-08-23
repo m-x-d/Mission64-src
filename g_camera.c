@@ -258,7 +258,7 @@ edict_t *G_FindNextCamera (edict_t *camera, edict_t *monitor)
 		const int start = which;
 		next = g_edicts + 1;
 
-		while(true)
+		while (true)
 		{
 			if (next->targetname && !Q_stricmp(next->targetname, monitor->target) && next->count == which)
 			{
@@ -361,7 +361,7 @@ edict_t *G_FindPrevCamera (edict_t *camera, edict_t *monitor)
 		const int start = which;
 		prev = g_edicts + 1;
 
-		while(true)
+		while (true)
 		{
 			if (prev->targetname && !Q_stricmp(prev->targetname, monitor->target) && prev->count == which)
 			{
@@ -437,7 +437,7 @@ void func_monitor_init (edict_t *self)
 {
 	self->count = 0;
 	edict_t *camera = NULL;
-	while((camera = G_Find(camera, FOFS(targetname), self->target)) != NULL)
+	while ((camera = G_Find(camera, FOFS(targetname), self->target)) != NULL)
 		self->count++;
 
 	if (!self->count)

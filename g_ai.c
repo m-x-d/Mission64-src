@@ -544,7 +544,7 @@ void FoundTarget(edict_t *self)
 		level.sight_entity->light_level = 128;
 
 		edict_t *goodguy = G_Find(NULL, FOFS(dmgteam), "player");
-		while(goodguy)
+		while (goodguy)
 		{
 			if (goodguy->health > 0 && !goodguy->enemy && goodguy->monsterinfo.aiflags & AI_ACTOR)
 			{

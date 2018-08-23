@@ -470,7 +470,7 @@ void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "
 	{
 		// target is player; attacker is monster... alert "good guys", if any
 		edict_t *teammate = G_Find(NULL, FOFS(dmgteam), "player");
-		while(teammate)
+		while (teammate)
 		{
 			if (teammate->health > 0 && !(teammate->monsterinfo.aiflags & AI_CHASE_THING) && teammate != attacker)
 			{
@@ -1198,7 +1198,7 @@ void T_RadiusDamage(edict_t *inflictor, edict_t *attacker, float damage, edict_t
 		if (ent == ignore || !ent->takedamage)
 			continue;
 
-		VectorAdd (ent->mins, ent->maxs, v);
+		VectorAdd(ent->mins, ent->maxs, v);
 		VectorMA(ent->s.origin, 0.5, v, v);
 		VectorSubtract(inflictor->s.origin, v, v);
 		float points = damage + dmg_slope * VectorLength(v);

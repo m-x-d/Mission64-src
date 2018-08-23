@@ -326,12 +326,12 @@ void VectorMA(const vec3_t veca, float scale, const vec3_t vecb, vec3_t vecc);
 // just in case you do't want to use the macros
 vec_t _DotProduct(const vec3_t v1, const vec3_t v2);
 void _VectorSubtract(const vec3_t veca, const vec3_t vecb, vec3_t out);
-void _VectorAdd (const vec3_t veca, const vec3_t vecb, vec3_t out);
+void _VectorAdd(const vec3_t veca, const vec3_t vecb, vec3_t out);
 void _VectorCopy(const vec3_t in, vec3_t out);
 
 void ClearBounds (vec3_t mins, vec3_t maxs);
 void AddPointToBounds (const vec3_t v, vec3_t mins, vec3_t maxs);
-int VectorCompare (const vec3_t v1, const vec3_t v2);
+int VectorCompare(const vec3_t v1, const vec3_t v2);
 vec_t VectorLength(const vec3_t v);
 void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
 vec_t VectorNormalize(vec3_t v);		// returns vector length

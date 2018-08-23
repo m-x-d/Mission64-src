@@ -189,7 +189,7 @@ int GetMaxArmorByIndex(int item_index)
 FindItemByClassname
 ===============
 */
-gitem_t	*FindItemByClassname (char *classname)
+gitem_t	*FindItemByClassname(char *classname)
 {
 	gitem_t *it = itemlist;
 	for (int i = 0; i < game.num_items; i++, it++)
@@ -1342,7 +1342,7 @@ void droptofloor (edict_t *ent)
 	if (!(ent->spawnflags & NO_DROPTOFLOOR))
 	{
 		v = tv(0, 0, -128);
-		VectorAdd (ent->s.origin, v, dest);
+		VectorAdd(ent->s.origin, v, dest);
 
 		trace_t tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		if (tr.startsolid)
@@ -3189,7 +3189,7 @@ void SP_item_health (edict_t *self)
 	self->model = "models/items/healing/medium/tris.md2";
 	self->count = 10;
 //	SpawnItem(self, FindItem("Health"));
-	SpawnItem(self, FindItemByClassname ("item_health"));
+	SpawnItem(self, FindItemByClassname("item_health"));
 	gi.soundindex("items/n_health.wav");
 }
 
@@ -3208,7 +3208,7 @@ void SP_item_health_small (edict_t *self)
 	self->model = "models/items/healing/stimpack/tris.md2";
 	self->count = sk_health_bonus_value->value;
 //	SpawnItem(self, FindItem("Health"));
-	SpawnItem(self, FindItemByClassname ("item_health_small"));
+	SpawnItem(self, FindItemByClassname("item_health_small"));
 	self->style = HEALTH_IGNORE_MAX;
 	gi.soundindex("items/s_health.wav");
 }
@@ -3226,7 +3226,7 @@ void SP_item_health_large (edict_t *self)
 	self->model = "models/items/healing/large/tris.md2";
 	self->count = 25;
 //	SpawnItem(self, FindItem("Health"));
-	SpawnItem(self, FindItemByClassname ("item_health_large"));
+	SpawnItem(self, FindItemByClassname("item_health_large"));
 	gi.soundindex("items/l_health.wav");
 }
 
@@ -3243,7 +3243,7 @@ void SP_item_health_mega (edict_t *self)
 	self->model = "models/items/mega_h/tris.md2";
 	self->count = 100;
 //	SpawnItem(self, FindItem("Health"));
-	SpawnItem(self, FindItemByClassname ("item_health_mega"));
+	SpawnItem(self, FindItemByClassname("item_health_mega"));
 	gi.soundindex("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
 }

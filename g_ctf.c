@@ -825,7 +825,7 @@ edict_t *SelectCTFSpawnPoint (edict_t *ent)
 		spot = G_Find(spot, FOFS(classname), cname);
 		if (spot == spot1 || spot == spot2)
 			selection++;
-	} while(selection--);
+	} while (selection--);
 
 	return spot;
 }
