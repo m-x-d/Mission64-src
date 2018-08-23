@@ -43,7 +43,7 @@ Called from SpawnEntities in g_spawn.c.
 Initializes all hint_path chains in a map.
 =====================
 */
-void SetupHintPaths (void)
+void SetupHintPaths(void)
 {
 	// check if there are any hint_paths in this map first
 	hint_chains_exist = 0;
@@ -135,7 +135,7 @@ hintpath_start
 Makes a monster go towards a hintpath spot, and clears inhibiting AI flags.
 =====================
 */
-void hintpath_start (edict_t *monster, edict_t *spot)
+void hintpath_start(edict_t *monster, edict_t *spot)
 {
 	vec3_t	goDir, goAngles;
 
@@ -193,7 +193,7 @@ One endpoint of a valid path must be visible to the monster, and the other to th
 =====================
 */
 #define HINT_NODE_RANGE 512
-qboolean hintcheck_monsterlost (edict_t *monster)
+qboolean hintcheck_monsterlost(edict_t *monster)
 {
 	edict_t		*ent;
 	edict_t		*prev_node = NULL; //mxd
@@ -439,7 +439,7 @@ touch_hint_path
 A monster has touched a hint_path node
 =====================
 */
-void touch_hint_path (edict_t *hintpath, edict_t *monster, cplane_t *plane, csurface_t *surf)
+void touch_hint_path(edict_t *hintpath, edict_t *monster, cplane_t *plane, csurface_t *surf)
 {
 	qboolean parsedGoal = false;
 	edict_t *nextPath = NULL; //mxd
@@ -522,7 +522,7 @@ ENDPT - set this for nodes at the start and end of each string
 "targetname"	: name of this hint_path
 "wait"			: delay for monster at this point
 */
-void SP_hint_path (edict_t *hintpath)
+void SP_hint_path(edict_t *hintpath)
 {
 	// singleplayer-only
 	if (deathmatch->value)
@@ -567,8 +567,8 @@ Blocked Logic
 #define STATE_UP			2
 #define STATE_DOWN			3
 
-qboolean face_wall (edict_t * monster);
-qboolean parasite_drain_attack_ok (vec3_t start, vec3_t end);
+qboolean face_wall(edict_t * monster);
+qboolean parasite_drain_attack_ok(vec3_t start, vec3_t end);
 
 /*
 =====================
@@ -577,7 +577,7 @@ check_shot_blocked
 chance_attack: 0-1, probability that monster will attack if it has a clear shot
 =====================
 */
-qboolean check_shot_blocked (edict_t *monster, float chance_attack)
+qboolean check_shot_blocked(edict_t *monster, float chance_attack)
 {
 	// only check for players, and random check
 	if (!monster->enemy || !monster->enemy->client || random() < chance_attack)
@@ -635,7 +635,7 @@ check_plat_blocked
 moveDist: how far monster is trying to move
 =====================
 */
-qboolean check_plat_blocked (edict_t *monster, float moveDist)
+qboolean check_plat_blocked(edict_t *monster, float moveDist)
 { 
 	edict_t		*platform = NULL;
 	int			enemy_relHeight;
@@ -706,7 +706,7 @@ check_jump_blocked
 jumpDist: distance monster is attempting to advance downLimit/upLimit: max altitude to approve jump for; 0 is for no change
 =====================
 */
-qboolean check_jump_blocked (edict_t *monster, float jumpDist, float downLimit, float upLimit)
+qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, float upLimit)
 {
 	edict_t		*target;
 	trace_t		jumpTrace;
@@ -813,7 +813,7 @@ float realrange(edict_t *this, edict_t *that)
 	return VectorLength(offset);
 }
 
-qboolean face_wall (edict_t *monster)
+qboolean face_wall(edict_t *monster)
 {
 	vec3_t	point, fwd, angles;
 
@@ -835,7 +835,7 @@ qboolean face_wall (edict_t *monster)
 	return false;
 }
 
-qboolean has_valid_enemy (edict_t *monster)
+qboolean has_valid_enemy(edict_t *monster)
 {
 	if (!monster->enemy || !monster->enemy->inuse)
 		return false;

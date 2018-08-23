@@ -30,7 +30,7 @@ This is a support routine used when a client is firing a non-instant attack weap
 It checks to see if a monster's dodge function should be called.
 =================
 */
-void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed)
+void check_dodge(edict_t *self, vec3_t start, vec3_t dir, int speed)
 {
 	// Easy mode only ducks one quarter the time
 	if (skill->value == 0 && random() > 0.25f)
@@ -57,7 +57,7 @@ fire_hit
 Used for all impact (hit/punch/slash) attacks
 =================
 */
-qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick)
+qboolean fire_hit(edict_t *self, vec3_t aim, int damage, int kick)
 {
 	vec3_t	forward, right, up;
 	vec3_t	v;
@@ -194,7 +194,7 @@ fire_lead
 This is an internal support routine used for bullet/pellet based weapons.
 =================
 */
-void fire_lead (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int te_impact, int hspread, int vspread, int mod)
+void fire_lead(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int te_impact, int hspread, int vspread, int mod)
 {
 	vec3_t		dir;
 	vec3_t		forward, right, up;
@@ -390,7 +390,7 @@ fire_shotgun
 Shoots shotgun pellets.  Used by shotgun and super shotgun.
 =================
 */
-void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod)
+void fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod)
 {
 	for (int i = 0; i < count; i++)
 		fire_lead(self, start, aimdir, damage, kick, TE_SHOTGUN, hspread, vspread, mod);
@@ -523,7 +523,7 @@ void fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 }	
 
 // SP_bolt should ONLY be used for blaster/hyperblaster bolts that have changed maps via trigger_transition. It should NOT be used for map entities.
-void bolt_delayed_start (edict_t *bolt)
+void bolt_delayed_start(edict_t *bolt)
 {
 	if (g_edicts[1].linkcount)
 	{
@@ -538,7 +538,7 @@ void bolt_delayed_start (edict_t *bolt)
 	}
 }
 
-void SP_bolt (edict_t *bolt)
+void SP_bolt(edict_t *bolt)
 {
 	bolt->s.modelindex = gi.modelindex("models/objects/laser/tris.md2");
 	bolt->s.sound = gi.soundindex("misc/lasfly.wav");
@@ -636,7 +636,7 @@ void Grenade_Evade(edict_t *monster)
 	}
 }
 
-void Grenade_Add_To_Chain (edict_t *grenade)
+void Grenade_Add_To_Chain(edict_t *grenade)
 {
 	edict_t *ancestor = world;
 	while (ancestor->next_grenade && ancestor->next_grenade->inuse)
@@ -646,7 +646,7 @@ void Grenade_Add_To_Chain (edict_t *grenade)
 	grenade->prev_grenade = ancestor;
 }
 
-void Grenade_Remove_From_Chain (edict_t *grenade)
+void Grenade_Remove_From_Chain(edict_t *grenade)
 {
 	if (grenade->prev_grenade)
 	{
@@ -720,7 +720,7 @@ void Grenade_Explode(edict_t *ent)
 	G_FreeEdict(ent);
 }
 
-void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void Grenade_Touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;
@@ -774,7 +774,7 @@ void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *s
 	Grenade_Explode(ent);
 }
 
-void ContactGrenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void ContactGrenade_Touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;
@@ -845,7 +845,7 @@ void fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int sp
 	gi.linkentity(grenade);
 }
 
-void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
+void fire_grenade2(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
 {
 	vec3_t	dir;
 	vec3_t	forward, right, up;
@@ -904,7 +904,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 // NOTE: SP_grenade and SP_handgrenade should ONLY be used to spawn grenades that change
 //       maps via a trigger_transition. They should NOT be used for map entities
 
-void grenade_delayed_start (edict_t *grenade)
+void grenade_delayed_start(edict_t *grenade)
 {
 	if (g_edicts[1].linkcount)
 	{
@@ -920,7 +920,7 @@ void grenade_delayed_start (edict_t *grenade)
 	}
 }
 
-void SP_grenade (edict_t *grenade)
+void SP_grenade(edict_t *grenade)
 {
 	grenade->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
 	grenade->touch = Grenade_Touch;
@@ -947,7 +947,7 @@ void SP_grenade (edict_t *grenade)
 	gi.linkentity(grenade);
 }
 
-void handgrenade_delayed_start (edict_t *grenade)
+void handgrenade_delayed_start(edict_t *grenade)
 {
 	if (g_edicts[1].linkcount)
 	{
@@ -967,7 +967,7 @@ void handgrenade_delayed_start (edict_t *grenade)
 	}
 }
 
-void SP_handgrenade (edict_t *grenade)
+void SP_handgrenade(edict_t *grenade)
 {
 	grenade->s.modelindex = gi.modelindex("models/objects/grenade2/tris.md2");
 	grenade->touch = Grenade_Touch;
@@ -1056,7 +1056,7 @@ fire_rocket
 */
 // Lazarus: Rocket_Evade tells monsters to get da hell outta da way
 
-void Rocket_Evade (edict_t *rocket, vec3_t dir, float speed)
+void Rocket_Evade(edict_t *rocket, vec3_t dir, float speed)
 {
 	edict_t	*ent = NULL;
 	vec3_t	hitpoint;
@@ -1131,7 +1131,7 @@ void Rocket_Evade (edict_t *rocket, vec3_t dir, float speed)
 	}
 }
 
-void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void rocket_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t	origin;
 
@@ -1189,7 +1189,7 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	G_FreeEdict(ent);
 }
 
-void rocket_explode (edict_t *ent)
+void rocket_explode(edict_t *ent)
 {
 	vec3_t origin;
 
@@ -1298,7 +1298,7 @@ void fire_rocket(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed,
 }
 
 // NOTE: SP_rocket should ONLY be used to spawn rockets that change maps via a trigger_transition. It should NOT be used for map entities
-void rocket_delayed_start (edict_t *rocket)
+void rocket_delayed_start(edict_t *rocket)
 {
 	if (g_edicts[1].linkcount)
 	{
@@ -1313,7 +1313,7 @@ void rocket_delayed_start (edict_t *rocket)
 	}
 }
 
-void SP_rocket (edict_t *rocket)
+void SP_rocket(edict_t *rocket)
 {
 	vec3_t dir;
 
@@ -1424,7 +1424,7 @@ void fire_rail(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick)
 fire_bfg
 =================
 */
-void bfg_explode (edict_t *self)
+void bfg_explode(edict_t *self)
 {
 	vec3_t v;
 
@@ -1623,7 +1623,7 @@ void fire_bfg(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, fl
 // velocity = speed. Returns false if grenade can't make it to target.
 //
 //==========================================================================================
-qboolean AimGrenade (edict_t *self, vec3_t start, const vec3_t target, vec_t speed, vec3_t aim)
+qboolean AimGrenade(edict_t *self, vec3_t start, const vec3_t target, vec_t speed, vec3_t aim)
 {
 	vec3_t		angles, forward, right, up;
 	vec3_t		from_origin, from_muzzle;

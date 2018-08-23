@@ -31,7 +31,7 @@ edict_t *SpawnThing()
 	return thing;
 }
 
-void thing_restore_leader (edict_t *self)
+void thing_restore_leader(edict_t *self)
 {
 	edict_t *monster = self->target_ent;
 	if (!monster || !monster->inuse)
@@ -179,7 +179,7 @@ void thing_think_pause(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void thing_grenade_boom (edict_t *self)
+void thing_grenade_boom(edict_t *self)
 {
 	edict_t *monster = self->target_ent;
 	G_FreeEdict(self);
@@ -310,7 +310,7 @@ void thing_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 	thing_think(self);
 }
 
-void SP_thing (edict_t *self)
+void SP_thing(edict_t *self)
 {
 	self->solid = SOLID_TRIGGER;
 	VectorSet(self->mins, -4, -4, -4);

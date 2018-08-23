@@ -64,9 +64,9 @@ int last_fog_color[3];
 
 #define COLOR(r,g,b) ((((BYTE)(b)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(r))<<16)))
 
-void fog_fade (edict_t *self);
+void fog_fade(edict_t *self);
 
-void Fog_ConsoleFog (void)
+void Fog_ConsoleFog(void)
 {
 	// This routine is ONLY called for console fog commands
 	if (deathmatch->value || coop->value || !level.active_fog)
@@ -103,7 +103,7 @@ void Cmd_Fog_f(edict_t *ent)
 			       "Use fog_active to see parameters for currently active fog.\n");
 
 		gi.dprintf("\nUse \"fog [0/1]\" to turn fog off/on (currently %s)\n"
-			"Current GL driver is %s\n",(level.active_fog > 0 ? "on" : "off"), gl_driver->string);
+			"Current GL driver is %s\n", (level.active_fog > 0 ? "on" : "off"), gl_driver->string);
 
 		gi.dprintf("Fog_Red     = red component   (0 - 1)\n"
 				   "Fog_Grn     = green component (0 - 1)\n"
@@ -274,7 +274,7 @@ void Cmd_Fog_f(edict_t *ent)
 	}
 }
 
-void GLFog (void)
+void GLFog(void)
 {
 	// engine fog
 	edict_t	*player_ent = &g_edicts[1];
@@ -294,7 +294,7 @@ void GLFog (void)
 	const auto fog_near = (int)pfog->Near;
 	const auto fog_far = (int)pfog->Far;
 
-	for(int i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		fog_color[i] = (int)(pfog->Color[i] * 255);
 
 	// check for change in fog state before updating
@@ -327,7 +327,7 @@ void GLFog (void)
 	last_opengl_frame = level.framenum;
 }
 
-void trig_fog_fade (edict_t *self)
+void trig_fog_fade(edict_t *self)
 {
 	if (!InTriggerFog)
 	{
@@ -352,7 +352,7 @@ void trig_fog_fade (edict_t *self)
 			trig_fade_fog.Density2 += (gfogs[index].Density2 - trig_fade_fog.Density2) / frames;
 		}
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 			trig_fade_fog.Color[i] += (gfogs[index].Color[i] - trig_fade_fog.Color[i]) / frames;
 
 		trig_fade_fog.GL_Model = GLModels[trig_fade_fog.Model];
@@ -362,7 +362,7 @@ void trig_fog_fade (edict_t *self)
 	}
 }
 
-void init_trigger_fog_delay (edict_t *self)
+void init_trigger_fog_delay(edict_t *self)
 {
 	// scan for other trigger_fog's that are currently "thinking", iow the trigger_fog has a delay and is ramping. If found, stop the ramp for those fogs
 	for (int i = 1; i < globals.num_edicts; i++)
@@ -408,7 +408,7 @@ void init_trigger_fog_delay (edict_t *self)
 	level.active_fog = self->fog_index;
 }
 
-void Fog (edict_t *ent)
+void Fog(edict_t *ent)
 {
 	edict_t	*player = ent;
 	vec3_t	viewpoint;
@@ -508,7 +508,7 @@ void Fog (edict_t *ent)
 	level.last_active_fog = level.active_fog;
 }
 
-void Fog_Off (void)
+void Fog_Off(void)
 {
 	if (deathmatch->value || coop->value)
 		return;
@@ -534,7 +534,7 @@ void Fog_Off (void)
 	VectorSet(last_fog_color, 255, 255, 255);
 }
 
-void Fog_Init (void)
+void Fog_Init(void)
 {
 	gfogs[0].Color[0] = gfogs[0].Color[1] = gfogs[0].Color[2] = 0.5;
 	gfogs[0].Model    = 1;
@@ -548,7 +548,7 @@ void Fog_Init (void)
 }
 
 
-void fog_fade (edict_t *self)
+void fog_fade(edict_t *self)
 {
 	if (level.framenum <= self->goal_frame)
 	{
@@ -567,7 +567,7 @@ void fog_fade (edict_t *self)
 			fade_fog.Density2 += (gfogs[index].Density2 - fade_fog.Density2) / frames;
 		}
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 			fade_fog.Color[i] += (gfogs[index].Color[i] - fade_fog.Color[i]) / frames;
 
 		fade_fog.GL_Model = GLModels[fade_fog.Model];
@@ -697,7 +697,7 @@ void target_fog_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_fog (edict_t *self)
+void SP_target_fog(edict_t *self)
 {
 	if (!allow_fog->value || deathmatch->value || coop->value)
 	{
@@ -803,7 +803,7 @@ void trigger_fog_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_trigger_fog (edict_t *self)
+void SP_trigger_fog(edict_t *self)
 {
 	if (!allow_fog->value || deathmatch->value || coop->value)
 	{
@@ -893,7 +893,7 @@ bleft Min b-box coords XYZ. Default = -16 -16 -16
 tright Max b-box coords XYZ. Default = 16 16 16
 */
 
-void SP_trigger_fog_bbox (edict_t *self)
+void SP_trigger_fog_bbox(edict_t *self)
 {
 	if (!allow_fog->value || deathmatch->value || coop->value)
 	{

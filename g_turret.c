@@ -38,12 +38,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	FL_TURRET_DOUBLE_ALT_FIRING	0x00000004
 //CW--
 
-void NoAmmoWeaponChange (edict_t *ent);
+void NoAmmoWeaponChange(edict_t *ent);
 
 #define TURRET_GRENADE_SPEED 800
 
 // DWH - Added TurretTarget to scan the player's view for a damageable target. Used with homing rockets
-edict_t	*TurretTarget (edict_t *self)
+edict_t	*TurretTarget(edict_t *self)
 {
 	vec3_t dir, end, forward, right, up, start;
 
@@ -90,7 +90,7 @@ edict_t	*TurretTarget (edict_t *self)
 }
 // end DWH
 
-void turret_blocked (edict_t *self, edict_t *other)
+void turret_blocked(edict_t *self, edict_t *other)
 {
 	edict_t	*attacker;
 	edict_t	*master;
@@ -151,7 +151,7 @@ void turret_blocked (edict_t *self, edict_t *other)
 }
 
 //CW++
-void hrocket_turret_fire (edict_t *self, edict_t *owner, vec3_t start, vec3_t dir, vec3_t start2, vec3_t dir2, int damage, int speed, float damage_radius, int radius_damage, edict_t *home_target)
+void hrocket_turret_fire(edict_t *self, edict_t *owner, vec3_t start, vec3_t dir, vec3_t start2, vec3_t dir2, int damage, int speed, float damage_radius, int radius_damage, edict_t *home_target)
 {
 	if (self->moreflags & FL_TURRET_DOUBLE)
 	{
@@ -183,7 +183,7 @@ void hrocket_turret_fire (edict_t *self, edict_t *owner, vec3_t start, vec3_t di
 
 static unsigned long HB_Shots;
 
-void turret_breach_fire (edict_t *self)
+void turret_breach_fire(edict_t *self)
 {
 	edict_t	*owner;
 	vec3_t	forward, right, up;
@@ -513,7 +513,7 @@ void turret_breach_fire (edict_t *self)
 	}
 }
 
-void turret_disengage (edict_t *self)
+void turret_disengage(edict_t *self)
 {
 	vec3_t  forward;
 
@@ -547,7 +547,7 @@ void turret_disengage (edict_t *self)
 	self->owner = NULL;
 }
 
-void turret_turn (edict_t *self)
+void turret_turn(edict_t *self)
 {
 	vec3_t		current_angles;
 	vec3_t		delta;
@@ -1151,7 +1151,7 @@ good_enemy:
 	}
 }
 
-void turret_breach_finish_init (edict_t *self)
+void turret_breach_finish_init(edict_t *self)
 {
 	// get and save info for muzzle location
 	if (!self->target)
@@ -1220,9 +1220,9 @@ void turret_die_temp_think(edict_t *self)
 	G_FreeEdict(self);
 }
 
-void turret_driver_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void SP_monster_infantry (edict_t *self);
-void monster_start_go (edict_t *self);
+void turret_driver_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void SP_monster_infantry(edict_t *self);
+void monster_start_go(edict_t *self);
 
 void turret_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
@@ -1345,7 +1345,7 @@ void turret_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 		self->move_angles[0] = 0;
 }
 
-void toggle_turret_breach (edict_t *self, edict_t *other, edict_t *activator)
+void toggle_turret_breach(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!(self->spawnflags & SF_TURRET_INACTIVE))
 	{
@@ -1372,7 +1372,7 @@ void toggle_turret_breach (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void use_turret_breach (edict_t *self, edict_t *other, edict_t *activator)
+void use_turret_breach(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->spawnflags & SF_TURRET_TRIGGER_SPAWN)
 	{
@@ -1414,7 +1414,7 @@ void turret_breach_touch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	}
 }
 
-void SP_turret_breach (edict_t *self)
+void SP_turret_breach(edict_t *self)
 {
 	self->class_id = ENTITY_TURRET_BREACH;
 
@@ -1572,7 +1572,7 @@ void use_turret_base(edict_t *self, edict_t *other, edict_t *activator)
 	self->solid = SOLID_BSP;
 }
 
-void SP_turret_base (edict_t *self)
+void SP_turret_base(edict_t *self)
 {
 	self->class_id = ENTITY_TURRET_BASE;
 
@@ -1605,9 +1605,9 @@ Must NOT be on the team with the rest of the turret parts.
 Instead it must target the turret_breach.
 */
 
-void infantry_die (edict_t * self, edict_t * inflictor, edict_t * attacker, int damage, vec3_t point);
-void infantry_stand (edict_t *self);
-void monster_use (edict_t *self, edict_t *other, edict_t *activator);
+void infantry_die(edict_t * self, edict_t * inflictor, edict_t * attacker, int damage, vec3_t point);
+void infantry_stand(edict_t *self);
+void monster_use(edict_t *self, edict_t *other, edict_t *activator);
 
 void turret_driver_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
@@ -1719,7 +1719,7 @@ void turret_driver_think(edict_t *self)
 	self->target_ent->spawnflags |= 65536;
 }
 
-void turret_driver_link (edict_t *self)
+void turret_driver_link(edict_t *self)
 {
 	vec3_t	vec;
 	edict_t	*ent;
@@ -1773,7 +1773,7 @@ void turret_driver_link (edict_t *self)
 	}
 }
 
-void SP_turret_driver (edict_t *self)
+void SP_turret_driver(edict_t *self)
 {
 	if (deathmatch->value)
 	{

@@ -56,7 +56,7 @@ static char wavname[NUM_ACTOR_SOUNDS][32] =
 #define ACTOR_SOUND_DEATH3     11
 #define ACTOR_SOUND_DEATH4     12
 
-mframe_t actor_frames_stand [] =
+mframe_t actor_frames_stand[] =
 {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -104,7 +104,7 @@ mframe_t actor_frames_stand [] =
 };
 mmove_t actor_move_stand = {FRAME_stand01, FRAME_stand40, actor_frames_stand, NULL};
 
-void actor_stand (edict_t *self)
+void actor_stand(edict_t *self)
 {
 	self->s.sound = 0;
 	if (self->monsterinfo.aiflags & AI_CROUCH)
@@ -117,7 +117,7 @@ void actor_stand (edict_t *self)
 		self->s.frame = self->monsterinfo.currentmove->firstframe + (rand() % (self->monsterinfo.currentmove->lastframe - self->monsterinfo.currentmove->firstframe + 1));
 }
 
-mframe_t actor_frames_walk [] =
+mframe_t actor_frames_walk[] =
 {
 /*	ai_walk, 4,  NULL,
 	ai_walk, 15, NULL,
@@ -147,7 +147,7 @@ mframe_t actor_frames_walk [] =
 mmove_t actor_move_walk = {FRAME_run1, FRAME_run6, actor_frames_walk, NULL};
 
 mmove_t actor_move_run;
-void actor_walk (edict_t *self)
+void actor_walk(edict_t *self)
 {
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
@@ -238,7 +238,7 @@ void actor_footstep_heavy_loud(edict_t *self)
 	gi.sound(self, CHAN_AUTO, gi.soundindex(va("footsteps/heavy%02i.wav", rand() % 4 + 1)) , footstep_volume_loud, footstep_attenuation_loud - footstep_attenuation_mod * 2.0f, 0);
 }
 
-mframe_t actor_frames_walk_back [] =
+mframe_t actor_frames_walk_back[] =
 {
 	{ai_walk, -10, NULL},
 	{ai_walk, -10, NULL},
@@ -255,7 +255,7 @@ mframe_t actor_frames_walk_back [] =
 };
 mmove_t actor_move_walk_back = {FRAME_run1, FRAME_run6, actor_frames_walk_back, NULL};
 
-mframe_t actor_frames_crouchwalk_back [] =
+mframe_t actor_frames_crouchwalk_back[] =
 {
 	{ai_walk, -10, NULL},
 	{ai_walk, -10, NULL},
@@ -266,7 +266,7 @@ mframe_t actor_frames_crouchwalk_back [] =
 };
 mmove_t actor_move_crouchwalk_back = {FRAME_crwalk1, FRAME_crwalk6, actor_frames_crouchwalk_back, NULL};
 
-void actor_walk_back (edict_t *self)
+void actor_walk_back(edict_t *self)
 {
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
@@ -302,7 +302,7 @@ void actor_walk_back (edict_t *self)
 			self->monsterinfo.currentmove = &actor_move_walk_back;
 	}
 }
-mframe_t actor_frames_crouch [] =
+mframe_t actor_frames_crouch[] =
 {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -326,7 +326,7 @@ mframe_t actor_frames_crouch [] =
 };
 mmove_t actor_move_crouch = {FRAME_crstnd01, FRAME_crstnd19, actor_frames_crouch, NULL};
 
-mframe_t actor_frames_crouchwalk [] =
+mframe_t actor_frames_crouchwalk[] =
 {
 	{ai_walk, 10, NULL},
 	{ai_walk, 10, NULL},
@@ -338,7 +338,7 @@ mframe_t actor_frames_crouchwalk [] =
 mmove_t actor_move_crouchwalk = {FRAME_crwalk1, FRAME_crwalk6, actor_frames_crouchwalk, NULL};
 
 // DWH: Changed running speed to a constant (equal to player running speed) for normal misc_actor and 2/3 that for "bad guys". Also eliminated excess frames.
-mframe_t actor_frames_run [] =
+mframe_t actor_frames_run[] =
 {
 	{ai_run, 40, NULL},
 	{ai_run, 40, NULL},
@@ -349,7 +349,7 @@ mframe_t actor_frames_run [] =
 };
 mmove_t actor_move_run = {FRAME_run1, FRAME_run6, actor_frames_run, NULL};
 
-mframe_t actor_frames_run_bad [] =
+mframe_t actor_frames_run_bad[] =
 {
 	{ai_run, 30, NULL},
 	{ai_run, 30, NULL},
@@ -361,7 +361,7 @@ mframe_t actor_frames_run_bad [] =
 
 mmove_t actor_move_run_bad = {FRAME_run1, FRAME_run6, actor_frames_run_bad, NULL};
 
-void actor_run (edict_t *self)
+void actor_run(edict_t *self)
 {
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
@@ -400,7 +400,7 @@ void actor_run (edict_t *self)
 		self->monsterinfo.currentmove = &actor_move_run_bad;
 }
 
-mframe_t actor_frames_run_back [] =
+mframe_t actor_frames_run_back[] =
 {
 	{ai_run, -40, NULL},
 	{ai_run, -40, NULL},
@@ -411,7 +411,7 @@ mframe_t actor_frames_run_back [] =
 };
 mmove_t actor_move_run_back = {FRAME_run1, FRAME_run6, actor_frames_run_back, NULL};
 
-void actor_run_back (edict_t *self)
+void actor_run_back(edict_t *self)
 {
 	// prevent foolishness:
 	if (self->monsterinfo.aiflags & AI_FOLLOW_LEADER)
@@ -446,7 +446,7 @@ void actor_run_back (edict_t *self)
 
 	self->monsterinfo.currentmove = &actor_move_run_back;
 }
-mframe_t actor_frames_pain1 [] =
+mframe_t actor_frames_pain1[] =
 {
 	{ai_move, -5, NULL},
 	{ai_move, 4,  NULL},
@@ -455,7 +455,7 @@ mframe_t actor_frames_pain1 [] =
 };
 mmove_t actor_move_pain1 = {FRAME_pain101, FRAME_pain104, actor_frames_pain1, actor_run};
 
-mframe_t actor_frames_pain2 [] =
+mframe_t actor_frames_pain2[] =
 {
 	{ai_move, -4, NULL},
 	{ai_move, 4,  NULL},
@@ -464,7 +464,7 @@ mframe_t actor_frames_pain2 [] =
 };
 mmove_t actor_move_pain2 = {FRAME_pain201, FRAME_pain204, actor_frames_pain2, actor_run};
 
-mframe_t actor_frames_pain3 [] =
+mframe_t actor_frames_pain3[] =
 {
 	{ai_move, -1, NULL},
 	{ai_move, 1,  NULL},
@@ -473,7 +473,7 @@ mframe_t actor_frames_pain3 [] =
 };
 mmove_t actor_move_pain3 = {FRAME_pain301, FRAME_pain304, actor_frames_pain3, actor_run};
 
-mframe_t actor_frames_flipoff [] =
+mframe_t actor_frames_flipoff[] =
 {
 	{ai_turn, 0,  NULL},
 	{ai_turn, 0,  NULL},
@@ -490,7 +490,7 @@ mframe_t actor_frames_flipoff [] =
 };
 mmove_t actor_move_flipoff = {FRAME_flip01, FRAME_flip12, actor_frames_flipoff, actor_run};
 
-mframe_t actor_frames_taunt [] =
+mframe_t actor_frames_taunt[] =
 {
 	{ai_turn, 0,  NULL},
 	{ai_turn, 0,  NULL},
@@ -554,7 +554,7 @@ void actor_ideal_range(edict_t *self)
 }
 
 //void actor_attack(edict_t *self);
-void actor_switch (edict_t *self)
+void actor_switch(edict_t *self)
 {
 	self->actor_current_weapon = 1 - self->actor_current_weapon;
 	self->s.modelindex2 = self->actor_model_index[self->actor_current_weapon];
@@ -562,7 +562,7 @@ void actor_switch (edict_t *self)
 	gi.linkentity(self);
 }
 
-mframe_t actor_frames_switch [] =
+mframe_t actor_frames_switch[] =
 {
 	{ai_run, 0, actor_switch},
 	{ai_run, 0, NULL},
@@ -570,7 +570,7 @@ mframe_t actor_frames_switch [] =
 };
 mmove_t actor_move_switch = {FRAME_jump4, FRAME_jump6, actor_frames_switch, actor_attack};
 
-void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
+void actor_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	// DWH: Players don't have pain skins!
 //	if (self->health < (self->max_health / 2))
@@ -629,7 +629,7 @@ void actor_pain (edict_t *self, edict_t *other, float kick, int damage)
 // Attack code moved to m_actor_weap.c
 //
 
-void actor_dead (edict_t *self)
+void actor_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
@@ -647,7 +647,7 @@ void actor_dead (edict_t *self)
 	}
 }
 
-mframe_t actor_frames_death1 [] =
+mframe_t actor_frames_death1[] =
 {
 	{ai_move, 0,   NULL},
 	{ai_move, 0,   NULL},
@@ -658,7 +658,7 @@ mframe_t actor_frames_death1 [] =
 };
 mmove_t actor_move_death1 = {FRAME_death101, FRAME_death106, actor_frames_death1, actor_dead};
 
-mframe_t actor_frames_death2 [] =
+mframe_t actor_frames_death2[] =
 {
 	{ai_move, 0,   NULL},
 	{ai_move, 7,   NULL},
@@ -773,7 +773,7 @@ void actor_no_weapon_sound(edict_t *self)
 }
 
 static int chase_angle[] = { 360, 315, 405, 270, 450, 225, 495, 540 };
-void actor_seekcover (edict_t *self)
+void actor_seekcover(edict_t *self)
 {
 	vec3_t	atk, dir, best_dir, end, forward;
 	vec3_t	mins, maxs;
@@ -890,7 +890,7 @@ void actor_seekcover (edict_t *self)
 	actor_run(self);
 }
 
-mframe_t actor_frames_attack [] =
+mframe_t actor_frames_attack[] =
 {
 	{ai_charge, 0,  actor_fire},
 	{ai_charge, 0,  actor_no_weapon_sound},
@@ -903,7 +903,7 @@ mframe_t actor_frames_attack [] =
 };
 mmove_t actor_move_attack = {FRAME_attack1, FRAME_attack8, actor_frames_attack, actor_seekcover};
 
-mframe_t actor_frames_crattack [] =
+mframe_t actor_frames_crattack[] =
 {
 	{ai_charge, 0,  actor_fire},
 	{ai_charge, 0,  actor_no_weapon_sound},
@@ -917,7 +917,7 @@ mframe_t actor_frames_crattack [] =
 };
 mmove_t actor_move_crattack = {FRAME_crattak1, FRAME_crattak9, actor_frames_crattack, actor_run};
 
-void actor_attack (edict_t *self)
+void actor_attack(edict_t *self)
 {
 	const int w_select = self->actor_current_weapon;
 	const int weapon   = self->actor_weapon[w_select];
@@ -1181,7 +1181,7 @@ qboolean actor_checkattack(edict_t *self)
 }
 
 mmove_t actor_move_jump;
-void actor_end_jump (edict_t *self)
+void actor_end_jump(edict_t *self)
 {
 	if (self->flags & FL_ROBOT)
 	{
@@ -1198,7 +1198,7 @@ void actor_end_jump (edict_t *self)
 	}
 }
 
-mframe_t actor_frames_jump [] =
+mframe_t actor_frames_jump[] =
 {
 	{ai_move,  0, NULL},
 	{ai_move,  0, NULL},
@@ -1210,13 +1210,13 @@ mframe_t actor_frames_jump [] =
 
 mmove_t actor_move_jump = {FRAME_jump1, FRAME_jump6, actor_frames_jump, actor_jump};
 
-void actor_jump (edict_t *self)
+void actor_jump(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, self->actor_sound_index[ACTOR_SOUND_JUMP], 1, ATTN_NORM, 0);
 	self->monsterinfo.currentmove = &actor_move_jump;
 }
 
-qboolean actor_blocked (edict_t *self, float dist)
+qboolean actor_blocked(edict_t *self, float dist)
 {
 	if (check_shot_blocked(self, 0.25 + (0.05 * skill->value) ))
 		return true;
@@ -1230,7 +1230,7 @@ qboolean actor_blocked (edict_t *self, float dist)
 	return false;
 }
 
-mframe_t actor_frames_salute [] =
+mframe_t actor_frames_salute[] =
 {
 	{ai_turn, 0, NULL},
 	{ai_turn, 0, NULL},
@@ -1246,7 +1246,7 @@ mframe_t actor_frames_salute [] =
 };
 mmove_t actor_move_salute = {FRAME_salute01, FRAME_salute11, actor_frames_salute, actor_run};
 
-void actor_salute (edict_t *self)
+void actor_salute(edict_t *self)
 {
 	self->monsterinfo.currentmove = &actor_move_salute;
 }
@@ -1275,7 +1275,7 @@ char ActorNames[NUM_ACTORPAK_ACTORS][32] =
 	"walker", "waste", "xenoid", "zumlin",
 };
 
-void SP_misc_actor (edict_t *self)
+void SP_misc_actor(edict_t *self)
 {
 	char	modelpath[256];
 	int		ActorID = 0;
@@ -1749,7 +1749,7 @@ void target_actor_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	}
 }
 
-void SP_target_actor (edict_t *self)
+void SP_target_actor(edict_t *self)
 {
 	if (deathmatch->value)
 	{
@@ -2183,7 +2183,7 @@ void actor_files()
 	}
 }
 
-void actor_moveit (edict_t *player, edict_t *actor)
+void actor_moveit(edict_t *player, edict_t *actor)
 {
 	vec3_t	dir, end;
 	vec_t	d[3];

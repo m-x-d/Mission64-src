@@ -32,7 +32,7 @@ float	bobmove;
 int		bobcycle;		// odd cycles are right foot going forward
 float	bobfracsin;		// sin(bobfrac*M_PI)
 
-qboolean PlayerOnFloor (edict_t *player);
+qboolean PlayerOnFloor(edict_t *player);
 
 /*
 ===============
@@ -40,7 +40,7 @@ SV_CalcRoll
 
 ===============
 */
-float SV_CalcRoll (vec3_t angles, const vec3_t velocity)
+float SV_CalcRoll(vec3_t angles, const vec3_t velocity)
 {
 	float side = DotProduct(velocity, right);
 	const float sign = (side < 0 ? -1 : 1);
@@ -64,7 +64,7 @@ P_DamageFeedback
 Handles color blends and view kicks
 ===============
 */
-void P_DamageFeedback (edict_t *player)
+void P_DamageFeedback(edict_t *player)
 {
 	vec3_t	v;
 	static vec3_t power_color = { 0.0, 1.0, 0.0 };
@@ -206,7 +206,7 @@ Auto pitching on slopes?
 
 ===============
 */
-void SV_CalcViewOffset (edict_t *ent)
+void SV_CalcViewOffset(edict_t *ent)
 {
 //===================================
 
@@ -326,7 +326,7 @@ void SV_CalcViewOffset (edict_t *ent)
 SV_CalcGunOffset
 ==============
 */
-void SV_CalcGunOffset (edict_t *ent)
+void SV_CalcGunOffset(edict_t *ent)
 {
 	// gun angles from bobbing
 	ent->client->ps.gunangles[PITCH] = xyspeed * bobfracsin * 0.005;
@@ -377,7 +377,7 @@ void SV_CalcGunOffset (edict_t *ent)
 SV_AddBlend
 =============
 */
-void SV_AddBlend (float r, float g, float b, float a, float *v_blend)
+void SV_AddBlend(float r, float g, float b, float a, float *v_blend)
 {
 	if (a <= 0)
 		return;
@@ -397,7 +397,7 @@ void SV_AddBlend (float r, float g, float b, float a, float *v_blend)
 SV_CalcBlend
 =============
 */
-void SV_CalcBlend (edict_t *ent)
+void SV_CalcBlend(edict_t *ent)
 {
 	vec3_t	vieworg;
 	int		remaining;
@@ -725,7 +725,7 @@ void P_FallingDamage(edict_t *ent)
 P_WorldEffects
 =============
 */
-void P_WorldEffects (void)
+void P_WorldEffects(void)
 {
 	if (current_player->movetype == MOVETYPE_NOCLIP)
 	{
@@ -911,7 +911,7 @@ void P_WorldEffects (void)
 G_SetClientEffects
 ===============
 */
-void G_SetClientEffects (edict_t *ent)
+void G_SetClientEffects(edict_t *ent)
 {
 	int remaining;
 
@@ -1030,7 +1030,7 @@ void G_SetClientEffects (edict_t *ent)
 G_SetClientEvent
 ===============
 */
-void G_SetClientEvent (edict_t *ent)
+void G_SetClientEvent(edict_t *ent)
 {
 	if (ent->s.event)
 		return;
@@ -1083,7 +1083,7 @@ void G_SetClientEvent (edict_t *ent)
 G_SetClientSound
 ===============
 */
-void G_SetClientSound (edict_t *ent)
+void G_SetClientSound(edict_t *ent)
 {
 	if (ent->client->pers.game_helpchanged != game.helpchanged)
 	{
@@ -1114,7 +1114,7 @@ void G_SetClientSound (edict_t *ent)
 		ent->s.sound = 0;
 }
 
-qboolean PlayerOnFloor (edict_t *player)
+qboolean PlayerOnFloor(edict_t *player)
 {
 	if (!player->client)
 		return false;

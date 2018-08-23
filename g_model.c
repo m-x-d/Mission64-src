@@ -131,7 +131,7 @@ void model_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 
 #define ANIM_MASK (EF_ANIM01|EF_ANIM23|EF_ANIM_ALL|EF_ANIM_ALLFAST)
 
-void SP_model_spawn (edict_t *ent)
+void SP_model_spawn(edict_t *ent)
 {
 	char modelname[256];
 

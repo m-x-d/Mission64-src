@@ -691,13 +691,13 @@ void ACEND_RemoveNodeEdge(edict_t *self, int from, int to)
 {
 	int i;
 
-	if (debug_mode) 
+	if (debug_mode)
 		debug_printf("%s: Removing Edge %d -> %d\n", self->client->pers.netname, from, to);
 		
-	path_table[from][to] = INVALID; // set to invalid			
+	path_table[from][to] = INVALID; // set to invalid
 
 	// Make sure this gets updated in our path array
-	for (i=0;i<numnodes;i++)
+	for (i = 0; i < numnodes; i++)
 		if (path_table[from][i] == to)
 			path_table[from][i] = INVALID;
 }
@@ -810,12 +810,12 @@ void ACEND_LoadNodes(void)
 	//Q_strncatz(filename, ".nod", sizeof(filename));
 
 	if ((pIn = fopen(filename, "rb" )) == NULL)
-    {
+	{
 		// Create item table
 		safe_bprintf(PRINT_MEDIUM, "ACE: No node file found, creating new one...");
 		ACEIT_BuildItemNodeTable(false);
 		safe_bprintf(PRINT_MEDIUM, "done.\n");
-		return; 
+		return;
 	}
 
 	// determine version

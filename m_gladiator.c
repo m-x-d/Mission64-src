@@ -43,28 +43,28 @@ static int	sound_search;
 static int	sound_sight;
 
 
-void gladiator_idle (edict_t *self)
+void gladiator_idle(edict_t *self)
 {
 	if (!(self->spawnflags & SF_MONSTER_AMBUSH))
 		gi.sound(self, CHAN_VOICE, sound_idle, 1, ATTN_IDLE, 0);
 }
 
-void gladiator_sight (edict_t *self, edict_t *other)
+void gladiator_sight(edict_t *self, edict_t *other)
 {
 	gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
 }
 
-void gladiator_search (edict_t *self)
+void gladiator_search(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
-void gladiator_cleaver_swing (edict_t *self)
+void gladiator_cleaver_swing(edict_t *self)
 {
 	gi.sound(self, CHAN_WEAPON, sound_cleaver_swing, 1, ATTN_NORM, 0);
 }
 
-mframe_t gladiator_frames_stand [] =
+mframe_t gladiator_frames_stand[] =
 {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -76,12 +76,12 @@ mframe_t gladiator_frames_stand [] =
 };
 mmove_t gladiator_move_stand = {FRAME_stand1, FRAME_stand7, gladiator_frames_stand, NULL};
 
-void gladiator_stand (edict_t *self)
+void gladiator_stand(edict_t *self)
 {
 	self->monsterinfo.currentmove = &gladiator_move_stand;
 }
 
-mframe_t gladiator_frames_walk [] =
+mframe_t gladiator_frames_walk[] =
 {
 	{ai_walk, 15, NULL},
 	{ai_walk, 7,  NULL},
@@ -102,12 +102,12 @@ mframe_t gladiator_frames_walk [] =
 };
 mmove_t gladiator_move_walk = {FRAME_walk1, FRAME_walk16, gladiator_frames_walk, NULL};
 
-void gladiator_walk (edict_t *self)
+void gladiator_walk(edict_t *self)
 {
 	self->monsterinfo.currentmove = &gladiator_move_walk;
 }
 
-mframe_t gladiator_frames_run [] =
+mframe_t gladiator_frames_run[] =
 {
 	{ai_run, 23,	NULL},
 	{ai_run, 14,	NULL},
@@ -118,7 +118,7 @@ mframe_t gladiator_frames_run [] =
 };
 mmove_t gladiator_move_run = {FRAME_run1, FRAME_run6, gladiator_frames_run, NULL};
 
-void gladiator_run (edict_t *self)
+void gladiator_run(edict_t *self)
 {
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.currentmove = &gladiator_move_stand;
@@ -127,7 +127,7 @@ void gladiator_run (edict_t *self)
 }
 
 
-void GaldiatorMelee (edict_t *self)
+void GaldiatorMelee(edict_t *self)
 {
 	vec3_t	aim;
 	VectorSet(aim, MELEE_DISTANCE, self->mins[0], -4);
@@ -138,7 +138,7 @@ void GaldiatorMelee (edict_t *self)
 		gi.sound(self, CHAN_AUTO, sound_cleaver_miss, 1, ATTN_NORM, 0);
 }
 
-mframe_t gladiator_frames_attack_melee [] =
+mframe_t gladiator_frames_attack_melee[] =
 {
 	{ai_charge, 0, NULL},
 	{ai_charge, 0, NULL},
@@ -165,7 +165,7 @@ void gladiator_melee(edict_t *self)
 	self->monsterinfo.currentmove = &gladiator_move_attack_melee;
 }
 
-void GladiatorGun (edict_t *self)
+void GladiatorGun(edict_t *self)
 {
 	vec3_t	start;
 	vec3_t	dir;
@@ -199,7 +199,7 @@ void GladiatorGun (edict_t *self)
 	monster_fire_railgun(self, start, dir, 50, 100, MZ2_GLADIATOR_RAILGUN_1);
 }
 
-mframe_t gladiator_frames_attack_gun [] =
+mframe_t gladiator_frames_attack_gun[] =
 {
 	{ai_charge, 0, NULL},
 	{ai_charge, 0, NULL},
@@ -234,7 +234,7 @@ void gladiator_attack(edict_t *self)
 }
 
 
-mframe_t gladiator_frames_pain [] =
+mframe_t gladiator_frames_pain[] =
 {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -245,7 +245,7 @@ mframe_t gladiator_frames_pain [] =
 };
 mmove_t gladiator_move_pain = {FRAME_pain1, FRAME_pain6, gladiator_frames_pain, gladiator_run};
 
-mframe_t gladiator_frames_pain_air [] =
+mframe_t gladiator_frames_pain_air[] =
 {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -257,7 +257,7 @@ mframe_t gladiator_frames_pain_air [] =
 };
 mmove_t gladiator_move_pain_air = {FRAME_painup1, FRAME_painup7, gladiator_frames_pain_air, gladiator_run};
 
-void gladiator_pain (edict_t *self, edict_t *other, float kick, int damage)
+void gladiator_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 
 	if (self->health < self->max_health / 2)
@@ -288,7 +288,7 @@ void gladiator_pain (edict_t *self, edict_t *other, float kick, int damage)
 }
 
 
-void gladiator_dead (edict_t *self)
+void gladiator_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
@@ -306,7 +306,7 @@ void gladiator_dead (edict_t *self)
 	}
 }
 
-mframe_t gladiator_frames_death [] =
+mframe_t gladiator_frames_death[] =
 {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -363,14 +363,14 @@ void gladiator_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	self->monsterinfo.currentmove = &gladiator_move_death;
 }
 
-qboolean gladiator_blocked (edict_t *self, float range)
+qboolean gladiator_blocked(edict_t *self, float range)
 {
 	return (check_shot_blocked(self, 0.25 + (skill->value / 20)) || check_plat_blocked(self, range));
 }
 
 /*QUAKED monster_gladiator (1 .5 0) (-32 -32 -24) (32 32 64) Ambush Trigger_Spawn Sight
 */
-void SP_monster_gladiator (edict_t *self)
+void SP_monster_gladiator(edict_t *self)
 {
 	if (deathmatch->value)
 	{
@@ -378,9 +378,9 @@ void SP_monster_gladiator (edict_t *self)
 		return;
 	}
 
-	sound_pain1 = gi.soundindex("gladiator/pain.wav");	
-	sound_pain2 = gi.soundindex("gladiator/gldpain2.wav");	
-	sound_die = gi.soundindex("gladiator/glddeth2.wav");	
+	sound_pain1 = gi.soundindex("gladiator/pain.wav");
+	sound_pain2 = gi.soundindex("gladiator/gldpain2.wav");
+	sound_die = gi.soundindex("gladiator/glddeth2.wav");
 	sound_gun = gi.soundindex("gladiator/railgun.wav");
 	sound_cleaver_swing = gi.soundindex("gladiator/melee1.wav");
 	sound_cleaver_hit = gi.soundindex("gladiator/melee2.wav");

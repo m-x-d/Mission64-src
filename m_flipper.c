@@ -41,28 +41,28 @@ static int	sound_search;
 static int	sound_sight;
 
 
-void flipper_stand (edict_t *self);
+void flipper_stand(edict_t *self);
 
 //Knightmare added- these sounds were unused
-void flipper_breathe (edict_t *self)
+void flipper_breathe(edict_t *self)
 {
 	if (self->waterlevel > 0) //only make bubble sounds if submerged
 		gi.sound(self, CHAN_VOICE, sound_idle, 1, ATTN_IDLE, 0);
 }
 
-void flipper_search (edict_t *self)
+void flipper_search(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_IDLE, 0);
 }
 // end Knightmare
 
-mframe_t flipper_frames_stand [] =
+mframe_t flipper_frames_stand[] =
 {
 	{ai_stand, 0, NULL}
 };
 mmove_t flipper_move_stand = {FRAME_flphor01, FRAME_flphor01, flipper_frames_stand, NULL};
 
-void flipper_stand (edict_t *self)
+void flipper_stand(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flipper_move_stand;
 	
@@ -73,7 +73,7 @@ void flipper_stand (edict_t *self)
 
 #define FLIPPER_RUN_SPEED	24
 
-mframe_t flipper_frames_run [] =
+mframe_t flipper_frames_run[] =
 {
 	{ai_run, FLIPPER_RUN_SPEED, NULL},	// 6
 	{ai_run, FLIPPER_RUN_SPEED, NULL},
@@ -104,12 +104,12 @@ mframe_t flipper_frames_run [] =
 };
 mmove_t flipper_move_run_loop = {FRAME_flpver06, FRAME_flpver29, flipper_frames_run, NULL};
 
-void flipper_run_loop (edict_t *self)
+void flipper_run_loop(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flipper_move_run_loop;
 }
 
-mframe_t flipper_frames_run_start [] =
+mframe_t flipper_frames_run_start[] =
 {
 	{ai_run, 8, NULL},
 	{ai_run, 8, NULL},
@@ -120,13 +120,13 @@ mframe_t flipper_frames_run_start [] =
 };
 mmove_t flipper_move_run_start = {FRAME_flpver01, FRAME_flpver06, flipper_frames_run_start, flipper_run_loop};
 
-void flipper_run (edict_t *self)
+void flipper_run(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flipper_move_run_start;
 }
 
 /* Standard Swimming */ 
-mframe_t flipper_frames_walk [] =
+mframe_t flipper_frames_walk[] =
 {
 	{ai_walk, 4, NULL},
 	{ai_walk, 4, NULL},
@@ -155,12 +155,12 @@ mframe_t flipper_frames_walk [] =
 };
 mmove_t flipper_move_walk = {FRAME_flphor01, FRAME_flphor24, flipper_frames_walk, NULL};
 
-void flipper_walk (edict_t *self)
+void flipper_walk(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flipper_move_walk;
 }
 
-mframe_t flipper_frames_start_run [] =
+mframe_t flipper_frames_start_run[] =
 {
 	{ai_run, 8, NULL},
 	{ai_run, 8, NULL},
@@ -170,12 +170,12 @@ mframe_t flipper_frames_start_run [] =
 };
 mmove_t flipper_move_start_run = {FRAME_flphor01, FRAME_flphor05, flipper_frames_start_run, NULL};
 
-void flipper_start_run (edict_t *self)
+void flipper_start_run(edict_t *self)
 {
 	self->monsterinfo.currentmove = &flipper_move_start_run;
 }
 
-mframe_t flipper_frames_pain2 [] =
+mframe_t flipper_frames_pain2[] =
 {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -185,7 +185,7 @@ mframe_t flipper_frames_pain2 [] =
 };
 mmove_t flipper_move_pain2 = {FRAME_flppn101, FRAME_flppn105, flipper_frames_pain2, flipper_run};
 
-mframe_t flipper_frames_pain1 [] =
+mframe_t flipper_frames_pain1[] =
 {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -195,19 +195,19 @@ mframe_t flipper_frames_pain1 [] =
 };
 mmove_t flipper_move_pain1 = {FRAME_flppn201, FRAME_flppn205, flipper_frames_pain1, flipper_run};
 
-void flipper_bite (edict_t *self)
+void flipper_bite(edict_t *self)
 {
 	vec3_t aim;
 	VectorSet(aim, MELEE_DISTANCE, 0, 0);
 	fire_hit(self, aim, 5, 0);
 }
 
-void flipper_preattack (edict_t *self)
+void flipper_preattack(edict_t *self)
 {
 	gi.sound(self, CHAN_WEAPON, sound_chomp, 1, ATTN_NORM, 0);
 }
 
-mframe_t flipper_frames_attack [] =
+mframe_t flipper_frames_attack[] =
 {
 	{ai_charge, 0,	flipper_preattack},
 	{ai_charge, 0,	NULL},
@@ -237,7 +237,7 @@ void flipper_melee(edict_t *self)
 	self->monsterinfo.currentmove = &flipper_move_attack;
 }
 
-void flipper_pain (edict_t *self, edict_t *other, float kick, int damage)
+void flipper_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	if (self->health < self->max_health / 2)
 		self->s.skinnum |= 1;
@@ -263,7 +263,7 @@ void flipper_pain (edict_t *self, edict_t *other, float kick, int damage)
 	}
 }
 
-void flipper_dead (edict_t *self)
+void flipper_dead(edict_t *self)
 {
 //	VectorSet(self->mins, -16, -16, -24);
 //	VectorSet(self->maxs, 16, 16, -8);
@@ -281,7 +281,7 @@ void flipper_dead (edict_t *self)
 	}
 }
 
-mframe_t flipper_frames_death [] =
+mframe_t flipper_frames_death[] =
 {
 	{ai_move, 0,	NULL},
 	{ai_move, 0,	NULL},
@@ -347,7 +347,7 @@ mframe_t flipper_frames_death [] =
 };
 mmove_t flipper_move_death = {FRAME_flpdth01, FRAME_flpdth56, flipper_frames_death, flipper_dead};
 
-void flipper_sight (edict_t *self, edict_t *other)
+void flipper_sight(edict_t *self, edict_t *other)
 {
 	gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
 }
@@ -382,7 +382,7 @@ void flipper_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 
 /*QUAKED monster_flipper (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
 */
-void SP_monster_flipper (edict_t *self)
+void SP_monster_flipper(edict_t *self)
 {
 	if (deathmatch->value)
 	{
@@ -393,9 +393,9 @@ void SP_monster_flipper (edict_t *self)
 	self->class_id = ENTITY_MONSTER_FLIPPER;
 	self->spawnflags |= SF_MONSTER_KNOWS_MIRRORS;
 
-	sound_pain1		= gi.soundindex("flipper/flppain1.wav");	
-	sound_pain2		= gi.soundindex("flipper/flppain2.wav");	
-	sound_death		= gi.soundindex("flipper/flpdeth1.wav");	
+	sound_pain1		= gi.soundindex("flipper/flppain1.wav");
+	sound_pain2		= gi.soundindex("flipper/flppain2.wav");
+	sound_death		= gi.soundindex("flipper/flpdeth1.wav");
 	sound_chomp		= gi.soundindex("flipper/flpatck1.wav");
 	sound_attack	= gi.soundindex("flipper/flpatck2.wav");
 	sound_idle		= gi.soundindex("flipper/flpidle1.wav");

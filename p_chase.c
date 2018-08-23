@@ -202,7 +202,7 @@ void ChasecamTrack(edict_t *ent)
 		// If we're not going faster than one, don't accelerate our speed at all, make us go slow to our destination
 		tot = clamp(tot, 1.0, 5.2); //mxd
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 			ent->velocity[i] = ((dir[i] * distance) * tot);
 		
 		// Subtract endpos, player position, from chasecam position to get a length to determine whether we should accelerate faster from the player or not

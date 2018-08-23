@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 #include "m_player.h"
 
-void RotateAngles (const vec3_t in, const vec3_t delta, vec3_t out)
+void RotateAngles(const vec3_t in, const vec3_t delta, vec3_t out)
 {
 	// Rotates input angles (in) by delta angles around the local coordinate system, returns new angles in [out].
 	vec3_t	X = { 1, 0, 0 };
@@ -352,7 +352,7 @@ void SaveEntProps(edict_t *e, FILE *f)
 		e->light_level, e->style);
 
 	fprintf(f, "enemy = %s\n", (e->enemy ? e->enemy->classname : "NULL"));
-	fprintf(f, "inuse:  %s\n",(e->enemy && e->enemy->inuse ? "yes" : "no"));
+	fprintf(f, "inuse:  %s\n", (e->enemy && e->enemy->inuse ? "yes" : "no"));
 
 	fprintf(f,
 		"moveinfo_t\n"
@@ -541,7 +541,7 @@ char *ClientTeam(edict_t *ent)
 	return ++p;
 }
 
-qboolean OnSameTeam (edict_t *ent1, edict_t *ent2)
+qboolean OnSameTeam(edict_t *ent1, edict_t *ent2)
 {
 	if (!ent1->client || !ent2->client) // Knightmare added
 		return false;
@@ -792,7 +792,7 @@ void Cmd_Give_f(edict_t *ent)
 			if (it->flags & (IT_ARMOR | IT_WEAPON | IT_AMMO | IT_TECH)) // exclude ctf techs
 				continue;
 
-			if(it->classname && !developer->value)
+			if (it->classname && !developer->value)
 			{
 				if (!Q_stricmp(it->classname, "item_jetpack")	 ||
 					!Q_stricmp(it->classname, "item_flashlight") ||
@@ -1334,7 +1334,7 @@ void Cmd_PutAway_f(edict_t *ent)
 }
 
 
-int PlayerSort (void const *a, void const *b)
+int PlayerSort(void const *a, void const *b)
 {
 	int anum = *(int *)a;
 	int bnum = *(int *)b;
@@ -1483,7 +1483,7 @@ void Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 {
 	char text[2048];
 
-	if (gi.argc () < 2 && !arg0)
+	if (gi.argc() < 2 && !arg0)
 		return;
 
 	if (!((int)dmflags->value & (DF_MODELTEAMS | DF_SKINTEAMS)))
@@ -1674,7 +1674,7 @@ void Cmd_Bbox_f(edict_t *ent)
 	if (viewing) DrawBBox(viewing);
 }
 
-void SetLazarusCrosshair (edict_t *ent)
+void SetLazarusCrosshair(edict_t *ent)
 {
 	if (deathmatch->value || coop->value || !ent->inuse || !ent->client || ent->client->zoomed || ent->client->zooming)
 		return;
@@ -1683,7 +1683,7 @@ void SetLazarusCrosshair (edict_t *ent)
 	gi.cvar_forceset("lazarus_cl_gun",    va("%d", (int)cl_gun->value));
 }
 
-void SetSensitivities (edict_t *ent, qboolean reset)
+void SetSensitivities(edict_t *ent, qboolean reset)
 {
 	char string[512];
 
@@ -1913,7 +1913,7 @@ ClientCommand
 */
 void Cmd_TechCount_f(edict_t *ent);
 
-void ClientCommand (edict_t *ent)
+void ClientCommand(edict_t *ent)
 {
 	char *parm;
 

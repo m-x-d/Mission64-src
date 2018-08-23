@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MUD1AMP  0.08
 #define MUD3     0.08
 
-//void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void SP_misc_teleporter_dest (edict_t *ent);
+//void ClientUserinfoChanged(edict_t *ent, char *userinfo);
+void SP_misc_teleporter_dest(edict_t *ent);
 
 //
 // Gross, ugly, disgustuing hack section
@@ -41,7 +41,7 @@ void SP_misc_teleporter_dest (edict_t *ent);
 // we use carnal knowledge of the maps to fix the coop spot targetnames to match
 // that of the nearest named single player spot
 
-void SP_FixCoopSpots (edict_t *self)
+void SP_FixCoopSpots(edict_t *self)
 {
 	vec3_t d;
 	edict_t *spot = NULL;
@@ -69,7 +69,7 @@ void SP_FixCoopSpots (edict_t *self)
 // now if that one wasn't ugly enough for you then try this one on for size
 // some maps don't have any coop spots at all, so we need to create them where they should have been
 
-void SP_CreateCoopSpots (edict_t *self)
+void SP_CreateCoopSpots(edict_t *self)
 {
 	if (Q_stricmp(level.mapname, "security") == 0)
 	{
@@ -176,13 +176,13 @@ void SP_info_player_intermission(edict_t *self)
 //=======================================================================
 
 
-void player_pain (edict_t *self, edict_t *other, float kick, int damage)
+void player_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	// player pain is handled at the end of the frame in P_DamageFeedback
 }
 
 
-qboolean IsFemale (edict_t *ent)
+qboolean IsFemale(edict_t *ent)
 {
 	if (!ent->client)
 		return false;
@@ -198,7 +198,7 @@ qboolean IsFemale (edict_t *ent)
 	return false;
 }
 
-qboolean IsNeutral (edict_t *ent)
+qboolean IsNeutral(edict_t *ent)
 {
 	if (!ent->client)
 		return false;
@@ -214,7 +214,7 @@ qboolean IsNeutral (edict_t *ent)
 	return false;
 }
 
-void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
+void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	if (coop->value && attacker->client)
 		meansOfDeath |= MOD_FRIENDLY_FIRE;
@@ -685,7 +685,7 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 }
 
 
-void TossClientWeapon (edict_t *self)
+void TossClientWeapon(edict_t *self)
 {
 	edict_t		*drop;
 	qboolean	quad;
@@ -745,7 +745,7 @@ void TossClientWeapon (edict_t *self)
 LookAtKiller
 ==================
 */
-void LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker)
+void LookAtKiller(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	vec3_t dir;
 	if (attacker && attacker != world && attacker != self)
@@ -1002,7 +1002,7 @@ void SwitchToBestStartWeapon(gclient_t *client)
 		client->pers.weapon = FindItem("No Weapon");
 }
 
-void SelectStartWeapon (gclient_t *client, int style)
+void SelectStartWeapon(gclient_t *client, int style)
 {
 	gitem_t	*item;
 
@@ -1135,7 +1135,7 @@ InitClientPersistant
 This is only called when the game first initializes in single player, but is called after each death and level change in deathmatch
 ==============
 */
-void InitClientPersistant (gclient_t *client, int style)
+void InitClientPersistant(gclient_t *client, int style)
 {
 	memset(&client->pers, 0, sizeof(client->pers));
 
@@ -1174,7 +1174,7 @@ void InitClientPersistant (gclient_t *client, int style)
 }
 
 
-void InitClientResp (gclient_t *client)
+void InitClientResp(gclient_t *client)
 {
 //ZOID
 	const int ctf_team = client->resp.ctf_team;
@@ -1205,7 +1205,7 @@ Some information that should be persistant, like health, is still stored in the 
 be mirrored out to the client structure before all the edicts are wiped.
 ==================
 */
-void SaveClientData (void)
+void SaveClientData(void)
 {
 	for (int i = 0; i < game.maxclients; i++)
 	{
@@ -1223,7 +1223,7 @@ void SaveClientData (void)
 	}
 }
 
-void FetchClientEntData (edict_t *ent)
+void FetchClientEntData(edict_t *ent)
 {
 	ent->health = ent->client->pers.health;
 	ent->gib_health = player_gib_health->value; // was -40
@@ -1338,7 +1338,7 @@ SelectFarthestDeathmatchSpawnPoint
 
 ================
 */
-edict_t *SelectFarthestDeathmatchSpawnPoint (void)
+edict_t *SelectFarthestDeathmatchSpawnPoint(void)
 {
 	edict_t *spot = NULL;
 	edict_t *bestspot = NULL;
@@ -1363,7 +1363,7 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 	return spot;
 }
 
-edict_t *SelectDeathmatchSpawnPoint (void)
+edict_t *SelectDeathmatchSpawnPoint(void)
 {
 	if ((int)(dmflags->value) & DF_SPAWN_FARTHEST)
 		return SelectFarthestDeathmatchSpawnPoint();
@@ -1696,7 +1696,7 @@ PutClientInServer
 Called when a player connects to a server or respawns in a deathmatch.
 ============
 */
-void PutClientInServer (edict_t *ent)
+void PutClientInServer(edict_t *ent)
 {
 	vec3_t				mins = { -16, -16, -24 };
 	vec3_t				maxs = { 16, 16, 32 };
@@ -1971,7 +1971,7 @@ ClientBeginDeathmatch
 A client has just connected to the server in deathmatch mode, so clear everything out before starting them.
 =====================
 */
-void ClientBeginDeathmatch (edict_t *ent)
+void ClientBeginDeathmatch(edict_t *ent)
 {
 	G_InitEdict(ent);
 	InitClientResp(ent->client);
@@ -2027,7 +2027,7 @@ ClientBegin
 called when a client has finished connecting, and is ready to be placed into the game.  This will happen every level load.
 ============
 */
-void ClientBegin (edict_t *ent)
+void ClientBegin(edict_t *ent)
 {
 	ent->client = game.clients + (ent - g_edicts - 1);
 
@@ -2116,7 +2116,7 @@ called whenever the player updates a userinfo variable.
 The game can override any of the settings in place (forcing skins or names, etc) before copying it off.
 ============
 */
-void ClientUserinfoChanged (edict_t *ent, char *userinfo)
+void ClientUserinfoChanged(edict_t *ent, char *userinfo)
 {
 	// check for malformed or illegal info strings
 	if (!Info_Validate(userinfo))
@@ -2195,7 +2195,7 @@ If the client is allowed, the connection process will continue and eventually ge
 Changing levels will NOT cause this to be called again, but loadgames will.
 ============
 */
-qboolean ClientConnect (edict_t *ent, char *userinfo)
+qboolean ClientConnect(edict_t *ent, char *userinfo)
 {
 	// check to see if they are on the banned IP list
 	char *value = Info_ValueForKey(userinfo, "ip");
@@ -2281,7 +2281,7 @@ Called when a player drops from the server.
 Will not be called between levels.
 ============
 */
-void ClientDisconnect (edict_t *ent)
+void ClientDisconnect(edict_t *ent)
 {
 	if (!ent->client)
 		return;
@@ -2339,7 +2339,7 @@ void ClientDisconnect (edict_t *ent)
 edict_t	*pm_passent;
 
 // pmove doesn't need to know about passent and contentmask
-trace_t	PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+trace_t	PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
 	if (pm_passent->health > 0)
 		return gi.trace(start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
@@ -2356,7 +2356,7 @@ unsigned CheckBlock(void *b, int c)
 	return v;
 }
 
-void PrintPmove (pmove_t *pm)
+void PrintPmove(pmove_t *pm)
 {
 	const unsigned c1 = CheckBlock(&pm->s, sizeof(pm->s));
 	const unsigned c2 = CheckBlock(&pm->cmd, sizeof(pm->cmd));
@@ -2801,7 +2801,7 @@ ClientThink
 This will be called once for each client frame, which will usually be a couple times for each server frame.
 ==============
 */
-void ClientThink (edict_t *ent, usercmd_t *ucmd)
+void ClientThink(edict_t *ent, usercmd_t *ucmd)
 {
 	edict_t		*other;
 	pmove_t		pm;

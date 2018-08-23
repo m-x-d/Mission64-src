@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define VEHICLE_BLOCK_STOPS 4
 
-void func_vehicle_explode (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void func_vehicle_explode(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	vec3_t	origin;
 	vec3_t	chunkorigin;
@@ -69,7 +69,7 @@ void func_vehicle_explode (edict_t *self, edict_t *inflictor, edict_t *attacker,
 		count = min(8, mass / 100);
 		while (count--)
 		{
-			for(int i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 				chunkorigin[i] = origin[i] + crandom() * size[i];
 
 			ThrowDebris(self, "models/objects/debris1/tris.md2", 1, chunkorigin, 0, 0);
@@ -92,7 +92,7 @@ void func_vehicle_explode (edict_t *self, edict_t *inflictor, edict_t *attacker,
 		G_FreeEdict(self);
 }
 
-void vehicle_blocked (edict_t *self, edict_t *other)
+void vehicle_blocked(edict_t *self, edict_t *other)
 {
 	edict_t *attacker;
 
@@ -233,7 +233,7 @@ void vehicle_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 }
 
 
-void vehicle_disengage (edict_t *vehicle)
+void vehicle_disengage(edict_t *vehicle)
 {
 	vec3_t	forward, left, f1, l1;
 
@@ -462,14 +462,14 @@ void vehicle_think(edict_t *self)
 		set_child_movement(self);
 }
 
-void turn_vehicle (edict_t *self)
+void turn_vehicle(edict_t *self)
 {
 	self->s.angles[YAW] = self->ideal_yaw;
 	gi.linkentity(self);
 	self->prethink = NULL;
 }
 
-void SP_func_vehicle (edict_t *self)
+void SP_func_vehicle(edict_t *self)
 {
 	self->ideal_yaw = self->s.angles[YAW];
 	VectorClear(self->s.angles);

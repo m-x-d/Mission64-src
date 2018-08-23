@@ -35,8 +35,8 @@ void box_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 #define SPOT_SEGMENT 32.0
 #define CARGO_BUFFER 0.125
 
-qboolean box_movestep (edict_t *ent, vec3_t move, qboolean relink);
-void Crane_Move_Begin (edict_t *);
+qboolean box_movestep(edict_t *ent, vec3_t move, qboolean relink);
+void Crane_Move_Begin(edict_t *);
 
 void Moving_Speaker_Think(edict_t *speaker)
 {
@@ -101,7 +101,7 @@ void Moving_Speaker_Think(edict_t *speaker)
 	gi.linkentity(speaker);
 }
 
-edict_t *CrateOnTop (edict_t *from, edict_t *ent)
+edict_t *CrateOnTop(edict_t *from, edict_t *ent)
 {
 	if (!from)
 		from = g_edicts;
@@ -128,7 +128,7 @@ edict_t *CrateOnTop (edict_t *from, edict_t *ent)
 	return NULL;
 }
 
-void Cargo_Stop (edict_t *ent)
+void Cargo_Stop(edict_t *ent)
 {
 	VectorClear(ent->velocity);
 
@@ -147,7 +147,7 @@ void Cargo_Stop (edict_t *ent)
 	ent->crane_control->busy = false;
 }
 
-void cargo_blocked (edict_t *cargo, edict_t *obstacle )
+void cargo_blocked(edict_t *cargo, edict_t *obstacle )
 {
 	vec3_t origin;
 
@@ -166,7 +166,7 @@ void cargo_blocked (edict_t *cargo, edict_t *obstacle )
 	gi.linkentity(cargo);
 }
 
-void Cargo_Float_Up (edict_t *cargo)
+void Cargo_Float_Up(edict_t *cargo)
 {
 	cargo->velocity[2] += sv_gravity->value * FRAMETIME;
 	cargo->velocity[0] = cargo->velocity[1] = 0;
@@ -220,7 +220,7 @@ void crane_light_off(edict_t *light)
 	light->svflags |= SVF_NOCLIENT;
 }
 
-void Crane_Move_Done (edict_t *ent)
+void Crane_Move_Done(edict_t *ent)
 {
 	if (!Q_stricmp(ent->classname, "crane_hook"))
 	{
@@ -399,7 +399,7 @@ qboolean Crane_Hook_Bonk(edict_t *hook, int axis, int dir, vec3_t bonk)
 	return fraction < 1;
 }
 
-void Crane_blocked (edict_t *self, edict_t *other)
+void Crane_blocked(edict_t *self, edict_t *other)
 {
 	if (other->classname && other->movetype == MOVETYPE_PUSHABLE)
 	{
@@ -437,7 +437,7 @@ void Crane_blocked (edict_t *self, edict_t *other)
 	T_Damage(other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 }
 
-void Crane_Move_Final (edict_t *ent)
+void Crane_Move_Final(edict_t *ent)
 {
 	if (ent->crane_control->activator->client->use)
 	{
@@ -482,7 +482,7 @@ void Crane_Move_Final (edict_t *ent)
 	gi.linkentity(ent);
 }
 
-void Crane_Move_Begin (edict_t *ent)
+void Crane_Move_Begin(edict_t *ent)
 {
 	if (ent->moveinfo.speed * FRAMETIME >= ent->moveinfo.remaining_distance)
 	{
@@ -1481,12 +1481,12 @@ void crane_control_action(edict_t *control, edict_t *activator, const vec3_t poi
 	}
 }
 
-void Use_Crane_Control (edict_t *ent, edict_t *other, edict_t *activator)
+void Use_Crane_Control(edict_t *ent, edict_t *other, edict_t *activator)
 { 
 	ent->spawnflags ^= 1;
 }
 
-void SP_crane_control (edict_t *self)
+void SP_crane_control(edict_t *self)
 {
 	if (!self->target)
 	{
@@ -1526,7 +1526,7 @@ void SpawnSpeaker(edict_t *self)
 	}
 }
 
-void SP_crane_hook (edict_t *self)
+void SP_crane_hook(edict_t *self)
 {
 	vec3_t origin;
 
@@ -1561,7 +1561,7 @@ void SP_crane_hook (edict_t *self)
 }
 
 
-void SP_crane_hoist (edict_t *self)
+void SP_crane_hoist(edict_t *self)
 {
 	vec3_t origin;
 
@@ -1603,7 +1603,7 @@ void SP_crane_hoist (edict_t *self)
 }
 
 
-void SP_crane_beam (edict_t *self)
+void SP_crane_beam(edict_t *self)
 {
 	vec3_t  origin;
 
@@ -1655,7 +1655,7 @@ void SP_crane_beam (edict_t *self)
 
 //QUAKED crane_reset - special purpose trigger_relay that calls the associated crane
 // to the beam extent closest to the crane_reset. Typically crane_reset is targeted by a func_button
-void crane_reset_go (edict_t *temp)
+void crane_reset_go(edict_t *temp)
 {
 	edict_t *control = temp->owner;
 	Crane_Move_Begin(control->crane_beam);

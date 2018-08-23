@@ -705,7 +705,7 @@ extern	edict_t			*g_edicts;
 #define	LLOFS(x) (int)&(((level_locals_t *)0)->x)
 #define	CLOFS(x) (int)&(((gclient_t *)0)->x)
 
-#define random()	((rand () & 0x7fff) / ((float)0x7fff))
+#define random()	((rand() & 0x7fff) / ((float)0x7fff))
 #define crandom()	(2.0 * (random() - 0.5))
 
 extern	cvar_t	*maxentities;
@@ -880,14 +880,14 @@ extern	spawn_t	spawns[];
 //
 // g_ai.c
 //
-void AI_SetSightClient (void);
-void ai_stand (edict_t *self, float dist);
-void ai_move (edict_t *self, float dist);
-void ai_walk (edict_t *self, float dist);
-void ai_turn (edict_t *self, float dist);
-void ai_run (edict_t *self, float dist);
-void ai_charge (edict_t *self, float dist);
-qboolean canReach (edict_t *self, edict_t *other);
+void AI_SetSightClient(void);
+void ai_stand(edict_t *self, float dist);
+void ai_move(edict_t *self, float dist);
+void ai_walk(edict_t *self, float dist);
+void ai_turn(edict_t *self, float dist);
+void ai_run(edict_t *self, float dist);
+void ai_charge(edict_t *self, float dist);
+qboolean canReach(edict_t *self, edict_t *other);
 qboolean FacingIdeal(edict_t *self);
 qboolean FindTarget(edict_t *self);
 void FoundTarget(edict_t *self);
@@ -895,12 +895,12 @@ void HuntTarget(edict_t *self);
 qboolean infront(edict_t *self, edict_t *other);
 int range(edict_t *self, edict_t *other);
 qboolean visible(edict_t *self, edict_t *other);
-qboolean ai_chicken (edict_t *self, edict_t *badguy);
+qboolean ai_chicken(edict_t *self, edict_t *badguy);
 
 //
 // km_cvar.c
 //
-void InitLithiumVars (void);	// init lithium cvars
+void InitLithiumVars(void);	// init lithium cvars
 
 //
 // g_camera.c
@@ -909,8 +909,8 @@ void use_camera(edict_t *ent, edict_t *other, edict_t *activator);
 void camera_on(edict_t *ent);
 void camera_off(edict_t *ent);
 void faker_animate(edict_t *self);
-edict_t *G_FindNextCamera (edict_t *camera, edict_t *monitor);
-edict_t *G_FindPrevCamera (edict_t *camera, edict_t *monitor);
+edict_t *G_FindNextCamera(edict_t *camera, edict_t *monitor);
+edict_t *G_FindPrevCamera(edict_t *camera, edict_t *monitor);
 
 //
 // g_chase.c
@@ -923,13 +923,13 @@ void GetChaseTarget(edict_t *ent);
 //
 // g_combat.c
 //
-qboolean OnSameTeam (edict_t *ent1, edict_t *ent2);
+qboolean OnSameTeam(edict_t *ent1, edict_t *ent2);
 qboolean CanDamage(edict_t *targ, edict_t *inflictor);
 qboolean CheckTeamDamage(edict_t *targ, edict_t *attacker);
 void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir, vec3_t point, vec3_t normal, int damage, int knockback, int dflags, int mod);
 void T_RadiusDamage(edict_t *inflictor, edict_t *attacker, float damage, edict_t *ignore, float radius, int mod, double dmg_slope);
 void Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void cleanupHealTarget (edict_t *ent);
+void cleanupHealTarget(edict_t *ent);
 
 // damage flags
 #define DAMAGE_RADIUS			0x00000001	// damage was indirect
@@ -954,7 +954,7 @@ qboolean CheckFlood(edict_t *ent);
 void Cmd_Help_f(edict_t *ent);
 void Cmd_Score_f(edict_t *ent);
 void Use_Flashlight(edict_t *ent,gitem_t *item);
-void SetLazarusCrosshair (edict_t *ent);
+void SetLazarusCrosshair(edict_t *ent);
 void SetSensitivities(edict_t *ent,qboolean reset);
 void ShiftItem(edict_t *ent, int direction);
 
@@ -1076,19 +1076,19 @@ void PrecacheDebris(int style);
 #define SF_MONSTER_IGNORESHOTS		128
 #define SF_MONSTER_KNOWS_MIRRORS	0x00010000
 
-void FadeSink (edict_t *ent);
-void FadeDieSink (edict_t *ent);
+void FadeSink(edict_t *ent);
+void FadeDieSink(edict_t *ent);
 void monster_eject_bullet_shell(edict_t *ent, vec3_t offset); //mxd
 void monster_eject_shotgun_shell(edict_t *ent, vec3_t offset); //mxd
 void monster_fire_bullet(edict_t *self, vec3_t start, vec3_t dir, int damage, int kick, int hspread, int vspread, int flashtype);
-void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype);
+void monster_fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype);
 void monster_fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect, int color);
 void monster_fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int flashtype);
 void monster_fire_rocket(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, edict_t *homing_target);
-void monster_fire_railgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype);
+void monster_fire_railgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype);
 void monster_fire_bfg(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int kick, float damage_radius, int flashtype);
 void HintTestNext(edict_t *self, edict_t *hint);
-int  HintTestStart (edict_t *self);
+int  HintTestStart(edict_t *self);
 void M_droptofloor(edict_t *ent);
 void monster_think(edict_t *self);
 void deadmonster_think(edict_t *self);
@@ -1098,13 +1098,13 @@ void flymonster_start(edict_t *self);
 void AttackFinished(edict_t *self, float time);
 void monster_death_use(edict_t *self);
 void M_CatagorizePosition(edict_t *ent);
-qboolean M_CheckAttack (edict_t *self);
-void M_FlyCheck (edict_t *self);
-void M_FliesOff (edict_t *self);
-void M_FliesOn (edict_t *self);
+qboolean M_CheckAttack(edict_t *self);
+void M_FlyCheck(edict_t *self);
+void M_FliesOff(edict_t *self);
+void M_FliesOn(edict_t *self);
 void M_CheckGround(edict_t *ent);
-qboolean M_SetDeath (edict_t *ent,mmove_t **moves);
-int  PatchMonsterModel (char *model);
+qboolean M_SetDeath(edict_t *ent,mmove_t **moves);
+int  PatchMonsterModel(char *model);
 void AlignToPlane(edict_t *self, cplane_t *plane, int extraroll); //mxd
 void AdjustAccuracy(edict_t * self, vec3_t target); //mxd
 void PositionToWorld(edict_t *self, vec3_t localpos, vec3_t result); //mxd
@@ -1114,7 +1114,7 @@ void M_SpawnEffect(edict_t *self, int effect, vec3_t localpos, vec3_t localnorma
 //
 // g_patchplayermodels.c
 //
-int PatchPlayerModels (char *modelname);
+int PatchPlayerModels(char *modelname);
 
 //
 // g_phys.c
@@ -1125,27 +1125,27 @@ void G_RunEntity(edict_t *ent);
 //
 // g_reflect.c
 //
-void AddReflection (edict_t *ent);
-void DeleteReflection (edict_t *ent, int index);
-void ReflectExplosion (int type, const vec3_t origin);
-void ReflectSparks (int type, const vec3_t origin, const vec3_t movedir);
-void ReflectSteam (const vec3_t origin, const vec3_t movedir, int count, int sounds, int speed, int wait, int nextid);
-void ReflectTrail (int type, const vec3_t start, const vec3_t end);
+void AddReflection(edict_t *ent);
+void DeleteReflection(edict_t *ent, int index);
+void ReflectExplosion(int type, const vec3_t origin);
+void ReflectSparks(int type, const vec3_t origin, const vec3_t movedir);
+void ReflectSteam(const vec3_t origin, const vec3_t movedir, int count, int sounds, int speed, int wait, int nextid);
+void ReflectTrail(int type, const vec3_t start, const vec3_t end);
 
 //
 // g_spawn.c
 //
-void ED_CallSpawn (edict_t *ent);
-void G_FindTeams ();
-void Cmd_ToggleHud ();
-void Hud_On ();
-void Hud_Off ();
+void ED_CallSpawn(edict_t *ent);
+void G_FindTeams();
+void Cmd_ToggleHud();
+void Hud_On();
+void Hud_Off();
 
 //
 // g_svcmds.c
 //
-void	ServerCommand (void);
-qboolean SV_FilterPacket (char *from);
+void	ServerCommand(void);
+qboolean SV_FilterPacket(char *from);
 
 //
 // g_thing.c
@@ -1155,13 +1155,13 @@ edict_t *SpawnThing();
 //
 // g_tracktrain.c
 //
-void tracktrain_disengage (edict_t *train);
+void tracktrain_disengage(edict_t *train);
 
 //
 // g_turret.c
 //
 void turret_breach_fire(edict_t *ent);
-void turret_disengage (edict_t *ent);
+void turret_disengage(edict_t *ent);
 
 //
 // g_trigger.c
@@ -1171,27 +1171,27 @@ typedef struct
 	char	*name;
 } entlist_t;
 qboolean HasSpawnFunction(edict_t *ent);
-int trigger_transition_ents (edict_t *changelevel, edict_t *self);
+int trigger_transition_ents(edict_t *changelevel, edict_t *self);
 
 //
 // g_utils.c
 //
 qboolean KillBox(edict_t *ent);
 void G_ProjectSource(const vec3_t point, const vec3_t distance, const vec3_t forward, const vec3_t right, vec3_t result);
-edict_t *G_Find (edict_t *from, int fieldofs, char *match);
-edict_t *findradius (edict_t *from, const vec3_t org, float rad);
-edict_t *G_PickTarget (char *targetname);
-void G_UseTargets (edict_t *ent, edict_t *activator);
-void G_SetMovedir (vec3_t angles, vec3_t movedir);
-void G_InitEdict (edict_t *e);
+edict_t *G_Find(edict_t *from, int fieldofs, char *match);
+edict_t *findradius(edict_t *from, const vec3_t org, float rad);
+edict_t *G_PickTarget(char *targetname);
+void G_UseTargets(edict_t *ent, edict_t *activator);
+void G_SetMovedir(vec3_t angles, vec3_t movedir);
+void G_InitEdict(edict_t *e);
 edict_t *G_Spawn(void);
 void G_FreeEdict(edict_t *e);
 void G_TouchTriggers(edict_t *ent);
-void G_TouchSolids (edict_t *ent);
-char *G_CopyString (char *in);
+void G_TouchSolids(edict_t *ent);
+char *G_CopyString(char *in);
 void stuffcmd(edict_t *ent,char *command);
-float *tv (float x, float y, float z);
-char *vtos (vec3_t v);
+float *tv(float x, float y, float z);
+char *vtos(vec3_t v);
 float vectoyaw(vec3_t vec);
 void vectoangles(vec3_t vec, vec3_t angles);
 qboolean point_infront(edict_t *self, const vec3_t point);
@@ -1201,14 +1201,14 @@ float SnapToEights(float x);
 float AtLeast(float x, float dx);
 edict_t *LookingAt(edict_t *ent, int filter, vec3_t endpos, float *range);
 void GameDirRelativePath(char *filename, char *output);
-void G_UseTarget (edict_t *ent, edict_t *activator, edict_t *target);
-qboolean IsIdMap (void); //Knightmare added
-void my_bprintf (int printlevel, char *fmt, ...);
+void G_UseTarget(edict_t *ent, edict_t *activator, edict_t *target);
+qboolean IsIdMap(void); //Knightmare added
+void my_bprintf(int printlevel, char *fmt, ...);
 
-void G_ProjectSource2 (const vec3_t point, const vec3_t distance, const vec3_t forward, const vec3_t right, const vec3_t up, vec3_t result);
-float vectoyaw2 (vec3_t vec);
-void vectoangles2 (vec3_t vec, vec3_t angles);
-//edict_t *findradius2 (edict_t *from, vec3_t org, float rad);
+void G_ProjectSource2(const vec3_t point, const vec3_t distance, const vec3_t forward, const vec3_t right, const vec3_t up, vec3_t result);
+float vectoyaw2(vec3_t vec);
+void vectoangles2(vec3_t vec, vec3_t angles);
+//edict_t *findradius2(edict_t *from, vec3_t org, float rad);
 
 //
 // g_weapon.c
@@ -1218,38 +1218,38 @@ void vectoangles2 (vec3_t vec, vec3_t angles);
 #define BLASTER_BLUE	3
 #define BLASTER_RED		4
 void ThrowDebris(edict_t *self, char *modelname, float speed, const vec3_t origin, int skin, int effects);
-qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick);
+qboolean fire_hit(edict_t *self, vec3_t aim, int damage, int kick);
 void fire_bullet(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod);
-void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);
+void fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);
 void fire_blaster(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int effect, qboolean hyper, int color);
 void fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean contact);
-void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
+void fire_grenade2(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
 void fire_rocket(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage, edict_t *home_target);
 void fire_rail(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick);
 void fire_bfg(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius);
-qboolean AimGrenade (edict_t *launcher, vec3_t start, const vec3_t target, vec_t speed, vec3_t aim);
+qboolean AimGrenade(edict_t *launcher, vec3_t start, const vec3_t target, vec_t speed, vec3_t aim);
 void Grenade_Evade(edict_t *monster);
 
 //
 // m_actor.c
 //
-void actor_attack (edict_t *actor);
-void actor_files ();
+void actor_attack(edict_t *actor);
+void actor_files();
 void actor_fire(edict_t *actor);
-void actor_jump (edict_t *actor);
-void actor_moveit (edict_t *player, edict_t *actor);
-void actor_run (edict_t *actor);
-void actor_run_back (edict_t *actor);
-void actor_salute (edict_t *actor);
-void actor_stand (edict_t *actor);
-void actor_walk (edict_t *actor);
-void actor_walk_back (edict_t *actor);
-void actor_footstep_light (edict_t *actor); //mxd
-void actor_footstep_medium (edict_t *actor); //mxd
-void actor_footstep_heavy (edict_t *actor); //mxd
-void actor_footstep_light_loud (edict_t *actor); //mxd
-void actor_footstep_medium_loud (edict_t *actor); //mxd
-void actor_footstep_heavy_loud (edict_t *actor); //mxd
+void actor_jump(edict_t *actor);
+void actor_moveit(edict_t *player, edict_t *actor);
+void actor_run(edict_t *actor);
+void actor_run_back(edict_t *actor);
+void actor_salute(edict_t *actor);
+void actor_stand(edict_t *actor);
+void actor_walk(edict_t *actor);
+void actor_walk_back(edict_t *actor);
+void actor_footstep_light(edict_t *actor); //mxd
+void actor_footstep_medium(edict_t *actor); //mxd
+void actor_footstep_heavy(edict_t *actor); //mxd
+void actor_footstep_light_loud(edict_t *actor); //mxd
+void actor_footstep_medium_loud(edict_t *actor); //mxd
+void actor_footstep_heavy_loud(edict_t *actor); //mxd
 extern mmove_t actor_move_crouch;
 extern mmove_t actor_move_crouchwalk;
 extern mmove_t actor_move_crouchwalk_back;
@@ -1272,18 +1272,18 @@ void flyer_become_kamikaze(edict_t *actor);
 #define MEDIC_MAX_HEAL_DISTANCE	400
 #define	MEDIC_TRY_TIME			10.0
 
-void abortHeal (edict_t *ent,qboolean mark);
-void medic_NextPatrolPoint (edict_t *ent,edict_t *hintpath);
-edict_t *medic_FindDeadMonster (edict_t *ent);
-void medic_StopPatrolling (edict_t *ent);
+void abortHeal(edict_t *ent,qboolean mark);
+void medic_NextPatrolPoint(edict_t *ent,edict_t *hintpath);
+edict_t *medic_FindDeadMonster(edict_t *ent);
+void medic_StopPatrolling(edict_t *ent);
 
 //
 // m_move.c
 //
-qboolean M_CheckBottom (edict_t *ent);
-qboolean M_walkmove (edict_t *ent, float yaw, float dist);
-void M_MoveToGoal (edict_t *ent, float dist);
-void M_ChangeYaw (edict_t *ent);
+qboolean M_CheckBottom(edict_t *ent);
+qboolean M_walkmove(edict_t *ent, float yaw, float dist);
+void M_MoveToGoal(edict_t *ent, float dist);
+void M_ChangeYaw(edict_t *ent);
 
 // tpp
 //
@@ -1291,35 +1291,35 @@ void M_ChangeYaw (edict_t *ent);
 //
 #define OPTION_OFF			0
 #define OPTION_BACKGROUND	1
-void CheckChasecam_Viewent (edict_t *ent);
-void Cmd_Chasecam_Toggle (edict_t *ent);
-void ChasecamRemove (edict_t *ent, int opt);
-void ChasecamStart (edict_t *ent);
+void CheckChasecam_Viewent(edict_t *ent);
+void Cmd_Chasecam_Toggle(edict_t *ent);
+void ChasecamRemove(edict_t *ent, int opt);
+void ChasecamStart(edict_t *ent);
 // end tpp
 
 //
 // p_client.c
 //
-void player_pain (edict_t *self, edict_t *other, float kick, int damage);
+void player_pain(edict_t *self, edict_t *other, float kick, int damage);
 void player_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void respawn (edict_t *ent);
+void respawn(edict_t *ent);
 void BeginIntermission(edict_t *targ);
-void PutClientInServer (edict_t *ent);
-void InitClientPersistant (gclient_t *client,int style);
-void InitClientResp (gclient_t *client);
-void InitBodyQue (void);
+void PutClientInServer(edict_t *ent);
+void InitClientPersistant(gclient_t *client,int style);
+void InitClientResp(gclient_t *client);
+void InitBodyQue(void);
 void ClientBeginServerFrame(edict_t *ent);
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
+void ClientUserinfoChanged(edict_t *ent, char *userinfo);
 
 //
 // p_hud.c
 //
 void MoveClientToIntermission(edict_t *client);
-void G_SetStats (edict_t *ent);
-void G_SetSpectatorStats (edict_t *ent);
-void G_CheckChaseStats (edict_t *ent);
+void G_SetStats(edict_t *ent);
+void G_SetSpectatorStats(edict_t *ent);
+void G_CheckChaseStats(edict_t *ent);
 void ValidateSelectedItem(edict_t *ent);
-void DeathmatchScoreboardMessage (edict_t *client, edict_t *killer);
+void DeathmatchScoreboardMessage(edict_t *client, edict_t *killer);
 
 //
 // p_text.c
@@ -1329,12 +1329,12 @@ void Do_Text_Display(edict_t *activator, int flags, char *message);
 //
 // p_trail.c
 //
-void PlayerTrail_Init (void);
-void PlayerTrail_Add (const vec3_t spot);
-void PlayerTrail_New (vec3_t spot);
+void PlayerTrail_Init(void);
+void PlayerTrail_Add(const vec3_t spot);
+void PlayerTrail_New(vec3_t spot);
 edict_t *PlayerTrail_PickFirst(edict_t *self);
 edict_t *PlayerTrail_PickNext(edict_t *self);
-edict_t *PlayerTrail_LastSpot (void);
+edict_t *PlayerTrail_LastSpot(void);
 //
 // p_view.c
 //
@@ -1344,16 +1344,16 @@ void ClientEndServerFrame(edict_t *ent);
 //
 void PlayerNoise(edict_t *who, const vec3_t where, int type);
 void P_ProjectSource(gclient_t *client, vec3_t point, const vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-void P_ProjectSource2 (gclient_t *client, vec3_t point, const vec3_t distance, vec3_t forward, vec3_t right, vec3_t up, vec3_t result); //mxd
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire));
-void kick_attack (edict_t *ent);
+void P_ProjectSource2(gclient_t *client, vec3_t point, const vec3_t distance, vec3_t forward, vec3_t right, vec3_t up, vec3_t result); //mxd
+void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire));
+void kick_attack(edict_t *ent);
 
 //
 // g_newai.c
 //
-qboolean check_shot_blocked (edict_t *monster, float chance_attack);
-qboolean check_plat_blocked (edict_t *monster, float moveDist);
-qboolean check_jump_blocked (edict_t *monster, float jumpDist, float downLimit, float upLimit);
+qboolean check_shot_blocked(edict_t *monster, float chance_attack);
+qboolean check_plat_blocked(edict_t *monster, float moveDist);
+qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, float upLimit);
 
 
 #define MAX_HINT_CHAINS		100
@@ -1361,13 +1361,13 @@ extern int hint_chains_exist;
 extern int hint_chain_count;
 extern edict_t *hint_chain_starts[MAX_HINT_CHAINS];
 
-void hintpath_start (edict_t *monster, edict_t *spot);
+void hintpath_start(edict_t *monster, edict_t *spot);
 void hintpath_stop(edict_t *monster);
-qboolean hintcheck_monsterlost (edict_t *monster);
-void SetupHintPaths (void);
+qboolean hintcheck_monsterlost(edict_t *monster);
+void SetupHintPaths(void);
 
 float realrange(edict_t *this, edict_t *that);
-qboolean has_valid_enemy (edict_t *monster);
+qboolean has_valid_enemy(edict_t *monster);
 
 //============================================================================
 
@@ -1736,9 +1736,9 @@ struct edict_s
 	float		roll;
 
 	float		nextthink;
-	void		(*prethink) (edict_t *ent);
+	void		(*prethink)(edict_t *ent);
 	void		(*think)(edict_t *self);
-	void		(*postthink) (edict_t *ent); //Knightmare added
+	void		(*postthink)(edict_t *ent); //Knightmare added
 	void		(*blocked)(edict_t *self, edict_t *other);	//move to moveinfo?
 	void		(*touch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 	void		(*use)(edict_t *self, edict_t *other, edict_t *activator);

@@ -41,9 +41,9 @@ mass        = mass of pendulum, used for knockback of func_pushables (not player
 #define SF_PENDULUM_SLOW         8
 #define SF_PENDULUM_STOPPING    16
 
-void box_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void box_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 
-void pendulum_blocked (edict_t *self, edict_t *other)
+void pendulum_blocked(edict_t *self, edict_t *other)
 {
 	trace_t	trace;
 	vec3_t	angles;
@@ -347,7 +347,7 @@ deadstop:
 	}
 }
 
-void pendulum_rotate (edict_t *self)
+void pendulum_rotate(edict_t *self)
 {
 	if (!(self->spawnflags & SF_PENDULUM_STARTON))
 		return;
@@ -510,7 +510,7 @@ void pendulum_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 
 	while (count--)
 	{
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 			chunkorigin[i] = origin[i] + crandom() * size[i];
 
 		ThrowDebris(self, "models/objects/debris2/tris.md2", 2, chunkorigin, 0, 0);
@@ -519,7 +519,7 @@ void pendulum_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	G_FreeEdict(self);
 }
 
-void SP_func_pendulum (edict_t *ent)
+void SP_func_pendulum(edict_t *ent)
 {
 	ent->class_id = ENTITY_FUNC_PENDULUM;
 	ent->solid = SOLID_BSP;

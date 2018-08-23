@@ -32,13 +32,13 @@ Makron -- Final Boss
 
 //qboolean visible(edict_t *self, edict_t *other);
 
-void MakronRailgun (edict_t *self);
-void MakronSaveloc (edict_t *self);
-void MakronHyperblaster (edict_t *self);
-void makron_step_left (edict_t *self);
-void makron_step_right (edict_t *self);
-void makronBFG (edict_t *self);
-void makron_dead (edict_t *self);
+void MakronRailgun(edict_t *self);
+void MakronSaveloc(edict_t *self);
+void MakronHyperblaster(edict_t *self);
+void makron_step_left(edict_t *self);
+void makron_step_right(edict_t *self);
+void makronBFG(edict_t *self);
+void makron_dead(edict_t *self);
 
 static int	sound_pain4;
 static int	sound_pain5;
@@ -70,7 +70,7 @@ void makron_taunt(edict_t *self)
 // stand
 //
 
-mframe_t makron_frames_stand []=
+mframe_t makron_frames_stand[]=
 {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -135,12 +135,12 @@ mframe_t makron_frames_stand []=
 };
 mmove_t	makron_move_stand = {FRAME_stand201, FRAME_stand260, makron_frames_stand, NULL};
 	
-void makron_stand (edict_t *self)
+void makron_stand(edict_t *self)
 {
 	self->monsterinfo.currentmove = &makron_move_stand;
 }
 
-mframe_t makron_frames_run [] =
+mframe_t makron_frames_run[] =
 {
 	{ai_run, 3,	makron_step_left},
 	{ai_run, 12,	NULL},
@@ -155,38 +155,38 @@ mframe_t makron_frames_run [] =
 };
 mmove_t	makron_move_run = {FRAME_walk204, FRAME_walk213, makron_frames_run, NULL};
 
-void makron_hit (edict_t *self)
+void makron_hit(edict_t *self)
 {
 	gi.sound(self, CHAN_AUTO, sound_hit, 1, ATTN_NONE,0);
 }
 
-void makron_popup (edict_t *self)
+void makron_popup(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_popup, 1, ATTN_NONE,0);
 }
 
-void makron_step_left (edict_t *self)
+void makron_step_left(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_step_left, 1, ATTN_NORM,0);
 }
 
-void makron_step_right (edict_t *self)
+void makron_step_right(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_step_right, 1, ATTN_NORM,0);
 }
 
-void makron_brainsplorch (edict_t *self)
+void makron_brainsplorch(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, sound_brainsplorch, 1, ATTN_NORM,0);
 }
 
-void makron_prerailgun (edict_t *self)
+void makron_prerailgun(edict_t *self)
 {
 	gi.sound(self, CHAN_WEAPON, sound_prerailgun, 1, ATTN_NORM,0);
 }
 
 
-mframe_t makron_frames_walk [] =
+mframe_t makron_frames_walk[] =
 {
 	{ai_walk, 3,	makron_step_left},
 	{ai_walk, 12,	NULL},
@@ -201,12 +201,12 @@ mframe_t makron_frames_walk [] =
 };
 mmove_t	makron_move_walk = {FRAME_walk204, FRAME_walk213, makron_frames_run, NULL};
 
-void makron_walk (edict_t *self)
+void makron_walk(edict_t *self)
 {
 	self->monsterinfo.currentmove = &makron_move_walk;
 }
 
-void makron_run (edict_t *self)
+void makron_run(edict_t *self)
 {
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.currentmove = &makron_move_stand;
@@ -214,7 +214,7 @@ void makron_run (edict_t *self)
 		self->monsterinfo.currentmove = &makron_move_run;
 }
 
-mframe_t makron_frames_pain6 [] =
+mframe_t makron_frames_pain6[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -246,7 +246,7 @@ mframe_t makron_frames_pain6 [] =
 };
 mmove_t makron_move_pain6 = {FRAME_pain601, FRAME_pain627, makron_frames_pain6, makron_run};
 
-mframe_t makron_frames_pain5 [] =
+mframe_t makron_frames_pain5[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -255,7 +255,7 @@ mframe_t makron_frames_pain5 [] =
 };
 mmove_t makron_move_pain5 = {FRAME_pain501, FRAME_pain504, makron_frames_pain5, makron_run};
 
-mframe_t makron_frames_pain4 [] =
+mframe_t makron_frames_pain4[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -264,7 +264,7 @@ mframe_t makron_frames_pain4 [] =
 };
 mmove_t makron_move_pain4 = {FRAME_pain401, FRAME_pain404, makron_frames_pain4, makron_run};
 
-mframe_t makron_frames_death2 [] =
+mframe_t makron_frames_death2[] =
 {
 	{ai_move,	-15,	NULL},
 	{ai_move,	3,	NULL},
@@ -364,7 +364,7 @@ mframe_t makron_frames_death2 [] =
 };
 mmove_t makron_move_death2 = {FRAME_death201, FRAME_death295, makron_frames_death2, makron_dead};
 
-mframe_t makron_frames_death3 [] =
+mframe_t makron_frames_death3[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -389,7 +389,7 @@ mframe_t makron_frames_death3 [] =
 };
 mmove_t makron_move_death3 = {FRAME_death301, FRAME_death320, makron_frames_death3, NULL};
 
-mframe_t makron_frames_sight [] =
+mframe_t makron_frames_sight[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -407,7 +407,7 @@ mframe_t makron_frames_sight [] =
 };
 mmove_t makron_move_sight= {FRAME_active01, FRAME_active13, makron_frames_sight, makron_run};
 
-void makronBFG (edict_t *self)
+void makronBFG(edict_t *self)
 {
 	vec3_t	forward, right;
 	vec3_t	start;
@@ -426,7 +426,7 @@ void makronBFG (edict_t *self)
 }	
 
 
-mframe_t makron_frames_attack3 []=
+mframe_t makron_frames_attack3[]=
 {
 	{ai_charge,	0,	NULL},
 	{ai_charge,	0,	NULL},
@@ -491,14 +491,14 @@ mframe_t makron_frames_attack5[]=
 };
 mmove_t makron_move_attack5 = {FRAME_attak501, FRAME_attak516, makron_frames_attack5, makron_run};
 
-void MakronSaveloc (edict_t *self)
+void MakronSaveloc(edict_t *self)
 {
 	VectorCopy(self->enemy->s.origin, self->pos1);	//save for aiming the shot
 	self->pos1[2] += self->enemy->viewheight;
 };
 
 // FIXME: He's not firing from the proper Z
-void MakronRailgun (edict_t *self)
+void MakronRailgun(edict_t *self)
 {
 	vec3_t	start;
 	vec3_t	dir;
@@ -549,7 +549,7 @@ void MakronHyperblaster(edict_t *self)
 }	
 
 
-void makron_pain (edict_t *self, edict_t *other, float kick, int damage)
+void makron_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 
 	if (self->health < (self->max_health / 2))
@@ -650,7 +650,7 @@ void makron_torso_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int 
 	}
 }
 
-void makron_torso (edict_t *ent)
+void makron_torso(edict_t *ent)
 {
 	// Lazarus changes to make makron torso gibbable
 	ent->movetype = MOVETYPE_NONE;
@@ -677,7 +677,7 @@ void makron_torso (edict_t *ent)
 // death
 //
 
-void makron_dead (edict_t *self)
+void makron_dead(edict_t *self)
 {
 	// Lazarus - this is way too big
 //	VectorSet(self->mins, -60, -60, 0);
@@ -813,7 +813,7 @@ qboolean Makron_CheckAttack(edict_t *self)
 // monster_makron
 //
 
-void MakronPrecache (void)
+void MakronPrecache(void)
 {
 	sound_pain4 = gi.soundindex("makron/pain3.wav");
 	sound_pain5 = gi.soundindex("makron/pain2.wav");
@@ -835,7 +835,7 @@ void MakronPrecache (void)
 
 /*QUAKED monster_makron (1 .5 0) (-30 -30 0) (30 30 90) Ambush Trigger_Spawn Sight
 */
-void SP_monster_makron (edict_t *self)
+void SP_monster_makron(edict_t *self)
 {
 	if (deathmatch->value)
 	{
@@ -892,7 +892,7 @@ void SP_monster_makron (edict_t *self)
 	if (self->health < 0)
 	{
 		mmove_t	*deathmoves[] = { &makron_move_death2, &makron_move_death3, NULL };
-		M_SetDeath(self,(mmove_t **)&deathmoves);
+		M_SetDeath(self, (mmove_t **)&deathmoves);
 	}
 
 	self->monsterinfo.scale = MODEL_SCALE;

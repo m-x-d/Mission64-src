@@ -53,7 +53,7 @@ void Lights()
 	}
 	else
 	{
-		for(int i = 0; i < 12; i++) //mxd
+		for (int i = 0; i < 12; i++) //mxd
 			gi.configstring(CS_LIGHTS + i, lightsmin->string);
 	}
 }
@@ -64,7 +64,7 @@ void ToggleLights()
 	Lights();
 }
 
-void target_lightswitch_toggle (edict_t *self)
+void target_lightswitch_toggle(edict_t *self)
 {
 	ToggleLights();
 
@@ -76,7 +76,7 @@ void target_lightswitch_toggle (edict_t *self)
 	}
 }
 
-void use_target_lightswitch (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_lightswitch(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->activator = activator;
 
@@ -90,7 +90,7 @@ void use_target_lightswitch (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + self->delay;
 }
 
-void SP_target_lightswitch (edict_t *self)
+void SP_target_lightswitch(edict_t *self)
 {
 	// Ensure this is the only target_lightswitch in the map
 	for (int i = 1; i < globals.num_edicts; i++)

@@ -138,7 +138,7 @@ void PlayerNoise(edict_t *who, const vec3_t where, int type)
 }
 
 
-qboolean Pickup_Weapon (edict_t *ent, edict_t *other)
+qboolean Pickup_Weapon(edict_t *ent, edict_t *other)
 {
 	//Knightmare- override ammo pickup values with cvars
 	SetAmmoPickupValues();
@@ -201,7 +201,7 @@ ChangeWeapon
 The old weapon has been dropped all the way, so make the new one current
 ===============
 */
-void ChangeWeapon (edict_t *ent)
+void ChangeWeapon(edict_t *ent)
 {
 	//mxd. No throwable grenades in Q2 N64
 	/*if (ent->client->grenade_time)
@@ -270,7 +270,7 @@ void ChangeWeapon (edict_t *ent)
 NoAmmoWeaponChange
 =================
 */
-void NoAmmoWeaponChange (edict_t *ent)
+void NoAmmoWeaponChange(edict_t *ent)
 {
 	if (ent->client->pers.inventory[slugs_index] && ent->client->pers.inventory[ITEM_INDEX(FindItem("railgun"))])
 		ent->client->newweapon = FindItem("railgun");
@@ -297,7 +297,7 @@ Think_Weapon
 Called by ClientBeginServerFrame and ClientThink
 =================
 */
-void Think_Weapon (edict_t *ent)
+void Think_Weapon(edict_t *ent)
 {
 	// if just died, put the weapon away
 	if (ent->health < 1)
@@ -338,7 +338,7 @@ Use_Weapon
 Make the weapon ready if there is ammo
 ================
 */
-void Use_Weapon (edict_t *ent, gitem_t *in_item)
+void Use_Weapon(edict_t *ent, gitem_t *in_item)
 {
 	gitem_t *item = in_item;
 	const int index = ITEM_INDEX(item);
@@ -380,7 +380,7 @@ void Use_Weapon (edict_t *ent, gitem_t *in_item)
 Drop_Weapon
 ================
 */
-void Drop_Weapon (edict_t *ent, gitem_t *item)
+void Drop_Weapon(edict_t *ent, gitem_t *item)
 {
 	if ((int)(dmflags->value) & DF_WEAPONS_STAY)
 		return;
@@ -663,7 +663,7 @@ void Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 
 //ZOID
 //mxd. Added select sounds
-void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire))
+void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int FRAME_SELECT_SOUND, char *PICKUP_SOUND, int *pause_frames, int *fire_frames, void (*fire)(edict_t *ent2, qboolean altfire))
 {
 	//mxd. Cock offhand grenade?
 	if ((ent->client->latched_buttons | ent->client->buttons) & BUTTON_ATTACK2)
@@ -837,7 +837,7 @@ void weapon_grenadelauncher_fire(edict_t *ent, qboolean altfire)
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
-void Weapon_GrenadeLauncher (edict_t *ent)
+void Weapon_GrenadeLauncher(edict_t *ent)
 {
 	static int	pause_frames[]	= {34, 51, 59, 0};
 	static int	fire_frames[]	= {6, 0};
@@ -891,7 +891,7 @@ edict_t	*rocket_target(edict_t *self, vec3_t start, vec3_t forward)
 	return NULL;
 }
 
-void Weapon_RocketLauncher_Fire (edict_t *ent, qboolean altfire)
+void Weapon_RocketLauncher_Fire(edict_t *ent, qboolean altfire)
 {
 	vec3_t offset, start, view_offset;
 	vec3_t forward, right, up;
@@ -937,7 +937,7 @@ void Weapon_RocketLauncher_Fire (edict_t *ent, qboolean altfire)
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
-void Weapon_RocketLauncher (edict_t *ent)
+void Weapon_RocketLauncher(edict_t *ent)
 {
 	static int pause_frames[] = { 25, 33, 42, 50, 0 };
 	static int fire_frames[]  = { 5, 0 };
@@ -952,7 +952,7 @@ BLASTER / HYPERBLASTER
 ======================================================================
 */
 
-void Blaster_Fire (edict_t *ent, const vec3_t g_offset, int damage, qboolean hyper, int effect, int color)
+void Blaster_Fire(edict_t *ent, const vec3_t g_offset, int damage, qboolean hyper, int effect, int color)
 {
 	vec3_t	forward, right, up;
 	vec3_t	start, offset, view_offset;
@@ -1025,7 +1025,7 @@ void Blaster_Fire (edict_t *ent, const vec3_t g_offset, int damage, qboolean hyp
 }
 
 
-void Weapon_Blaster_Fire (edict_t *ent, qboolean altfire)
+void Weapon_Blaster_Fire(edict_t *ent, qboolean altfire)
 {
 	// select color
 	int color = sk_blaster_color->value;
@@ -1062,7 +1062,7 @@ void Weapon_Blaster_Fire (edict_t *ent, qboolean altfire)
 	ent->client->ps.gunframe++;
 }
 
-void Weapon_Blaster (edict_t *ent)
+void Weapon_Blaster(edict_t *ent)
 {
 	static int pause_frames[] = { 19, 32, 0 };
 	static int fire_frames[]  = { 5, 0 };
@@ -1071,7 +1071,7 @@ void Weapon_Blaster (edict_t *ent)
 }
 
 
-void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
+void Weapon_HyperBlaster_Fire(edict_t *ent, qboolean altfire)
 {
 	ent->client->weapon_sound = gi.soundindex("weapons/hyprbl1a.wav");
 
@@ -1163,7 +1163,7 @@ void Weapon_HyperBlaster_Fire (edict_t *ent, qboolean altfire)
 	}
 }
 
-void Weapon_HyperBlaster (edict_t *ent)
+void Weapon_HyperBlaster(edict_t *ent)
 {
 	static int pause_frames[] = { 0 };
 	static int fire_frames[]  = { 6, 7, 8, 9, 10, 11, 0 };
@@ -1177,7 +1177,7 @@ MACHINEGUN / CHAINGUN
 ======================================================================
 */
 
-void Machinegun_Fire (edict_t *ent, qboolean altfire)
+void Machinegun_Fire(edict_t *ent, qboolean altfire)
 {
 	vec3_t		forward, right, up, start, view_offset;
 	vec3_t		angles;
@@ -1271,7 +1271,7 @@ void Machinegun_Fire (edict_t *ent, qboolean altfire)
 	}
 }
 
-void Weapon_Machinegun (edict_t *ent)
+void Weapon_Machinegun(edict_t *ent)
 {
 	static int pause_frames[] = { 23, 45, 0 };
 	static int fire_frames[]  = { 4, 5, 0 };
@@ -1279,7 +1279,7 @@ void Weapon_Machinegun (edict_t *ent)
 	Weapon_Generic(ent, 3, 5, 45, 49, 2, "weapons/HGRENT1A.WAV", pause_frames, fire_frames, Machinegun_Fire); //mxd. Select sounds
 }
 
-void Chaingun_Fire (edict_t *ent, qboolean altfire)
+void Chaingun_Fire(edict_t *ent, qboolean altfire)
 {
 	int			shots;
 	vec3_t		start;
@@ -1390,7 +1390,7 @@ void Chaingun_Fire (edict_t *ent, qboolean altfire)
 }
 
 
-void Weapon_Chaingun (edict_t *ent)
+void Weapon_Chaingun(edict_t *ent)
 {
 	static int pause_frames[] = { 38, 43, 51, 61, 0 };
 	static int fire_frames[]  = { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 0 };
@@ -1455,7 +1455,7 @@ void weapon_shotgun_fire(edict_t *ent, qboolean altfire)
 		ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
-void Weapon_Shotgun (edict_t *ent)
+void Weapon_Shotgun(edict_t *ent)
 {
 	static int pause_frames[] = { 22, 28, 34, 0 };
 	static int fire_frames[]  = { 8, 9, 0 };
@@ -1516,7 +1516,7 @@ void weapon_supershotgun_fire(edict_t *ent, qboolean altfire)
 		ent->client->pers.inventory[ent->client->ammo_index] -= 2;
 }
 
-void Weapon_SuperShotgun (edict_t *ent)
+void Weapon_SuperShotgun(edict_t *ent)
 {
 	static int pause_frames[] = { 29, 42, 57, 0 };
 	static int fire_frames[]  = { 7, 0 };
@@ -1586,7 +1586,7 @@ void weapon_railgun_fire(edict_t *ent, qboolean altfire)
 }
 
 
-void Weapon_Railgun (edict_t *ent)
+void Weapon_Railgun(edict_t *ent)
 {
 	static int pause_frames[] = { 56, 0 };
 	static int fire_frames[]  = { 4, 0 };
@@ -1654,7 +1654,7 @@ void weapon_bfg_fire(edict_t *ent, qboolean altfire)
 		ent->client->pers.inventory[ent->client->ammo_index] -= 50;
 }
 
-void Weapon_BFG (edict_t *ent)
+void Weapon_BFG(edict_t *ent)
 {
 	static int pause_frames[] = { 39, 45, 50, 55, 0 };
 	static int fire_frames[]  = { 9, 17, 0 };
@@ -1669,9 +1669,9 @@ void Weapon_Null(edict_t *ent)
 		ChangeWeapon(ent);
 }
 //======================================================================
-qboolean Pickup_Health (edict_t *ent, edict_t *other);
+qboolean Pickup_Health(edict_t *ent, edict_t *other);
 
-void kick_attack (edict_t *ent)
+void kick_attack(edict_t *ent)
 {
 	vec3_t start, end;
 	vec3_t forward, right;

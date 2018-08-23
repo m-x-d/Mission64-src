@@ -48,7 +48,7 @@ qboolean	trail_active = false;
 #define PREV(n)		(((n) - 1) & (TRAIL_LENGTH - 1))
 
 
-void PlayerTrail_Init (void)
+void PlayerTrail_Init(void)
 {
 	if (deathmatch->value /* FIXME || coop */)
 		return;
@@ -64,7 +64,7 @@ void PlayerTrail_Init (void)
 }
 
 
-void PlayerTrail_Add (const vec3_t spot)
+void PlayerTrail_Add(const vec3_t spot)
 {
 	if (!trail_active)
 		return;
@@ -81,7 +81,7 @@ void PlayerTrail_Add (const vec3_t spot)
 }
 
 
-void PlayerTrail_New (vec3_t spot)
+void PlayerTrail_New(vec3_t spot)
 {
 	if (!trail_active)
 		return;
@@ -135,7 +135,7 @@ edict_t *PlayerTrail_PickNext(edict_t *self)
 	return trail[marker];
 }
 
-edict_t *PlayerTrail_LastSpot (void)
+edict_t *PlayerTrail_LastSpot(void)
 {
 	return trail[PREV(trail_head)];
 }

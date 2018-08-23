@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
-void func_train_find (edict_t *self);
-void train_resume (edict_t *self); //mxd
-void SP_model_spawn (edict_t *ent);
-void train_blocked (edict_t *self, edict_t *other);
-void train_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-void train_use (edict_t *self, edict_t *other, edict_t *activator);
+void func_train_find(edict_t *self);
+void train_resume(edict_t *self); //mxd
+void SP_model_spawn(edict_t *ent);
+void train_blocked(edict_t *self, edict_t *other);
+void train_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void train_use(edict_t *self, edict_t *other, edict_t *activator);
 
 #define TRAIN_START_ON		     1
 #define TRAIN_TOGGLE		     2
@@ -63,7 +63,7 @@ void model_train_animator(edict_t *animator)
 	gi.linkentity(train);
 }
 
-void SP_model_train (edict_t *self)
+void SP_model_train(edict_t *self)
 {
 	SP_model_spawn(self);
 
@@ -162,7 +162,7 @@ void SP_model_train (edict_t *self)
 
 }
 
-void SP_model_train_origin (edict_t *self)
+void SP_model_train_origin(edict_t *self)
 {
 	self->spawnflags |= TRAIN_ORIGIN;
 	SP_model_train(self);

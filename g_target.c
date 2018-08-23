@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Fire an origin based temp entity event to the clients.
 "style"		type byte
 */
-void Use_Target_Tent (edict_t *self, edict_t *other, edict_t *activator)
+void Use_Target_Tent(edict_t *self, edict_t *other, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(self->style);
@@ -44,7 +44,7 @@ void Use_Target_Tent (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_temp_entity (edict_t *ent)
+void SP_target_temp_entity(edict_t *ent)
 {
 	ent->use = Use_Target_Tent;
 }
@@ -75,7 +75,7 @@ Multiple identical looping sounds will just increase volume without any speed co
 Changelevel spawnflag added for Lazarus. This should ONLY be applied in the code,
 and is an indication that the "message" key contains the noise.
 */
-void Use_Target_Speaker (edict_t *ent, edict_t *other, edict_t *activator)
+void Use_Target_Speaker(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	if (ent->spawnflags & 3)
 	{	
@@ -118,7 +118,7 @@ void Use_Target_Speaker (edict_t *ent, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_speaker (edict_t *ent)
+void SP_target_speaker(edict_t *ent)
 {
 	if (!(ent->spawnflags & 8))
 	{
@@ -173,7 +173,7 @@ void SP_target_speaker (edict_t *ent)
 
 //==========================================================
 
-void Use_Target_Help (edict_t *self, edict_t *other, edict_t *activator)
+void Use_Target_Help(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->message)
 	{
@@ -227,7 +227,7 @@ Lazarus:
 DISABLED SF=1
 
 */
-void use_target_secret (edict_t *ent, edict_t *other, edict_t *activator)
+void use_target_secret(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	if (ent->spawnflags & 1)
 	{
@@ -245,7 +245,7 @@ void use_target_secret (edict_t *ent, edict_t *other, edict_t *activator)
 	G_FreeEdict(ent);
 }
 
-void SP_target_secret (edict_t *ent)
+void SP_target_secret(edict_t *ent)
 {
 	if (deathmatch->value)
 	{	
@@ -280,7 +280,7 @@ Lazarus:
 DISABLED SF=1
 
 */
-void use_target_goal (edict_t *ent, edict_t *other, edict_t *activator)
+void use_target_goal(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	if (ent->spawnflags & 1)
 	{
@@ -306,7 +306,7 @@ void use_target_goal (edict_t *ent, edict_t *other, edict_t *activator)
 	G_FreeEdict(ent);
 }
 
-void SP_target_goal (edict_t *ent)
+void SP_target_goal(edict_t *ent)
 {
 	if (deathmatch->value)
 	{	
@@ -337,7 +337,7 @@ BIG			Do you want a larger explosion model?
 "delay"		wait this long before going dff
 "dmg"		how much radius damage should be done, defaults to 0
 */
-void target_explosion_explode (edict_t *self)
+void target_explosion_explode(edict_t *self)
 {
 	const int type = (self->spawnflags & 1 ? TE_EXPLOSION1_BIG : TE_EXPLOSION1); //mxd
 	
@@ -364,7 +364,7 @@ void target_explosion_explode (edict_t *self)
 	}
 }
 
-void use_target_explosion (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_explosion(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->activator = activator;
 
@@ -378,7 +378,7 @@ void use_target_explosion (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + self->delay;
 }
 
-void SP_target_explosion (edict_t *ent)
+void SP_target_explosion(edict_t *ent)
 {
 	ent->use = use_target_explosion;
 	ent->svflags = SVF_NOCLIENT;
@@ -402,7 +402,7 @@ Lazarus spawnflags:
 32 HARD             Sets skill 2 for next map
 64 NIGHTMARE        Sets skill 3 for next map
 */
-void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_changelevel(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (level.intermissiontime)
 		return; // already activated
@@ -570,7 +570,7 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	BeginIntermission(self);
 }
 
-void SP_target_changelevel (edict_t *ent)
+void SP_target_changelevel(edict_t *ent)
 {
 	if (!ent->map)
 	{
@@ -613,7 +613,7 @@ Set "sounds" to one of the following:
 		useful for lava/sparks
 */
 
-void use_target_splash (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_splash(edict_t *self, edict_t *other, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(TE_SPLASH);
@@ -627,7 +627,7 @@ void use_target_splash (edict_t *self, edict_t *other, edict_t *activator)
 		T_RadiusDamage(self, activator, self->dmg, NULL, self->dmg + 40, MOD_SPLASH, -0.5);
 }
 
-void SP_target_splash (edict_t *self)
+void SP_target_splash(edict_t *self)
 {
 	self->use = use_target_splash;
 	G_SetMovedir(self->s.angles, self->movedir);
@@ -655,7 +655,7 @@ For gibs:
 
 //void ED_CallSpawn(edict_t *ent);
 
-void use_target_spawner (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_spawner(edict_t *self, edict_t *other, edict_t *activator)
 {
 	edict_t *ent = G_Spawn();
 	ent->classname = self->target;
@@ -688,7 +688,7 @@ void use_target_spawner (edict_t *self, edict_t *other, edict_t *activator)
 }
 
 
-void SP_target_spawner (edict_t *self)
+void SP_target_spawner(edict_t *self)
 {
 	vec3_t	fact2spawnpoint1 = { -1504, 512, 72 };
 
@@ -726,7 +726,7 @@ sounds - weapon choice
 6 = grenade
 */
 
-void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_blaster(edict_t *self, edict_t *other, edict_t *activator)
 {
 	vec3_t	movedir, start, target;
 	int effect;
@@ -953,7 +953,7 @@ void find_target_blaster_target(edict_t *self, edict_t *other, edict_t *activato
 	target_blaster_think(self);
 }
 
-void toggle_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
+void toggle_target_blaster(edict_t *self, edict_t *other, edict_t *activator)
 {
 	// Used for target_blasters with a "wait" value
 	self->activator = activator;
@@ -978,7 +978,7 @@ void toggle_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void target_blaster_init (edict_t *self)
+void target_blaster_init(edict_t *self)
 {
 	if (self->target)
 	{
@@ -989,7 +989,7 @@ void target_blaster_init (edict_t *self)
 		self->enemy = ent;
 	}
 }
-void SP_target_blaster (edict_t *self)
+void SP_target_blaster(edict_t *self)
 {
 	G_SetMovedir(self->s.angles, self->movedir);
 	self->noise_index = gi.soundindex("weapons/laser2.wav");
@@ -1049,7 +1049,7 @@ void trigger_crosslevel_trigger_use(edict_t *self, edict_t *other, edict_t *acti
 	G_FreeEdict(self);
 }
 
-void SP_target_crosslevel_trigger (edict_t *self)
+void SP_target_crosslevel_trigger(edict_t *self)
 {
 	self->svflags = SVF_NOCLIENT;
 	self->use = trigger_crosslevel_trigger_use;
@@ -1070,7 +1070,7 @@ void target_crosslevel_target_think(edict_t *self)
 	}
 }
 
-void SP_target_crosslevel_target (edict_t *self)
+void SP_target_crosslevel_target(edict_t *self)
 {
 	if (!self->delay)
 		self->delay = 1;
@@ -1219,7 +1219,7 @@ void target_laser_ps_think(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void target_laser_ps_on (edict_t *self)
+void target_laser_ps_on(edict_t *self)
 {
 	if (!self->activator)
 		self->activator = self;
@@ -1236,7 +1236,7 @@ void target_laser_ps_on (edict_t *self)
 	target_laser_ps_think(self);
 }
 
-void target_laser_ps_off (edict_t *self)
+void target_laser_ps_off(edict_t *self)
 {
 	self->spawnflags &= ~1;
 	self->svflags |= SVF_NOCLIENT;
@@ -1352,7 +1352,7 @@ void target_laser_think(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void target_laser_on (edict_t *self)
+void target_laser_on(edict_t *self)
 {
 	if (self->wait > 0)
 	{
@@ -1369,7 +1369,7 @@ void target_laser_on (edict_t *self)
 	target_laser_think(self);
 }
 
-void target_laser_off (edict_t *self)
+void target_laser_off(edict_t *self)
 {
 	self->spawnflags &= ~1;
 	self->svflags |= SVF_NOCLIENT;
@@ -1396,7 +1396,7 @@ void target_laser_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void target_laser_start (edict_t *self)
+void target_laser_start(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
@@ -1491,7 +1491,7 @@ void target_laser_start (edict_t *self)
 		target_laser_off(self);
 }
 
-void SP_target_laser (edict_t *self)
+void SP_target_laser(edict_t *self)
 {
 	self->class_id = ENTITY_TARGET_LASER;
 
@@ -1644,7 +1644,7 @@ void target_lightramp_use(edict_t *self, edict_t *other, edict_t *activator)
 	target_lightramp_think(self);
 }
 
-void SP_target_lightramp (edict_t *self)
+void SP_target_lightramp(edict_t *self)
 {
 	// DWH: CUSTOM spawnflag allows custom light switching, speed is ignored
 	if (self->spawnflags & LIGHTRAMP_CUSTOM)
@@ -1756,7 +1756,7 @@ void target_earthquake_use(edict_t *self, edict_t *other, edict_t *activator)
 	self->last_move_time = 0;
 }
 
-void SP_target_earthquake (edict_t *self)
+void SP_target_earthquake(edict_t *self)
 {
 	if (!self->targetname)
 		gi.dprintf("untargeted %s at %s\n", self->classname, vtos(self->s.origin));
@@ -1798,7 +1798,7 @@ void SP_target_earthquake (edict_t *self)
 //
 // target_locator can be used to move entities to a random selection from a series of path_corners. Move takes place at level start ONLY.
 //
-void target_locator_init (edict_t *self)
+void target_locator_init(edict_t *self)
 {
 	int num_points = 0;
 	edict_t *tgtlast = NULL; //mxd
@@ -2179,14 +2179,14 @@ void SP_target_monsterbattle(edict_t *self)
 /*====================================================================================
    TARGET_ROCKS
 ======================================================================================*/
-void directed_debris_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void directed_debris_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	G_FreeEdict(self);
 }
 
-void gib_fade (edict_t *self);
+void gib_fade(edict_t *self);
 
-void ThrowRock (edict_t *self, char *modelname, float speed, const vec3_t origin, const vec3_t size, int mass)
+void ThrowRock(edict_t *self, char *modelname, float speed, const vec3_t origin, const vec3_t size, int mass)
 {
 	const vec_t	var = speed / 5;
 
@@ -2218,7 +2218,7 @@ void ThrowRock (edict_t *self, char *modelname, float speed, const vec3_t origin
 	gi.linkentity(chunk);
 }
 
-void use_target_rocks (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_rocks(edict_t *self, edict_t *other, edict_t *activator)
 {
 	vec3_t	chunkorigin;
 	vec3_t	size, source;
@@ -2269,7 +2269,7 @@ void use_target_rocks (edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-void SP_target_rocks (edict_t *self)
+void SP_target_rocks(edict_t *self)
 {
 	gi.modelindex("models/objects/rock1/tris.md2");
 	gi.modelindex("models/objects/rock2/tris.md2");
@@ -2288,7 +2288,7 @@ void SP_target_rocks (edict_t *self)
    TARGET_ROTATION
 ======================================================================================*/
 
-void use_target_rotation (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_rotation(edict_t *self, edict_t *other, edict_t *activator)
 {
 	int pick;
 	char targetname[256];
@@ -2352,7 +2352,7 @@ void use_target_rotation (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_rotation (edict_t *self)
+void SP_target_rotation(edict_t *self)
 {
 	if (!self->target)
 	{
@@ -2396,7 +2396,7 @@ TE_FORCEWALL,          37  ??
 /* Spawns an effect at the entity origin
   TE_FLASHLIGHT         36
 */
-void target_effect_at (edict_t *self, edict_t *activator)
+void target_effect_at(edict_t *self, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(self->style);
@@ -2408,7 +2408,7 @@ void target_effect_at (edict_t *self, edict_t *activator)
 /* Poor man's target_steam
   TE_STEAM           40
 */
-void target_effect_steam (edict_t *self, edict_t *activator)
+void target_effect_steam(edict_t *self, edict_t *activator)
 {
 	static int nextid;
 	int	wait;
@@ -2449,7 +2449,7 @@ moving in (movedir) direction.
 */
 //=========================================================================
 
-void target_effect_splash (edict_t *self, edict_t *activator)
+void target_effect_splash(edict_t *self, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(self->style);
@@ -2479,7 +2479,7 @@ in Potentially Visible Set from vector (origin)
 */
 //======================================================
 
-void target_effect_trail (edict_t *self, edict_t *activator)
+void target_effect_trail(edict_t *self, edict_t *activator)
 {
 	if (!self->target) return;
 	edict_t *target = G_Find(NULL, FOFS(targetname), self->target);
@@ -2564,7 +2564,7 @@ Broadcasts to all in Potentially Visible Set from vector (origin)
 */
 //======================================================
 
-void target_effect_sparks (edict_t *self, edict_t *activator)
+void target_effect_sparks(edict_t *self, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(self->style);
@@ -2604,7 +2604,7 @@ Potentially Hearable set from vector (origin)
   TE_EXPLOSION1_NP           54
 */
 //==============================================================================
-void target_effect_explosion (edict_t *self, edict_t *activator)
+void target_effect_explosion(edict_t *self, edict_t *activator)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(self->style);
@@ -2617,10 +2617,10 @@ void target_effect_explosion (edict_t *self, edict_t *activator)
 }
 //===============================================================================
 /*  TE_TUNNEL_SPARKS    29 
-    Similar to other splash effects, but Xatrix does some funky things with
+	Similar to other splash effects, but Xatrix does some funky things with
 	the origin so we'll do the same */
 
-void target_effect_tunnel_sparks (edict_t *self, edict_t *activator)
+void target_effect_tunnel_sparks(edict_t *self, edict_t *activator)
 {
 	vec3_t origin;
 	VectorCopy(self->s.origin, origin);
@@ -2650,7 +2650,7 @@ void target_effect_widowbeam(edict_t *self, edict_t *activator)
 }
 //===============================================================================
 
-void target_effect_use (edict_t *self, edict_t *other, edict_t *activator)
+void target_effect_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->spawnflags & 1)
 	{
@@ -2683,13 +2683,13 @@ void target_effect_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	self->play(self, activator);
 }
-void target_effect_think (edict_t *self)
+void target_effect_think(edict_t *self)
 {
 	self->play(self, NULL);
 	self->nextthink = level.time + self->wait;
 }
 //===============================================================================
-void SP_target_effect (edict_t *self)
+void SP_target_effect(edict_t *self)
 {
 	self->class_id = ENTITY_TARGET_EFFECT;
 
@@ -2855,7 +2855,7 @@ void SP_target_effect (edict_t *self)
 #define ATTRACTOR_SINGLE     32
 #define ATTRACTOR_PATHTARGET 64
 
-void target_attractor_think_single (edict_t *self)
+void target_attractor_think_single(edict_t *self)
 {
 	edict_t	*ent;
 	trace_t	tr;
@@ -3358,7 +3358,7 @@ void SP_target_attractor(edict_t *self)
  (default=4) times.
 ===================================================================*/
 
-void use_target_CD (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_CD(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->musictrack && strlen(self->musictrack))
 		gi.configstring(CS_CDTRACK, self->musictrack);
@@ -3376,7 +3376,7 @@ void use_target_CD (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_CD (edict_t *self)
+void SP_target_CD(edict_t *self)
 {
 	self->use = use_target_CD;
 
@@ -3401,7 +3401,7 @@ void SP_target_CD (edict_t *self)
 #define SF_MONITOR_CAMERAEFFECT   4		// Knightmare- camera effect
 #define SF_MONITOR_LETTERBOX      8		// Knightmare- letterboxing
 
-void target_monitor_off (edict_t *self)
+void target_monitor_off(edict_t *self)
 {
 	edict_t *player = self->child;
 	if (!player)
@@ -3462,7 +3462,7 @@ void target_monitor_off (edict_t *self)
 }
 
 
-void target_monitor_move (edict_t *self)
+void target_monitor_move(edict_t *self)
 {
 	vec3_t	forward, o, goal;
 
@@ -3519,7 +3519,7 @@ void target_monitor_move (edict_t *self)
 }
 
 
-void use_target_monitor (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 {
 	//int			i;
 	//edict_t		*monster;
@@ -3600,7 +3600,7 @@ void use_target_monitor (edict_t *self, edict_t *other, edict_t *activator)
 
 	VectorCopy(self->s.origin, activator->s.origin);
 
-	for(int c = 0; c < 3; c++)
+	for (int c = 0; c < 3; c++)
 		activator->client->ps.pmove.origin[c] = self->s.origin[c] * 8;
 
 	activator->client->ps.pmove.pm_type = PM_FREEZE;
@@ -3691,7 +3691,7 @@ void use_target_monitor (edict_t *self, edict_t *other, edict_t *activator)
 }
 
 
-void SP_target_monitor (edict_t *self)
+void SP_target_monitor(edict_t *self)
 {
 	char	buffer[MAX_QPATH];
 
@@ -3755,7 +3755,7 @@ void SP_target_monitor (edict_t *self)
  "message" - specifies allowable classname to animate. This prevents 
              animating entities with inapplicable frame numbers
 =====================================================================================*/
-void target_animate (edict_t *ent)
+void target_animate(edict_t *ent)
 {
 	if (ent->s.frame < ent->monsterinfo.currentmove->firstframe || ent->s.frame >= ent->monsterinfo.currentmove->lastframe)
 	{
@@ -3837,7 +3837,7 @@ void target_animation_use(edict_t *self, edict_t *other, edict_t *activator)
 		self->touch_debounce_time = level.time + (self->framenumbers + 1) * FRAMETIME;
 }
 
-void SP_target_animation (edict_t *self)
+void SP_target_animation(edict_t *self)
 {
 	if (!self->target && !(self->spawnflags & 1))
 	{
@@ -3893,7 +3893,7 @@ void SP_target_animation (edict_t *self)
                   Optionally plays a sound.
 ====================================================================================*/
 
-void target_failure_wipe (edict_t *self)
+void target_failure_wipe(edict_t *self)
 {
 	edict_t *player = &g_edicts[1];	// Gotta be, since this is SP only
 	if (player->client->textdisplay)
@@ -3956,7 +3956,7 @@ void target_failure_player_die(edict_t *player)
 	self->nextthink = level.time + 10;
 }*/
 
-void target_failure_fade_lights (edict_t *self)
+void target_failure_fade_lights(edict_t *self)
 {
 	char lightvalue[2];
 	char values[] = "abcdefghijklm";
@@ -3979,9 +3979,9 @@ void target_failure_fade_lights (edict_t *self)
 	}
 }
 
-void Use_Target_Text (edict_t *self, edict_t *other, edict_t *activator);
+void Use_Target_Text(edict_t *self, edict_t *other, edict_t *activator);
 
-void use_target_failure (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_failure(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!activator->client || self->target_ent)
 		return;
@@ -4018,7 +4018,7 @@ void use_target_failure (edict_t *self, edict_t *other, edict_t *activator)
 	gi.linkentity(activator);
 }
 
-void SP_target_failure (edict_t *self)
+void SP_target_failure(edict_t *self)
 {
 	if (deathmatch->value || coop->value)
 	{	// SP only
@@ -4039,7 +4039,7 @@ void SP_target_failure (edict_t *self)
  target_change.
 ======================================================================================*/
 
-void use_target_change (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_change(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->target)
 		return;
@@ -4184,7 +4184,7 @@ void use_target_change (edict_t *self, edict_t *other, edict_t *activator)
 		G_FindTeams();
 }
 
-void SP_target_change (edict_t *self)
+void SP_target_change(edict_t *self)
 {
 	self->use = use_target_change;
 	if (st.noise)
@@ -4196,7 +4196,7 @@ void SP_target_change (edict_t *self)
    that setting if DETACH (=1) is set)
 ======================================================================================*/
 
-void movewith_detach (edict_t *child)
+void movewith_detach(edict_t *child)
 {
 	edict_t	*parent = NULL;
 
@@ -4221,7 +4221,7 @@ void movewith_detach (edict_t *child)
 	gi.linkentity(child);
 }
 
-void use_target_movewith (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_movewith(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->target)
 		return;
@@ -4289,7 +4289,7 @@ void use_target_movewith (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_movewith (edict_t *self)
+void SP_target_movewith(edict_t *self)
 {
 	if (!self->target)
 	{
@@ -4322,7 +4322,7 @@ void target_command_use(edict_t *self, edict_t *activator, edict_t *other)
 }
 
 //mxd. INFO: this seems to get eaten when other events are triggered at the same tick!
-void SP_target_command (edict_t *self)
+void SP_target_command(edict_t *self)
 {
 	if (!self->message)
 	{
@@ -4344,7 +4344,7 @@ void SP_target_command (edict_t *self)
  2 = XOR (toggle)
 ======================================================================================*/
  
-void use_target_set_effect (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_set_effect(edict_t *self, edict_t *other, edict_t *activator)
 {
 	edict_t *target = G_Find(NULL, FOFS(targetname), self->target);
 	while (target)
@@ -4375,7 +4375,7 @@ void use_target_set_effect (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_set_effect (edict_t *self)
+void SP_target_set_effect(edict_t *self)
 {
 	if (!self->target)
 	{
@@ -4398,7 +4398,7 @@ void SP_target_set_effect (edict_t *self)
        is visible before the switch.
 =============================================================================*/
 
-void use_target_sky (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_sky(edict_t *self, edict_t *other, edict_t *activator)
 {
 	gi.configstring(CS_SKY, self->pathtarget);
 	stuffcmd(&g_edicts[1], va("sky %s\n", self->pathtarget));
@@ -4410,7 +4410,7 @@ void use_target_sky (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_sky (edict_t *self)
+void SP_target_sky(edict_t *self)
 {
 	if (!st.sky || !*st.sky)
 	{
@@ -4433,7 +4433,7 @@ void SP_target_sky (edict_t *self)
  holdtime = time to hold the effect at full alpha value. -1 = permanent
 =============================================================================*/
 
-void use_target_fade (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_fade(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!activator->client)
 		return;
@@ -4452,7 +4452,7 @@ void use_target_fade (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_fade (edict_t *self)
+void SP_target_fade(edict_t *self)
 {
 	self->use = use_target_fade;
 
@@ -4478,12 +4478,12 @@ void SP_target_fade (edict_t *self)
               1 = START_ON
 =============================================================================*/
 
-void button_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-void Think_CalcMoveSpeed (edict_t *self);
-void Think_SpawnDoorTrigger (edict_t *ent);
-void func_train_find (edict_t *self);
+void button_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void Think_CalcMoveSpeed(edict_t *self);
+void Think_SpawnDoorTrigger(edict_t *ent);
+void func_train_find(edict_t *self);
 
-void clone (edict_t *self, edict_t *other, edict_t *activator)
+void clone(edict_t *self, edict_t *other, edict_t *activator)
 {
 	edict_t *parent = G_Find(NULL, FOFS(targetname), self->source);
 	if (!parent)
@@ -4586,7 +4586,7 @@ void clone (edict_t *self, edict_t *other, edict_t *activator)
 
 		vectoangles(child->movedir, child->movedir);
 
-		for(int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			child->movedir[i] += child->s.angles[i];
 			if (child->movedir[i] > 360)
@@ -4751,12 +4751,12 @@ void clone (edict_t *self, edict_t *other, edict_t *activator)
 		G_FindTeams();
 }
 
-void target_clone_starton (edict_t *self)
+void target_clone_starton(edict_t *self)
 {
 	self->use(self, NULL, NULL);
 }
 
-void SP_target_clone (edict_t *self)
+void SP_target_clone(edict_t *self)
 {
 	if (!self->source)
 	{
@@ -4773,7 +4773,7 @@ void SP_target_clone (edict_t *self)
 	}
 }
 
-void use_target_skill (edict_t *self, edict_t *other, edict_t *activator)
+void use_target_skill(edict_t *self, edict_t *other, edict_t *activator)
 {
 	level.next_skill = self->style + 1;
 	self->count--;
@@ -4782,7 +4782,7 @@ void use_target_skill (edict_t *self, edict_t *other, edict_t *activator)
 		G_FreeEdict(self);
 }
 
-void SP_target_skill (edict_t *self)
+void SP_target_skill(edict_t *self)
 {
 	self->use = use_target_skill;
 }

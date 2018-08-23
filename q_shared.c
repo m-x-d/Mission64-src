@@ -322,7 +322,7 @@ Returns 1, 2, or 1 + 2
 //#if !id386 || defined __linux__ 
 //#ifndef id386
 #ifndef _WIN32
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
 	float	dist1, dist2;
 	int		sides;
@@ -391,7 +391,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 #else
 #pragma warning( disable: 4035 )
 
-__declspec( naked ) int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
+__declspec( naked ) int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
 	static int bops_initialized;
 	static int Ljmptab[8];
@@ -685,7 +685,7 @@ VectorNormalizeFast
 From Q2E
 =================
 */
-void VectorNormalizeFast (vec3_t v)
+void VectorNormalizeFast(vec3_t v)
 {
 	const float ilength = Q_rsqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 	VectorScale(v, ilength, v);
@@ -725,7 +725,7 @@ void _VectorCopy(const vec3_t in, vec3_t out)
 	out[2] = in[2];
 }
 
-void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross)
+void CrossProduct(const vec3_t v1, const vec3_t v2, vec3_t cross)
 {
 	cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
@@ -891,7 +891,7 @@ qboolean AxisCompare(const vec3_t axis1[3], const vec3_t axis2[3])
 COM_SkipPath
 ============
 */
-char *COM_SkipPath (char *pathname)
+char *COM_SkipPath(char *pathname)
 {
 	char *last = pathname;
 	while (*pathname)
@@ -1019,25 +1019,25 @@ qboolean bigendien;
 
 // can't just use function pointers, or dll linkage can mess up when qcommon is included in multiple places
 // Knightmare- made these static
-static short	(*_BigShort) (short l);
-static short	(*_LittleShort) (short l);
-static int		(*_BigLong) (int l);
-static int		(*_LittleLong) (int l);
-static qint64	(*_BigLong64) (qint64 l);
-static qint64	(*_LittleLong64) (qint64 l);
-static float	(*_BigFloat) (float l);
-static float	(*_LittleFloat) (float l);
+static short	(*_BigShort)(short l);
+static short	(*_LittleShort)(short l);
+static int		(*_BigLong)(int l);
+static int		(*_LittleLong)(int l);
+static qint64	(*_BigLong64)(qint64 l);
+static qint64	(*_LittleLong64)(qint64 l);
+static float	(*_BigFloat)(float l);
+static float	(*_LittleFloat)(float l);
 
-short	BigShort(short l){return _BigShort(l);}
-short	LittleShort(short l) {return _LittleShort(l);}
-int		BigLong (int l) {return _BigLong(l);}
-int		LittleLong (int l) {return _LittleLong(l);}
-qint64	BigLong64 (qint64 l) {return _BigLong64(l);}
-qint64	LittleLong64 (qint64 l) {return _LittleLong64(l);}
-float	BigFloat (float l) {return _BigFloat(l);}
-float	LittleFloat (float l) {return _LittleFloat(l);}
+short	BigShort(short l) { return _BigShort(l); }
+short	LittleShort(short l) { return _LittleShort(l); }
+int		BigLong(int l) { return _BigLong(l); }
+int		LittleLong(int l) { return _LittleLong(l); }
+qint64	BigLong64(qint64 l) { return _BigLong64(l); }
+qint64	LittleLong64(qint64 l) { return _LittleLong64(l); }
+float	BigFloat(float l) { return _BigFloat(l); }
+float	LittleFloat(float l) { return _LittleFloat(l); }
 
-short ShortSwap (short l)
+short ShortSwap(short l)
 {
 	const byte b1 = l & 255;
 	const byte b2 = (l >> 8) & 255;
@@ -1045,12 +1045,12 @@ short ShortSwap (short l)
 	return (b1 << 8) + b2;
 }
 
-short ShortNoSwap (short l)
+short ShortNoSwap(short l)
 {
 	return l;
 }
 
-int LongSwap (int l)
+int LongSwap(int l)
 {
 	const byte b1 = l & 255;
 	const byte b2 = (l >> 8) & 255;
@@ -1060,12 +1060,12 @@ int LongSwap (int l)
 	return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
 }
 
-int	LongNoSwap (int l)
+int	LongNoSwap(int l)
 {
 	return l;
 }
 
-qint64 Long64Swap (qint64 ll)
+qint64 Long64Swap(qint64 ll)
 {
 	const byte b1 = ll & 255;
 	const byte b2 = (ll >> 8) & 255;
@@ -1080,12 +1080,12 @@ qint64 Long64Swap (qint64 ll)
 		 + ((qint64)b5 << 24) + ((qint64)b6 << 16) + ((qint64)b7 << 8) + (qint64)b8;
 }
 
-qint64	Long64NoSwap (qint64 ll)
+qint64	Long64NoSwap(qint64 ll)
 {
 	return ll;
 }
 
-float FloatSwap (float f)
+float FloatSwap(float f)
 {
 	union
 	{
@@ -1102,7 +1102,7 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
-float FloatNoSwap (float f)
+float FloatNoSwap(float f)
 {
 	return f;
 }
@@ -1112,7 +1112,7 @@ float FloatNoSwap (float f)
 Swap_Init
 ================
 */
-void Swap_Init (void)
+void Swap_Init(void)
 {
 	byte swaptest[2] = { 1, 0 };
 
@@ -1151,7 +1151,7 @@ va
 does a varargs printf into a temp buffer, so I don't need to have varargs versions of all text functions.
 ============
 */
-char *va (char *format, ...)
+char *va(char *format, ...)
 {
 	va_list argptr;
 	static char string[1024];
@@ -1178,7 +1178,7 @@ char com_token[MAX_TOKEN_CHARS];
 COM_SkipWhiteSpace
 =================
 */
-char *COM_SkipWhiteSpace (char *data_p, qboolean *hasNewLines)
+char *COM_SkipWhiteSpace(char *data_p, qboolean *hasNewLines)
 {
 	int c;
 
@@ -1204,7 +1204,7 @@ COM_SkipBracedSection
 Skips until a matching close brace is found. Internal brace depths are properly skipped.
 =================
 */
-void COM_SkipBracedSection (char **data_p, int depth)
+void COM_SkipBracedSection(char **data_p, int depth)
 {
 	do
 	{
@@ -1227,7 +1227,7 @@ COM_SkipRestOfLine
 Skips until a new line is found
 =================
 */
-void COM_SkipRestOfLine (char **data_p)
+void COM_SkipRestOfLine(char **data_p)
 {
 	while (true)
 	{
@@ -1245,7 +1245,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char *COM_Parse (char **data_p)
+char *COM_Parse(char **data_p)
 {
 	int c;
 
@@ -1331,7 +1331,7 @@ Parse a token out of a string
 From Quake2Evolved
 =================
 */
-char *COM_ParseExt (char **data_p, qboolean allowNewLines)
+char *COM_ParseExt(char **data_p, qboolean allowNewLines)
 {
 	int			c, len = 0;
 	qboolean	hasNewLines = false;
@@ -1465,7 +1465,7 @@ int Q_stricmp(char *s1, char *s2)
 }
 
 
-int Q_strncasecmp (char *s1, char *s2, int n)
+int Q_strncasecmp(char *s1, char *s2, int n)
 {
 	int		c1, c2;
 	
@@ -1492,7 +1492,7 @@ int Q_strncasecmp (char *s1, char *s2, int n)
 }
 
 
-int Q_strcasecmp (char *s1, char *s2)
+int Q_strcasecmp(char *s1, char *s2)
 {
 	return Q_strncasecmp(s1, s2, 99999);
 }
@@ -1547,7 +1547,7 @@ Q_snprintfz
 Safe snprintf that ensures a trailing zero
 =================
 */
-void Q_snprintfz (char *dst, int dstSize, const char *fmt, ...)
+void Q_snprintfz(char *dst, int dstSize, const char *fmt, ...)
 {
 	va_list	argPtr;
 
@@ -1562,7 +1562,7 @@ void Q_snprintfz (char *dst, int dstSize, const char *fmt, ...)
 }
 
 
-char *Q_strlwr (char *string)
+char *Q_strlwr(char *string)
 {
 	char *s = string;
 	while (*s)
@@ -1575,7 +1575,7 @@ char *Q_strlwr (char *string)
 }
 
 
-char *Q_strupr (char *string)
+char *Q_strupr(char *string)
 {
 	char *s = string;
 	while (*s)
@@ -1612,7 +1612,7 @@ void Com_sprintf(char *dest, int size, char *fmt, ...)
 Com_HashFileName
 =============
 */
-long Com_HashFileName (const char *fname, int hashSize, qboolean sized)
+long Com_HashFileName(const char *fname, int hashSize, qboolean sized)
 {
 	int		i = 0;
 	long	hash = 0;
@@ -1697,7 +1697,7 @@ char *Info_ValueForKey(char *s, char *key)
 	}
 }
 
-void Info_RemoveKey (char *s, char *key)
+void Info_RemoveKey(char *s, char *key)
 {
 	char pkey[512];
 	char value[512];
@@ -1751,7 +1751,7 @@ Info_Validate
 Some characters are illegal in info strings because they can mess up the server's parsing
 ==================
 */
-qboolean Info_Validate (char *s)
+qboolean Info_Validate(char *s)
 {
 	if (strstr(s, "\"") || strstr(s, ";"))
 		return false;

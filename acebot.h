@@ -290,18 +290,18 @@ extern int numnodes;
 extern int num_items;
 
 // id Function Protos I need
-void     LookAtKiller (edict_t *self, edict_t *inflictor, edict_t *attacker);
-void     ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker);
-void     TossClientWeapon (edict_t *self);
-void     ClientThink (edict_t *ent, usercmd_t *ucmd);
-void	 SelectSpawnPoint (edict_t *ent, vec3_t origin, vec3_t angles, int *style, int *health);
-//void     ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void     CopyToBodyQue (edict_t *ent);
-qboolean ClientConnect (edict_t *ent, char *userinfo);
-void     Use_Plat (edict_t *ent, edict_t *other, edict_t *activator);
+void     LookAtKiller(edict_t *self, edict_t *inflictor, edict_t *attacker);
+void     ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker);
+void     TossClientWeapon(edict_t *self);
+void     ClientThink(edict_t *ent, usercmd_t *ucmd);
+void	 SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles, int *style, int *health);
+//void     ClientUserinfoChanged(edict_t *ent, char *userinfo);
+void     CopyToBodyQue(edict_t *ent);
+qboolean ClientConnect(edict_t *ent, char *userinfo);
+void     Use_Plat(edict_t *ent, edict_t *other, edict_t *activator);
 
 // acebot_ai.c protos
-void     ACEAI_Think (edict_t *self);
+void     ACEAI_Think(edict_t *self);
 void     ACEAI_PickLongRangeGoal(edict_t *self);
 void     ACEAI_PickShortRangeGoal(edict_t *self);
 qboolean ACEAI_FindEnemy(edict_t *self);
@@ -316,7 +316,7 @@ void     ACEIT_PlayerAdded(edict_t *ent);
 void     ACEIT_PlayerRemoved(edict_t *ent);
 qboolean ACEIT_IsVisible(edict_t *self, vec3_t goal);
 qboolean ACEIT_IsReachable(edict_t *self,vec3_t goal);
-qboolean ACEIT_ChangeWeapon (edict_t *ent, gitem_t *item);
+qboolean ACEIT_ChangeWeapon(edict_t *ent, gitem_t *item);
 qboolean ACEIT_CanUseArmor(gitem_t *item, edict_t *other);
 float	 ACEIT_ItemNeed(edict_t *self, int item);
 int		 ACEIT_ClassnameToIndex(char *classname);
@@ -325,8 +325,8 @@ void     ACEIT_BuildItemNodeTable (qboolean rebuild);
 // acebot_movement.c protos
 qboolean ACEMV_SpecialMove(edict_t *self,usercmd_t *ucmd);
 void     ACEMV_Move(edict_t *self, usercmd_t *ucmd);
-void     ACEMV_Attack (edict_t *self, usercmd_t *ucmd);
-void     ACEMV_Wander (edict_t *self, usercmd_t *ucmd);
+void     ACEMV_Attack(edict_t *self, usercmd_t *ucmd);
+void     ACEMV_Wander(edict_t *self, usercmd_t *ucmd);
 
 // acebot_nodes.c protos
 int      ACEND_FindCost(int from, int to);
@@ -353,16 +353,16 @@ void     ACEND_LoadNodes();
 //void	 ACESP_LoadBots(); // Knightmare- removed this
 void	 ACESP_LoadBotInfo(); // Knightmare added
 void     ACESP_HoldSpawn(edict_t *self);
-void     ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team);
+void     ACESP_PutClientInServer(edict_t *bot, qboolean respawn, int team);
 void     ACESP_Respawn(edict_t *self);
-edict_t *ACESP_FindFreeClient (void);
+edict_t *ACESP_FindFreeClient(void);
 void     ACESP_SetName(edict_t *bot, char *name, char *skin, char *team);
-void     ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo);
-void     ACESP_ReAddBots();
+void     ACESP_SpawnBot(char *team, char *name, char *skin, char *userinfo);
+//void     ACESP_ReAddBots();
 void     ACESP_RemoveBot(char *name);
 void	 safe_cprintf(edict_t *ent, int printlevel, char *fmt, ...);
-void     safe_centerprintf (edict_t *ent, char *fmt, ...);
+void     safe_centerprintf(edict_t *ent, char *fmt, ...);
 void     safe_bprintf(int printlevel, char *fmt, ...);
-void     debug_printf (char *fmt, ...);
+void     debug_printf(char *fmt, ...);
 
 #endif

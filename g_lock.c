@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //=====================================================
 
-void SP_target_lock_digit (edict_t *self)
+void SP_target_lock_digit(edict_t *self)
 {
 	self->movetype = MOVETYPE_PUSH;
 	gi.setmodel(self, self->model);
@@ -33,7 +33,7 @@ void SP_target_lock_digit (edict_t *self)
 }
 
 
-void target_lock_use (edict_t *self, edict_t *other, edict_t *activator)
+void target_lock_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	char current[16];
 	memset(current, 0, 16);
@@ -72,7 +72,7 @@ void target_lock_use (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void lock_digit_increment (edict_t *digit, edict_t *activator)
+void lock_digit_increment(edict_t *digit, edict_t *activator)
 {
 	if (digit->s.frame == 9)
 		digit->s.frame = 0;
@@ -80,7 +80,7 @@ void lock_digit_increment (edict_t *digit, edict_t *activator)
 		digit->s.frame++;
 }
 
-void lock_initialize (edict_t *lock)
+void lock_initialize(edict_t *lock)
 {
 	if (lock->spawnflags & 1 && strlen(game.lock_code) != 0)
 	{
@@ -123,7 +123,7 @@ void lock_initialize (edict_t *lock)
 	game.lock_revealed = 0;
 }
 
-void SP_target_lock (edict_t *self)
+void SP_target_lock(edict_t *self)
 {
 	if (game.lock_hud && (self->spawnflags & 2))
 	{
@@ -146,7 +146,7 @@ void SP_target_lock (edict_t *self)
 }
 
 // target_lock_code reveals the lock combination to the target_lock specified in it's target field, or in global game data for crosslevel locks
-void lock_code_use (edict_t *self, edict_t *other, edict_t *activator)
+void lock_code_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	char message[64];
 
@@ -183,7 +183,7 @@ void lock_code_use (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_target_lock_code (edict_t *self)
+void SP_target_lock_code(edict_t *self)
 {
 	if (!self->target && !(self->spawnflags & 1))
 	{
@@ -276,7 +276,7 @@ void lock_clue_initialize(edict_t *self)
 	gi.linkentity(self);
 }
 
-void SP_target_lock_clue (edict_t *self)
+void SP_target_lock_clue(edict_t *self)
 {
 	if (!self->target && !(self->spawnflags & 1))
 	{

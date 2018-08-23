@@ -207,7 +207,7 @@ cvar_t	*tech_vampiremax;    // sets maximum health that can be gained from vampi
 cvar_t	*m64_spawn_casings; // whether to spawn bullet casings
 cvar_t	*m64_spawn_tracers; // whether to spawn bullet tracers
 
-void InitLithiumVars (void)
+void InitLithiumVars(void)
 {
 	mega_gibs = gi.cvar("mega_gibs", "0", 0);
 	player_gib_health = gi.cvar("player_gib_health", "-40", 0);

@@ -407,7 +407,7 @@ Returns entities that have origins within a spherical area
 findradius (origin, radius)
 =================
 */
-static edict_t *loc_findradius (edict_t *from, const vec3_t org, float rad)
+static edict_t *loc_findradius(edict_t *from, const vec3_t org, float rad)
 {
 	vec3_t	eorg;
 
@@ -433,7 +433,7 @@ static edict_t *loc_findradius (edict_t *from, const vec3_t org, float rad)
 	return NULL;
 }
 
-void loc_buildboxpoints (vec3_t p[8], const vec3_t org, const vec3_t mins, const vec3_t maxs)
+void loc_buildboxpoints(vec3_t p[8], const vec3_t org, const vec3_t mins, const vec3_t maxs)
 {
 	VectorAdd(org, mins, p[0]);
 	VectorCopy(p[0], p[1]);
@@ -453,7 +453,7 @@ void loc_buildboxpoints (vec3_t p[8], const vec3_t org, const vec3_t mins, const
 	p[7][1] -= maxs[1];
 }
 
-qboolean loc_CanSee (edict_t *targ, edict_t *inflictor)
+qboolean loc_CanSee(edict_t *targ, edict_t *inflictor)
 {
 	// bmodels need special checking because their origin is 0,0,0
 	if (targ->movetype == MOVETYPE_PUSH)
@@ -504,7 +504,7 @@ void CTFSpawn(void)
 	}
 }
 
-void CTFInit (void)
+void CTFInit(void)
 {
 	ctf = gi.cvar("ctf", "0", CVAR_SERVERINFO | CVAR_LATCH);
 	ttctf = gi.cvar("ttctf", "0", CVAR_SERVERINFO | CVAR_LATCH); // Knightmare added
@@ -525,7 +525,7 @@ void CTFInit (void)
  * Precache CTF items
  */
 
-void CTFPrecache (void)
+void CTFPrecache(void)
 {
 	if (ttctf->value)
 	{
@@ -564,7 +564,7 @@ void CTFPrecache (void)
 
 /*--------------------------------------------------------------------------*/
 
-char *CTFTeamName (int team)
+char *CTFTeamName(int team)
 {
 	switch (team)
 	{
@@ -576,7 +576,7 @@ char *CTFTeamName (int team)
 }
 
 //Knightmare added
-int PlayersOnCTFTeam (int checkteam)
+int PlayersOnCTFTeam(int checkteam)
 {
 	int total = 0;
 	for (int i = 0; i < maxclients->value; i++)
@@ -589,7 +589,7 @@ int PlayersOnCTFTeam (int checkteam)
 }
 
 // Knightmare added
-int CTFFlagTeam (gitem_t *flag)
+int CTFFlagTeam(gitem_t *flag)
 {
 	if (flag == flag1_item)
 		return CTF_TEAM1;
@@ -601,7 +601,7 @@ int CTFFlagTeam (gitem_t *flag)
 	return CTF_NOTEAM; // invalid flag
 }
 
-char *CTFOtherTeamName (int team)
+char *CTFOtherTeamName(int team)
 {
 	switch (team)
 	{
@@ -613,7 +613,7 @@ char *CTFOtherTeamName (int team)
 }
 
 // Knightmare added
-char *CTFOtherTeamName2 (int team)
+char *CTFOtherTeamName2(int team)
 {
 	switch (team)
 	{
@@ -624,7 +624,7 @@ char *CTFOtherTeamName2 (int team)
 	}
 }
 
-int CTFOtherTeam (int team)
+int CTFOtherTeam(int team)
 {
 	switch (team)
 	{
@@ -635,7 +635,7 @@ int CTFOtherTeam (int team)
 	}
 }
 
-int CTFOtherTeam2 (int team)
+int CTFOtherTeam2(int team)
 {
 	switch (team)
 	{
@@ -648,11 +648,11 @@ int CTFOtherTeam2 (int team)
 
 /*--------------------------------------------------------------------------*/
 
-edict_t *SelectRandomDeathmatchSpawnPoint (void);
-edict_t *SelectFarthestDeathmatchSpawnPoint (void);
-float	PlayersRangeFromSpot (edict_t *spot);
+edict_t *SelectRandomDeathmatchSpawnPoint(void);
+edict_t *SelectFarthestDeathmatchSpawnPoint(void);
+float	PlayersRangeFromSpot(edict_t *spot);
 
-void CTFAssignSkin (edict_t *ent, char *s)
+void CTFAssignSkin(edict_t *ent, char *s)
 {
 	const int playernum = ent-g_edicts - 1;
 	
@@ -683,7 +683,7 @@ void CTFAssignSkin (edict_t *ent, char *s)
 	}
 }
 
-void CTFAssignTeam (gclient_t *who)
+void CTFAssignTeam(gclient_t *who)
 {
 	int team1count = 0, team2count = 0, team3count = 0;
 
@@ -757,7 +757,7 @@ SelectCTFSpawnPoint
 go to a ctf point, but NOT the two points closest to other players
 ================
 */
-edict_t *SelectCTFSpawnPoint (edict_t *ent)
+edict_t *SelectCTFSpawnPoint(edict_t *ent)
 {
 	if (ent->client->resp.ctf_state)
 	{
@@ -837,7 +837,7 @@ CTFFragBonuses
 Calculate the bonuses for flag defense, flag carrier defense, etc.
 Note that bonuses are not cumaltive.  You get one, they are in importance order.
 */
-void CTFFragBonuses (edict_t *targ, edict_t *inflictor, edict_t *attacker)
+void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker)
 {
 	if (targ->client && attacker->client)
 	{
@@ -998,7 +998,7 @@ void CTFFragBonuses (edict_t *targ, edict_t *inflictor, edict_t *attacker)
 	}
 }
 
-void CTFCheckHurtCarrier (edict_t *targ, edict_t *attacker)
+void CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker)
 {
 	gitem_t *flag_item1, *flag_item2;
 
@@ -1036,7 +1036,7 @@ void CTFCheckHurtCarrier (edict_t *targ, edict_t *attacker)
 
 /*------------------------------------------------------------------------*/
 
-void CTFResetFlag (int ctf_team)
+void CTFResetFlag(int ctf_team)
 {
 	char *c;
 
@@ -1072,14 +1072,14 @@ void CTFResetFlag (int ctf_team)
 	}
 }
 
-void CTFResetFlags (void)
+void CTFResetFlags(void)
 {
 	CTFResetFlag(CTF_TEAM1);
 	CTFResetFlag(CTF_TEAM2);
 	CTFResetFlag(CTF_TEAM3); // Knightmare added
 }
 
-qboolean CTFPickup_Flag (edict_t *ent, edict_t *other)
+qboolean CTFPickup_Flag(edict_t *ent, edict_t *other)
 {
 	int ctf_team;
 	int captures = 0;
@@ -1348,7 +1348,7 @@ qboolean CTFPickup_Flag (edict_t *ent, edict_t *other)
 	return true;
 }
 
-gitem_t *CTFWhat_Flag (edict_t *ent)
+gitem_t *CTFWhat_Flag(edict_t *ent)
 {
 	gitem_t *flag;
 
@@ -1365,7 +1365,7 @@ gitem_t *CTFWhat_Flag (edict_t *ent)
 	return NULL;
 }
 
-void CTFDropFlagTouch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void CTFDropFlagTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	//owner (who dropped us) can't touch for two secs
 	if (other == ent->owner && (ent->nextthink - level.time > CTF_AUTO_FLAG_RETURN_TIMEOUT - 2 || level.time < ent->touch_debounce_time))
@@ -1374,7 +1374,7 @@ void CTFDropFlagTouch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t
 	Touch_Item(ent, other, plane, surf);
 }
 
-void CTFDropFlagThink (edict_t *ent)
+void CTFDropFlagThink(edict_t *ent)
 {
 	// auto return the flag
 	// reset flag will remove ourselves
@@ -1397,7 +1397,7 @@ void CTFDropFlagThink (edict_t *ent)
 }
 
 // Called from PlayerDie, to drop the flag from a dying player
-void CTFDeadDropFlag (edict_t *self)
+void CTFDeadDropFlag(edict_t *self)
 {
 	if (!ctf->value)
 		return;
@@ -1446,7 +1446,7 @@ void CTFDeadDropFlag (edict_t *self)
 	}
 }
 
-qboolean CTFDrop_Flag (edict_t *ent, gitem_t *item)
+qboolean CTFDrop_Flag(edict_t *ent, gitem_t *item)
 {
 	// Knightmare changed this
 	if (!allow_flagdrop->value)
@@ -1522,7 +1522,7 @@ qboolean CTFDrop_Flag (edict_t *ent, gitem_t *item)
 	return true;
 }
 
-void CTFFlagThink (edict_t *ent)
+void CTFFlagThink(edict_t *ent)
 {
 	if (ent->solid != SOLID_NOT)
 		ent->s.frame = 173 + (((ent->s.frame - 173) + 1) % 16);
@@ -1531,7 +1531,7 @@ void CTFFlagThink (edict_t *ent)
 }
 
 
-void CTFFlagSetup (edict_t *ent)
+void CTFFlagSetup(edict_t *ent)
 {
 	VectorSet(ent->mins, -15, -15, -15);
 	VectorSet(ent->maxs, 15, 15, 15);
@@ -1580,7 +1580,7 @@ void CTFFlagSetup (edict_t *ent)
 	ent->think = CTFFlagThink;
 }
 
-void CTFEffects (edict_t *player)
+void CTFEffects(edict_t *player)
 {
 	player->s.effects &= ~(EF_FLAG1 | EF_FLAG2);
 
@@ -1636,7 +1636,7 @@ void CTFEffects (edict_t *player)
 }
 
 // called when we enter the intermission
-void CTFCalcScores (void)
+void CTFCalcScores(void)
 {
 	ctfgame.total1 = ctfgame.total2 = 0;
 	for (int i = 0; i < maxclients->value; i++)
@@ -1667,7 +1667,7 @@ void CTFID_f(edict_t *ent)
 	}
 }
 
-void CTFSetIDView (edict_t *ent)
+void CTFSetIDView(edict_t *ent)
 {
 	vec3_t	forward, dir;
 	float	bd = 0;
@@ -1730,7 +1730,7 @@ void CTFSetIDView (edict_t *ent)
 	}
 }
 
-void SetCTFStats (edict_t *ent)
+void SetCTFStats(edict_t *ent)
 {
 	gitem_t *tech;
 
@@ -2032,14 +2032,14 @@ void SetCTFStats (edict_t *ent)
 /*QUAKED info_player_team1 (1 0 0) (-16 -16 -24) (16 16 32)
 potential team1 spawning position for CTF games
 */
-void SP_info_player_team1 (edict_t *self)
+void SP_info_player_team1(edict_t *self)
 {
 }
 
 /*QUAKED info_player_team2 (0 0 1) (-16 -16 -24) (16 16 32)
 potential team2 spawning position for CTF games
 */
-void SP_info_player_team2 (edict_t *self)
+void SP_info_player_team2(edict_t *self)
 {
 }
 
@@ -2047,7 +2047,7 @@ void SP_info_player_team2 (edict_t *self)
 /*QUAKED info_player_team3 (0 0 1) (-16 -16 -24) (16 16 32)
 potential team3 spawning position for 3Team-CTF games
 */
-void SP_info_player_team3 (edict_t *self)
+void SP_info_player_team3(edict_t *self)
 {
 }
 
@@ -2057,14 +2057,14 @@ void SP_info_player_team3 (edict_t *self)
 /*------------------------------------------------------------------------*/
 
 // ent is player
-void CTFPlayerResetGrapple (edict_t *ent)
+void CTFPlayerResetGrapple(edict_t *ent)
 {
 	if (ent->client && ent->client->ctf_grapple)
 		CTFResetGrapple(ent->client->ctf_grapple);
 }
 
 // self is grapple, not player
-void CTFResetGrapple (edict_t *self)
+void CTFResetGrapple(edict_t *self)
 {
 	if (self->owner->client->ctf_grapple)
 	{
@@ -2081,7 +2081,7 @@ void CTFResetGrapple (edict_t *self)
 	}
 }
 
-void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void CTFGrappleTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == self->owner || self->owner->client->ctf_grapplestate != CTF_GRAPPLE_STATE_FLY)
 		return;
@@ -2124,7 +2124,7 @@ void CTFGrappleTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 }
 
 // draw beam between grapple and self
-void CTFGrappleDrawCable (edict_t *self)
+void CTFGrappleDrawCable(edict_t *self)
 {
 	vec3_t	offset, start, end, f, r;
 	vec3_t	dir;
@@ -2154,7 +2154,7 @@ void CTFGrappleDrawCable (edict_t *self)
 }
 
 // pull the player toward the grapple
-void CTFGrapplePull (edict_t *self)
+void CTFGrapplePull(edict_t *self)
 {
 	vec3_t hookdir, v;
 	const float volume = (self->owner->client->silencer_shots ? 0.2 : 1.0);
@@ -2231,7 +2231,7 @@ void CTFGrapplePull (edict_t *self)
 	}
 }
 
-void CTFFireGrapple (edict_t *self, const vec3_t start, vec3_t dir, int damage, int speed, int effect)
+void CTFFireGrapple(edict_t *self, const vec3_t start, vec3_t dir, int damage, int speed, int effect)
 {
 	VectorNormalize(dir);
 
@@ -2266,7 +2266,7 @@ void CTFFireGrapple (edict_t *self, const vec3_t start, vec3_t dir, int damage, 
 	}
 }	
 
-void CTFGrappleFire (edict_t *ent, const vec3_t g_offset, int damage, int effect)
+void CTFGrappleFire(edict_t *ent, const vec3_t g_offset, int damage, int effect)
 {
 	vec3_t	forward, right;
 	vec3_t	start;
@@ -2290,13 +2290,13 @@ void CTFGrappleFire (edict_t *ent, const vec3_t g_offset, int damage, int effect
 }
 
 
-void CTFWeapon_Grapple_Fire (edict_t *ent, qboolean altfire)
+void CTFWeapon_Grapple_Fire(edict_t *ent, qboolean altfire)
 {
 	CTFGrappleFire(ent, vec3_origin, 10, 0);
 	ent->client->ps.gunframe++;
 }
 
-void CTFWeapon_Grapple (edict_t *ent)
+void CTFWeapon_Grapple(edict_t *ent)
 {
 	static int pause_frames[]	= { 10, 18, 27, 0 };
 	static int fire_frames[]	= { 6, 0 };
@@ -2409,7 +2409,7 @@ void CTFTeam_f(edict_t *ent)
 CTFScoreboardMessage
 ==================
 */
-void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
+void CTFScoreboardMessage(edict_t *ent, edict_t *killer)
 {
 	char	entry[1024];
 	char	string[1400];
@@ -2752,7 +2752,7 @@ void CTFScoreboardMessage (edict_t *ent, edict_t *killer)
 /*------------------------------------------------------------------------*/
 
 
-void Apply_Tech_Shell (gitem_t *item, edict_t *ent)
+void Apply_Tech_Shell(gitem_t *item, edict_t *ent)
 {
 	ent->s.renderfx = RF_GLOW;
 
@@ -2832,7 +2832,7 @@ void Apply_Tech_Shell (gitem_t *item, edict_t *ent)
 	}
 }
 
-void CTFHasTech (edict_t *who)
+void CTFHasTech(edict_t *who)
 {
 	if (level.time - who->client->ctf_lasttechmsg > 2)
 	{
@@ -2841,7 +2841,7 @@ void CTFHasTech (edict_t *who)
 	}
 }
 
-gitem_t *CTFWhat_Tech (edict_t *ent)
+gitem_t *CTFWhat_Tech(edict_t *ent)
 {
 	gitem_t *tech;
 	int i = 0;
@@ -2857,7 +2857,7 @@ gitem_t *CTFWhat_Tech (edict_t *ent)
 	return NULL;
 }
 
-qboolean CTFPickup_Tech (edict_t *ent, edict_t *other)
+qboolean CTFPickup_Tech(edict_t *ent, edict_t *other)
 {
 	gitem_t *tech;
 	int i = 0;
@@ -2880,9 +2880,9 @@ qboolean CTFPickup_Tech (edict_t *ent, edict_t *other)
 	return true;
 }
 
-void SpawnTech (gitem_t *item, edict_t *spot);
+void SpawnTech(gitem_t *item, edict_t *spot);
 
-void CTFTechTouch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void CTFTechTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	//owner (who dropped us) can't touch for two secs
 	if (other == ent->owner && level.time < ent->touch_debounce_time)
@@ -2905,7 +2905,7 @@ static edict_t *FindTechSpawn(void)
 	return spot;
 }
 
-void TechThink (edict_t *tech)
+void TechThink(edict_t *tech)
 {
 	edict_t *spot;
 
@@ -2921,7 +2921,7 @@ void TechThink (edict_t *tech)
 	}
 }
 
-void CTFDrop_Tech (edict_t *ent, gitem_t *item)
+void CTFDrop_Tech(edict_t *ent, gitem_t *item)
 {
 	if (!allow_techdrop->value)
 		return;
@@ -2941,7 +2941,7 @@ void CTFDrop_Tech (edict_t *ent, gitem_t *item)
 	Apply_Tech_Shell(item, tech);
 }
 
-void CTFDeadDropTech (edict_t *ent)
+void CTFDeadDropTech(edict_t *ent)
 {
 	gitem_t *tech;
 	int i = 0;
@@ -2967,7 +2967,7 @@ void CTFDeadDropTech (edict_t *ent)
 }
 
 //ScarFace- this function counts the number of runes in circulation
-int TechCount (void)
+int TechCount(void)
 {
 	gitem_t	*tech;
 	int count = 0;
@@ -2998,7 +2998,7 @@ int TechCount (void)
 	return count;
 }
 
-int NumOfTech (int index)
+int NumOfTech(int index)
 {
 	gitem_t	*tech;
 	int count = 0;
@@ -3038,7 +3038,7 @@ void Cmd_TechCount_f(edict_t *ent)
 }
 
 // ScarFace- spawn the additional runes
-void SpawnMoreTechs (int oldtechcount, int newtechcount, int numtechtypes)
+void SpawnMoreTechs(int oldtechcount, int newtechcount, int numtechtypes)
 {
 	gitem_t	*tech;
 	edict_t	*spot;
@@ -3064,7 +3064,7 @@ void SpawnMoreTechs (int oldtechcount, int newtechcount, int numtechtypes)
 }
 
 // ScarFace- remove some runes
-void RemoveTechs (int oldtechcount, int newtechcount, int numtechtypes)
+void RemoveTechs(int oldtechcount, int newtechcount, int numtechtypes)
 {
 	int i;
 
@@ -3111,7 +3111,7 @@ void RemoveTechs (int oldtechcount, int newtechcount, int numtechtypes)
 }
 
 // ScarFace- this function checks to see if we need to spawn or remove runes
-void CheckNumTechs (void)
+void CheckNumTechs(void)
 {
 	int numtechtypes = 0;
 
@@ -3157,7 +3157,7 @@ void CheckNumTechs (void)
 		RemoveTechs(numtechs, newtechcount, numtechtypes);
 }
 
-void SpawnTech (gitem_t *item, edict_t *spot)
+void SpawnTech(gitem_t *item, edict_t *spot)
 {
 	vec3_t	forward, right;
 	vec3_t  angles;
@@ -3195,7 +3195,7 @@ void SpawnTech (gitem_t *item, edict_t *spot)
 	gi.linkentity(ent);
 }
 
-void SpawnTechs (edict_t *ent)
+void SpawnTechs(edict_t *ent)
 {
 	gitem_t *tech;
 	edict_t *spot;
@@ -3222,7 +3222,7 @@ void SpawnTechs (edict_t *ent)
 }
 
 // frees the passed edict!
-void CTFRespawnTech (edict_t *ent)
+void CTFRespawnTech(edict_t *ent)
 {
 	edict_t *spot;
 
@@ -3242,7 +3242,7 @@ void CTFSetupTechSpawn(void)
 	ent->think = SpawnTechs;
 }
 
-void CTFResetTech (void)
+void CTFResetTech(void)
 {
 	edict_t *ent;
 	int i;
@@ -3256,7 +3256,7 @@ void CTFResetTech (void)
 	SpawnTechs(NULL);
 }
 
-int CTFApplyResistance (edict_t *ent, int dmg)
+int CTFApplyResistance(edict_t *ent, int dmg)
 {
 	static gitem_t *tech = NULL;
 
@@ -3274,7 +3274,7 @@ int CTFApplyResistance (edict_t *ent, int dmg)
 	return dmg;
 }
 
-int CTFApplyStrength (edict_t *ent, int dmg)
+int CTFApplyStrength(edict_t *ent, int dmg)
 {
 	static gitem_t *tech = NULL;
 
@@ -3287,7 +3287,7 @@ int CTFApplyStrength (edict_t *ent, int dmg)
 	return dmg;
 }
 
-qboolean CTFApplyStrengthSound (edict_t *ent)
+qboolean CTFApplyStrengthSound(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3314,7 +3314,7 @@ qboolean CTFApplyStrengthSound (edict_t *ent)
 }
 
 
-qboolean CTFApplyHaste (edict_t *ent)
+qboolean CTFApplyHaste(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3327,7 +3327,7 @@ qboolean CTFApplyHaste (edict_t *ent)
 	return false;
 }
 
-void CTFApplyHasteSound (edict_t *ent)
+void CTFApplyHasteSound(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3343,7 +3343,7 @@ void CTFApplyHasteSound (edict_t *ent)
 	}
 }
 
-void CTFApplyRegeneration (edict_t *ent)
+void CTFApplyRegeneration(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 	qboolean noise = false;
@@ -3371,7 +3371,7 @@ void CTFApplyRegeneration (edict_t *ent)
 			if (tech_regen_armor->value)
 			{
 				int index = ArmorIndex(ent);
-				if(!index && tech_regen_armor_always->value)
+				if (!index && tech_regen_armor_always->value)
 					index = combat_armor_index;
 
 				if (index && client->pers.inventory[index] < tech_regen_armor_max->value)
@@ -3393,7 +3393,7 @@ void CTFApplyRegeneration (edict_t *ent)
 	}
 }
 
-qboolean CTFHasRegeneration (edict_t *ent)
+qboolean CTFHasRegeneration(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3407,7 +3407,7 @@ qboolean CTFHasRegeneration (edict_t *ent)
 }
 
 // Knightmare added
-void CTFApplyVampire (edict_t *ent, int dmg)
+void CTFApplyVampire(edict_t *ent, int dmg)
 {
 	static gitem_t *tech = NULL;
 
@@ -3427,7 +3427,7 @@ void CTFApplyVampire (edict_t *ent, int dmg)
 }
 
 // Knightmare added
-void CTFApplyVampireSound (edict_t *ent)
+void CTFApplyVampireSound(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3444,7 +3444,7 @@ void CTFApplyVampireSound (edict_t *ent)
 }
 
 // Knightmare added
-void CTFApplyAmmogen (edict_t *attacker, edict_t *targ)
+void CTFApplyAmmogen(edict_t *attacker, edict_t *targ)
 {
 	static gitem_t *tech = NULL, *pack = NULL;
 
@@ -3468,7 +3468,7 @@ void CTFApplyAmmogen (edict_t *attacker, edict_t *targ)
 }
 
 // Knightmare added
-void CTFApplyAmmogenSound (edict_t *ent)
+void CTFApplyAmmogenSound(edict_t *ent)
 {
 	static gitem_t *tech = NULL;
 
@@ -3537,7 +3537,7 @@ item_priority_t loc_names[] =
 };
 
 
-void CTFSay_Team_Location (edict_t *who, char *buf, int bufSize)
+void CTFSay_Team_Location(edict_t *who, char *buf, int bufSize)
 {
 	edict_t *what = NULL;
 	edict_t *hot = NULL;
@@ -3688,7 +3688,7 @@ void CTFSay_Team_Armor(edict_t *who, char *buf, int bufSize)
 		Q_strncpyz(buf, "no armor", bufSize);
 }
 
-void CTFSay_Team_Health (edict_t *who, char *buf, int bufSize)
+void CTFSay_Team_Health(edict_t *who, char *buf, int bufSize)
 {
 	if (who->health <= 0)
 		Q_strncpyz(buf, "dead", bufSize);
@@ -3696,7 +3696,7 @@ void CTFSay_Team_Health (edict_t *who, char *buf, int bufSize)
 		Com_sprintf(buf, bufSize, "%i health", who->health);
 }
 
-void CTFSay_Team_Tech (edict_t *who, char *buf, int bufSize)
+void CTFSay_Team_Tech(edict_t *who, char *buf, int bufSize)
 {
 	// see if the player has a tech powerup
 	int i = 0;
@@ -3715,7 +3715,7 @@ void CTFSay_Team_Tech (edict_t *who, char *buf, int bufSize)
 	Q_strncpyz(buf, "no powerup", bufSize);
 }
 
-void CTFSay_Team_Weapon (edict_t *who, char *buf, int bufSize)
+void CTFSay_Team_Weapon(edict_t *who, char *buf, int bufSize)
 {
 	if (who->client->pers.weapon)
 		Q_strncpyz(buf, who->client->pers.weapon->pickup_name, bufSize);
@@ -3771,7 +3771,7 @@ void CTFSay_Team_Sight(edict_t *who, char *buf, int bufSize)
 	}
 }
 
-void CTFSay_Team (edict_t *who, char *msg)
+void CTFSay_Team(edict_t *who, char *msg)
 {
 	char outmsg[256];
 	char buf[256];
@@ -3880,7 +3880,7 @@ void misc_ctf_banner_think(edict_t *ent)
 	ent->nextthink = level.time + FRAMETIME;
 }
 
-void SP_misc_ctf_banner (edict_t *ent)
+void SP_misc_ctf_banner(edict_t *ent)
 {
 	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_NOT;
@@ -3904,7 +3904,7 @@ void SP_misc_ctf_banner (edict_t *ent)
 The origin is the bottom of the banner.
 The banner is 124 tall.
 */
-void SP_misc_ctf_small_banner (edict_t *ent)
+void SP_misc_ctf_small_banner(edict_t *ent)
 {
 	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_NOT;
@@ -3926,7 +3926,7 @@ void SP_misc_ctf_small_banner (edict_t *ent)
 
 /*-----------------------------------------------------------------------*/
 
-void SetLevelName (pmenu_t *p)
+void SetLevelName(pmenu_t *p)
 {
 	static char levelname[33];
 
@@ -3945,7 +3945,7 @@ void SetLevelName (pmenu_t *p)
 
 /* ELECTIONS */
 
-qboolean CTFBeginElection (edict_t *ent, elect_t type, char *msg)
+qboolean CTFBeginElection(edict_t *ent, elect_t type, char *msg)
 {
 	if (electpercentage->value == 0)
 	{
@@ -3993,7 +3993,7 @@ qboolean CTFBeginElection (edict_t *ent, elect_t type, char *msg)
 
 void DoRespawn(edict_t *ent);
 
-void CTFResetAllPlayers (void)
+void CTFResetAllPlayers(void)
 {
 	for (int i = 1; i <= maxclients->value; i++)
 	{
@@ -4034,7 +4034,7 @@ void CTFResetAllPlayers (void)
 		ctfgame.matchtime = level.time + matchsetuptime->value * 60;
 }
 
-void CTFAssignGhost (edict_t *ent)
+void CTFAssignGhost(edict_t *ent)
 {
 	int ghost, i;
 
@@ -4067,7 +4067,7 @@ void CTFAssignGhost (edict_t *ent)
 }
 
 // start a match
-void CTFStartMatch (void)
+void CTFStartMatch(void)
 {
 	ctfgame.match = MATCH_GAME;
 	ctfgame.matchtime = level.time + matchtime->value * 60;
@@ -4110,7 +4110,7 @@ void CTFStartMatch (void)
 	}
 }
 
-void CTFEndMatch (void)
+void CTFEndMatch(void)
 {
 	ctfgame.match = MATCH_POST;
 	safe_bprintf(PRINT_CHAT, "MATCH COMPLETED!\n");
@@ -4157,7 +4157,7 @@ void CTFEndMatch (void)
 	EndDMLevel();
 }
 
-qboolean CTFNextMap (void)
+qboolean CTFNextMap(void)
 {
 	if (ctfgame.match == MATCH_POST)
 	{
@@ -4169,7 +4169,7 @@ qboolean CTFNextMap (void)
 	return false;
 }
 
-void CTFWinElection (void)
+void CTFWinElection(void)
 {
 	switch (ctfgame.election)
 	{
@@ -4220,7 +4220,7 @@ void CTFVote(edict_t *ent, qboolean yes)
 
 	ent->client->resp.voted = true;
 
-	if(yes)
+	if (yes)
 	{
 		ctfgame.evotes++;
 		if (ctfgame.evotes == ctfgame.needvotes)
@@ -4235,7 +4235,7 @@ void CTFVote(edict_t *ent, qboolean yes)
 	safe_bprintf(PRINT_CHAT, "Votes: %d  Needed: %d  Time left: %ds\n", ctfgame.evotes, ctfgame.needvotes, (int)(ctfgame.electtime - level.time));
 }
 
-void CTFReady (edict_t *ent)
+void CTFReady(edict_t *ent)
 {
 	if (ent->client->resp.ctf_team == CTF_NOTEAM)
 	{
@@ -4288,7 +4288,7 @@ void CTFReady (edict_t *ent)
 	}
 }
 
-void CTFNotReady (edict_t *ent)
+void CTFNotReady(edict_t *ent)
 {
 	if (ent->client->resp.ctf_team == CTF_NOTEAM)
 	{
@@ -4319,7 +4319,7 @@ void CTFNotReady (edict_t *ent)
 	}
 }
 
-void CTFGhost (edict_t *ent)
+void CTFGhost(edict_t *ent)
 {
 	if (gi.argc() < 2)
 	{
@@ -4366,12 +4366,12 @@ void CTFGhost (edict_t *ent)
 	safe_cprintf(ent, PRINT_HIGH, "Invalid ghost code.\n");
 }
 
-qboolean CTFMatchSetup (void)
+qboolean CTFMatchSetup(void)
 {
 	return (ctfgame.match == MATCH_SETUP || ctfgame.match == MATCH_PREGAME);
 }
 
-qboolean CTFMatchOn (void)
+qboolean CTFMatchOn(void)
 {
 	return (ctfgame.match == MATCH_GAME);
 }
@@ -4379,12 +4379,12 @@ qboolean CTFMatchOn (void)
 
 /*-----------------------------------------------------------------------*/
 
-void CTFJoinTeam1 (edict_t *ent, pmenuhnd_t *p);
-void CTFJoinTeam2 (edict_t *ent, pmenuhnd_t *p);
-void CTFJoinTeam3 (edict_t *ent, pmenuhnd_t *p); // Knightmare added
-void CTFCredits (edict_t *ent, pmenuhnd_t *p);
-void CTFReturnToMain (edict_t *ent, pmenuhnd_t *p);
-void CTFChaseCam (edict_t *ent, pmenuhnd_t *p);
+void CTFJoinTeam1(edict_t *ent, pmenuhnd_t *p);
+void CTFJoinTeam2(edict_t *ent, pmenuhnd_t *p);
+void CTFJoinTeam3(edict_t *ent, pmenuhnd_t *p); // Knightmare added
+void CTFCredits(edict_t *ent, pmenuhnd_t *p);
+void CTFReturnToMain(edict_t *ent, pmenuhnd_t *p);
+void CTFChaseCam(edict_t *ent, pmenuhnd_t *p);
 
 pmenu_t creditsmenu[] =
 {
@@ -4491,7 +4491,7 @@ pmenu_t ttctf_nochasemenu[] =
 	{ "Return to Main Menu", PMENU_ALIGN_LEFT, CTFReturnToMain }
 };
 
-void CTFJoinTeam (edict_t *ent, int desired_team)
+void CTFJoinTeam(edict_t *ent, int desired_team)
 {
 	// Knightmare added
 	if (ent->solid == SOLID_NOT && ctfgame.match > MATCH_SETUP)
@@ -4538,23 +4538,23 @@ void CTFJoinTeam (edict_t *ent, int desired_team)
 	}
 }
 
-void CTFJoinTeam1 (edict_t *ent, pmenuhnd_t *p)
+void CTFJoinTeam1(edict_t *ent, pmenuhnd_t *p)
 {
 	CTFJoinTeam(ent, CTF_TEAM1);
 }
 
-void CTFJoinTeam2 (edict_t *ent, pmenuhnd_t *p)
+void CTFJoinTeam2(edict_t *ent, pmenuhnd_t *p)
 {
 	CTFJoinTeam(ent, CTF_TEAM2);
 }
 
 // Knightmare added
-void CTFJoinTeam3 (edict_t *ent, pmenuhnd_t *p)
+void CTFJoinTeam3(edict_t *ent, pmenuhnd_t *p)
 {
 	CTFJoinTeam(ent, CTF_TEAM3);
 }
 
-void CTFChaseCam (edict_t *ent, pmenuhnd_t *p)
+void CTFChaseCam(edict_t *ent, pmenuhnd_t *p)
 {
 	if (ent->client->chase_target)
 	{
@@ -4598,7 +4598,7 @@ void CTFChaseCam (edict_t *ent, pmenuhnd_t *p)
 	}
 }
 
-void CTFReturnToMain (edict_t *ent, pmenuhnd_t *p)
+void CTFReturnToMain(edict_t *ent, pmenuhnd_t *p)
 {
 	PMenu_Close(ent);
 
@@ -4608,7 +4608,7 @@ void CTFReturnToMain (edict_t *ent, pmenuhnd_t *p)
 		CTFOpenJoinMenu(ent);
 }
 
-void CTFRequestMatch (edict_t *ent, pmenuhnd_t *p)
+void CTFRequestMatch(edict_t *ent, pmenuhnd_t *p)
 {
 	PMenu_Close(ent);
 
@@ -4617,9 +4617,9 @@ void CTFRequestMatch (edict_t *ent, pmenuhnd_t *p)
 	CTFBeginElection(ent, ELECT_MATCH, text);
 }
 
-void DeathmatchScoreboard (edict_t *ent);
+void DeathmatchScoreboard(edict_t *ent);
 
-void CTFShowScores (edict_t *ent, pmenu_t *p)
+void CTFShowScores(edict_t *ent, pmenu_t *p)
 {
 	PMenu_Close(ent);
 
@@ -4628,7 +4628,7 @@ void CTFShowScores (edict_t *ent, pmenu_t *p)
 	DeathmatchScoreboard(ent);
 }
 
-int CTFUpdateJoinMenu (edict_t *ent)
+int CTFUpdateJoinMenu(edict_t *ent)
 {
 	static char team1players[32];
 	static char team2players[32];
@@ -4746,7 +4746,7 @@ int CTFUpdateJoinMenu (edict_t *ent)
 }
 
 // Knightmare added
-int TTCTFUpdateJoinMenu (edict_t *ent)
+int TTCTFUpdateJoinMenu(edict_t *ent)
 {
 	static char team1players[32];
 	static char team2players[32];
@@ -4894,7 +4894,7 @@ int TTCTFUpdateJoinMenu (edict_t *ent)
 	return CTF_TEAM3;
 }
 
-void CTFOpenJoinMenu (edict_t *ent)
+void CTFOpenJoinMenu(edict_t *ent)
 {
 	if (ent->client->textdisplay)
 		Text_Close(ent);
@@ -4914,7 +4914,7 @@ void CTFOpenJoinMenu (edict_t *ent)
 }
 
 // Knightmare added
-void TTCTFOpenJoinMenu (edict_t *ent)
+void TTCTFOpenJoinMenu(edict_t *ent)
 {
 	if (ent->client->textdisplay)
 		Text_Close(ent);
@@ -4935,13 +4935,13 @@ void TTCTFOpenJoinMenu (edict_t *ent)
 	PMenu_Open(ent, ttctf_joinmenu, team, sizeof(ttctf_joinmenu) / sizeof(pmenu_t), NULL);
 }
 
-void CTFCredits (edict_t *ent, pmenuhnd_t *p)
+void CTFCredits(edict_t *ent, pmenuhnd_t *p)
 {
 	PMenu_Close(ent);
 	PMenu_Open(ent, creditsmenu, -1, sizeof(creditsmenu) / sizeof(pmenu_t), NULL);
 }
 
-qboolean CTFStartClient (edict_t *ent)
+qboolean CTFStartClient(edict_t *ent)
 {
 	if (ent->client->resp.ctf_team != CTF_NOTEAM)
 		return false;
@@ -4967,7 +4967,7 @@ qboolean CTFStartClient (edict_t *ent)
 	return false;
 }
 
-void CTFObserver (edict_t *ent)
+void CTFObserver(edict_t *ent)
 {
 	char userinfo[MAX_INFO_STRING];
 
@@ -4997,7 +4997,7 @@ void CTFObserver (edict_t *ent)
 		CTFOpenJoinMenu(ent);
 }
 
-qboolean CTFInMatch (void)
+qboolean CTFInMatch(void)
 {
 	return (ctfgame.match > MATCH_NONE);
 }
@@ -5223,7 +5223,7 @@ void old_teleporter_touch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 /*QUAKED trigger_teleport (0.5 0.5 0.5) ?
 Players touching this will be teleported
 */
-void SP_trigger_teleport (edict_t *ent)
+void SP_trigger_teleport(edict_t *ent)
 {
 	if (!ent->target)
 	{
@@ -5253,7 +5253,7 @@ void SP_trigger_teleport (edict_t *ent)
 /*QUAKED info_teleport_destination (0.5 0.5 0.5) (-16 -16 -24) (16 16 32)
 Point trigger_teleports at these.
 */
-void SP_info_teleport_destination (edict_t *ent)
+void SP_info_teleport_destination(edict_t *ent)
 {
 	ent->s.origin[2] += 16;
 }
@@ -5275,8 +5275,8 @@ typedef struct admin_settings_s
 
 #define SETMENU_SIZE (7 + 5)
 
-void CTFAdmin_UpdateSettings (edict_t *ent, pmenuhnd_t *setmenu);
-void CTFOpenAdminMenu (edict_t *ent);
+void CTFAdmin_UpdateSettings(edict_t *ent, pmenuhnd_t *setmenu);
+void CTFOpenAdminMenu(edict_t *ent);
 
 void CTFAdmin_SettingsApply(edict_t *ent, pmenuhnd_t *p)
 {

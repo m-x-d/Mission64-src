@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //extern cvar_t	*maxclients;
 
 qboolean ai_checkattack(edict_t *self, float dist);
-//edict_t *medic_FindDeadMonster (edict_t *self);
+//edict_t *medic_FindDeadMonster(edict_t *self);
 
 qboolean	enemy_vis;
 qboolean	enemy_infront;
@@ -43,7 +43,7 @@ If all clients are either dead or in notarget, sight_client will be null.
 In coop games, sight_client will cycle between the clients.
 =================
 */
-void AI_SetSightClient (void)
+void AI_SetSightClient(void)
 {
 	int start;
 
@@ -97,7 +97,7 @@ Move the specified distance at current facing.
 This replaces the QC functions: ai_forward, ai_back, ai_pain, and ai_painforward
 ==============
 */
-void ai_move (edict_t *self, float dist)
+void ai_move(edict_t *self, float dist)
 {
 	M_walkmove(self, self->s.angles[YAW], dist);
 }
@@ -111,7 +111,7 @@ Used for standing around and looking for players.
 Distance is for slight position adjustments needed by the animations.
 ==============
 */
-void ai_stand (edict_t *self, float dist)
+void ai_stand(edict_t *self, float dist)
 {
 	if (dist)
 		M_walkmove(self, self->s.angles[YAW], dist);
@@ -247,7 +247,7 @@ void ai_stand (edict_t *self, float dist)
 }
 
 
-void ai_walk (edict_t *self, float dist)
+void ai_walk(edict_t *self, float dist)
 {
 	// Lazarus: If we're following the leader and have no enemy, run to him
 	if (!self->enemy && (self->monsterinfo.aiflags & AI_FOLLOW_LEADER))
@@ -285,7 +285,7 @@ Turns towards target and advances
 Use this call with a distnace of 0 to replace ai_face
 ==============
 */
-void ai_charge (edict_t *self, float dist)
+void ai_charge(edict_t *self, float dist)
 {
 	// Lazarus: Check for existence and validity of enemy.
 	// This is normally not necessary, but target_anger making monster mad at a static object (a pickup, for example) previously resulted in weirdness here
@@ -326,7 +326,7 @@ don't move, but turn towards ideal_yaw
 Distance is for slight position adjustments needed by the animations
 =============
 */
-void ai_turn (edict_t *self, float dist)
+void ai_turn(edict_t *self, float dist)
 {
 	if (dist)
 		M_walkmove(self, self->s.angles[YAW], dist);
@@ -490,7 +490,7 @@ canReach
 similar to visible, but uses a different mask
 =============
 */
-qboolean canReach (edict_t *self, edict_t *other)
+qboolean canReach(edict_t *self, edict_t *other)
 {
 	vec3_t	spot1;
 	vec3_t	spot2;
@@ -932,7 +932,7 @@ qboolean FacingIdeal(edict_t *self)
 
 //=============================================================================
 
-qboolean M_CheckAttack (edict_t *self)
+qboolean M_CheckAttack(edict_t *self)
 {
 	vec3_t spot1, spot2;
 
@@ -1283,7 +1283,7 @@ ai_run
 The monster has an enemy it is trying to kill
 =============
 */
-void ai_run (edict_t *self, float dist)
+void ai_run(edict_t *self, float dist)
 {
 	vec3_t		v;
 	edict_t		*marker;
@@ -1635,7 +1635,7 @@ void ai_run (edict_t *self, float dist)
 }
 
 static int chase_angle[] = { 270, 450, 225, 495, 540 };
-qboolean ai_chicken (edict_t *self, edict_t *badguy)
+qboolean ai_chicken(edict_t *self, edict_t *badguy)
 {
 	vec3_t	dir, best_dir, end, forward;
 	vec3_t	mins, maxs;

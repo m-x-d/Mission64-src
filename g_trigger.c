@@ -42,7 +42,7 @@ void InitTrigger(edict_t *self)
 
 
 // the wait time has passed, so set back up for another activation
-void multi_wait (edict_t *ent)
+void multi_wait(edict_t *ent)
 {
 	ent->nextthink = 0;
 }
@@ -71,13 +71,13 @@ void multi_trigger(edict_t *ent)
 	}
 }
 
-void Use_Multi (edict_t *ent, edict_t *other, edict_t *activator)
+void Use_Multi(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	ent->activator = activator;
 	multi_trigger(ent);
 }
 
-void Touch_Multi (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other->client || (other->flags & FL_ROBOT))
 	{
@@ -121,14 +121,14 @@ sounds
 4)
 set "message" to text string
 */
-void trigger_enable (edict_t *self, edict_t *other, edict_t *activator)
+void trigger_enable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
 	gi.linkentity(self);
 }
 
-void SP_trigger_multiple (edict_t *ent)
+void SP_trigger_multiple(edict_t *ent)
 {
 	if (ent->sounds == 1)
 		ent->noise_index = gi.soundindex("misc/secret.wav");
@@ -220,7 +220,7 @@ void trigger_relay_autotrigger(edict_t *self)
 	trigger_relay_use(self, NULL, self->activator);
 }
 
-void SP_trigger_relay (edict_t *self)
+void SP_trigger_relay(edict_t *self)
 {
 // DWH - gives trigger_relay same message-displaying, sound-playing capabilities as trigger_multiple and trigger_once
 	if (self->sounds == 1)
@@ -355,7 +355,7 @@ void trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_trigger_key (edict_t *self)
+void SP_trigger_key(edict_t *self)
 {
 	if (!st.item)
 	{
@@ -438,7 +438,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_trigger_counter (edict_t *self)
+void SP_trigger_counter(edict_t *self)
 {
 	self->wait = -1;
 	if (!self->count)
@@ -459,7 +459,7 @@ trigger_always
 /*QUAKED trigger_always (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This trigger will always fire.  It is activated by the world.
 */
-void SP_trigger_always (edict_t *ent)
+void SP_trigger_always(edict_t *ent)
 {
 	// we must have some delay to make sure our use targets are present
 	ent->delay = max(0.2, ent->delay);
@@ -525,7 +525,7 @@ void trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 Pushes the player
 "speed"		defaults to 1000
 */
-void SP_trigger_push (edict_t *self)
+void SP_trigger_push(edict_t *self)
 {
 	InitTrigger(self);
 
@@ -572,9 +572,9 @@ It does dmg points of damage each server frame
 #define SF_HURT_NOGIB          32  // Lazarus: won't gib entity
 #define SF_HURT_ENVIRONMENT    64  // Lazarus: environment suit protects from damage
 
-void hurt_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void hurt_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
-void hurt_use (edict_t *self, edict_t *other, edict_t *activator)
+void hurt_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->solid == SOLID_NOT)
 	{
@@ -653,7 +653,7 @@ void hurt_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	}
 }
 
-void SP_trigger_hurt (edict_t *self)
+void SP_trigger_hurt(edict_t *self)
 {
 	InitTrigger(self);
 
@@ -697,7 +697,7 @@ void trigger_gravity_touch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 	other->gravity = self->gravity;
 }
 
-void SP_trigger_gravity (edict_t *self)
+void SP_trigger_gravity(edict_t *self)
 {
 	if (st.gravity == 0)
 	{
@@ -742,7 +742,7 @@ void trigger_monsterjump_touch(edict_t *self, edict_t *other, cplane_t *plane, c
 	other->velocity[2] = self->movedir[2];
 }
 
-void SP_trigger_monsterjump (edict_t *self)
+void SP_trigger_monsterjump(edict_t *self)
 {
 	if (!self->speed)
 		self->speed = 200;
@@ -774,9 +774,9 @@ sounds
 set "message" to text string
 */
 
-void tremor_trigger_enable (edict_t *self, edict_t *other, edict_t *activator);
+void tremor_trigger_enable(edict_t *self, edict_t *other, edict_t *activator);
 
-void Use_tremor_Multi (edict_t *self, edict_t *other, edict_t *activator)
+void Use_tremor_Multi(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->count--;
 	if (!self->count)
@@ -792,14 +792,14 @@ void Use_tremor_Multi (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void tremor_trigger_enable (edict_t *self, edict_t *other, edict_t *activator)
+void tremor_trigger_enable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_tremor_Multi;
 	gi.linkentity(self);
 }
 
-void SP_tremor_trigger_multiple (edict_t *ent)
+void SP_tremor_trigger_multiple(edict_t *ent)
 {
 	if (ent->sounds == 1)
 		ent->noise_index = gi.soundindex("misc/secret.wav");
@@ -850,7 +850,7 @@ void trigger_mass_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	}
 }
 
-void SP_trigger_mass (edict_t *self)
+void SP_trigger_mass(edict_t *self)
 {
 	// Fires its target if touched by an entity weighing at least self->mass
 	if (self->sounds == 1)
@@ -931,7 +931,7 @@ void trigger_inside_think(edict_t *self)
 	gi.linkentity(self);
 }
 
-void SP_trigger_inside (edict_t *self)
+void SP_trigger_inside(edict_t *self)
 {
 	vec3_t v;
 	VectorMA(self->mins, 0.5f, self->size, v);
@@ -1038,7 +1038,7 @@ void trigger_scales_think(edict_t *self)
 	gi.linkentity(self);
 }
 
-void SP_trigger_scales (edict_t *self)
+void SP_trigger_scales(edict_t *self)
 {
 	vec3_t v;
 	VectorMA(self->mins, 0.5f, self->size, v);
@@ -1068,14 +1068,14 @@ void SP_trigger_scales (edict_t *self)
 //                helps lower the total brush model count, which in turn helps head off
 //                Index Overflow errors.
 //======================================================================================
-void trigger_bbox_reset (edict_t *self)
+void trigger_bbox_reset(edict_t *self)
 {
 	self->takedamage = DAMAGE_YES;
 	self->health = self->max_health;
 	gi.linkentity(self);
 }
 
-void trigger_bbox_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void trigger_bbox_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	self->activator = attacker;
 	self->takedamage = DAMAGE_NO;
@@ -1168,7 +1168,7 @@ void trigger_bbox_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_trigger_bbox (edict_t *ent)
+void SP_trigger_bbox(edict_t *ent)
 {
 	if (ent->sounds == 1)
 		ent->noise_index = gi.soundindex("misc/secret.wav");
@@ -1329,9 +1329,9 @@ void trigger_look_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	}
 }
 
-void trigger_look_enable (edict_t *self, edict_t *other, edict_t *activator);
+void trigger_look_enable(edict_t *self, edict_t *other, edict_t *activator);
 
-void trigger_look_disable (edict_t *self, edict_t *other, edict_t *activator)
+void trigger_look_disable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->count--;
 	if (!self->count)
@@ -1347,14 +1347,14 @@ void trigger_look_disable (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void trigger_look_enable (edict_t *self, edict_t *other, edict_t *activator)
+void trigger_look_enable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = trigger_look_disable;
 	gi.linkentity(self);
 }
 
-void SP_trigger_look (edict_t *self)
+void SP_trigger_look(edict_t *self)
 {
 	if (self->sounds == 1)
 		self->noise_index = gi.soundindex("misc/secret.wav");
@@ -1417,23 +1417,23 @@ void trigger_speaker_think(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void trigger_speaker_enable (edict_t *self, edict_t *other, edict_t *activator);
+void trigger_speaker_enable(edict_t *self, edict_t *other, edict_t *activator);
 
-void trigger_speaker_disable (edict_t *self, edict_t *other, edict_t *activator)
+void trigger_speaker_disable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->use = trigger_speaker_enable;
 	self->think = NULL;
 	self->nextthink = 0;
 }
 
-void trigger_speaker_enable (edict_t *self, edict_t *other, edict_t *activator)
+void trigger_speaker_enable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->use = trigger_speaker_disable;
 	self->think = trigger_speaker_think;
 	self->think(self);
 }
 
-void SP_trigger_speaker (edict_t *self)
+void SP_trigger_speaker(edict_t *self)
 {
 	char buffer[MAX_QPATH];
 
@@ -1475,7 +1475,7 @@ void SP_trigger_speaker (edict_t *self)
 //==============================================================================
 void WriteEdict (FILE *f, edict_t *ent);
 
-qboolean HasSpawnFunction (edict_t *ent)
+qboolean HasSpawnFunction(edict_t *ent)
 {
 	gitem_t	*item;
 	int		i;
@@ -1624,12 +1624,12 @@ entlist_t DoNotMove[] =
 	{NULL}
 };
 
-void trans_ent_filename (char *filename)
+void trans_ent_filename(char *filename)
 {
 	GameDirRelativePath("save/trans.ent", filename);
 }
 
-int trigger_transition_ents (edict_t *changelevel, edict_t *self)
+int trigger_transition_ents(edict_t *changelevel, edict_t *self)
 {
 	char		t_file[MAX_QPATH];
 	int			total = 0;
@@ -1793,7 +1793,7 @@ int trigger_transition_ents (edict_t *changelevel, edict_t *self)
 	return total;
 }
 
-void SP_trigger_transition (edict_t *self)
+void SP_trigger_transition(edict_t *self)
 {
 	if (!self->targetname)
 	{
@@ -1827,7 +1827,7 @@ Remove - trigger removes disguise
 #define TRIGGER_DISGUISE_START_ON	2
 #define TRIGGER_DISGUISE_REMOVE		4
 
-void touch_trigger_disguise (edict_t *trigger, edict_t *other, cplane_t *plane, csurface_t *surf)
+void touch_trigger_disguise(edict_t *trigger, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!other->client) // this only works for players
 		return;
@@ -1845,7 +1845,7 @@ void touch_trigger_disguise (edict_t *trigger, edict_t *other, cplane_t *plane, 
 		other->flags |= FL_DISGUISED;
 }
 
-void use_trigger_disguise (edict_t *trigger, edict_t *other, edict_t *activator)
+void use_trigger_disguise(edict_t *trigger, edict_t *other, edict_t *activator)
 {
 	if (trigger->solid == SOLID_TRIGGER)
 		trigger->solid = SOLID_NOT;
@@ -1855,7 +1855,7 @@ void use_trigger_disguise (edict_t *trigger, edict_t *other, edict_t *activator)
 	gi.linkentity(trigger);
 }
 
-void SP_trigger_disguise (edict_t *trigger)
+void SP_trigger_disguise(edict_t *trigger)
 {
 	trigger->movetype = MOVETYPE_NONE;
 	trigger->svflags |= SVF_NOCLIENT;
@@ -1882,15 +1882,15 @@ void SP_trigger_disguise (edict_t *trigger)
 
 ==============================================================================*/
 
-void trigger_switch_usetargets (edict_t *ent, edict_t *activator);
+void trigger_switch_usetargets(edict_t *ent, edict_t *activator);
 
-void trigger_switch_delay (edict_t *ent)
+void trigger_switch_delay(edict_t *ent)
 {
 	trigger_switch_usetargets(ent, ent->activator);
 	G_FreeEdict(ent);
 }
 
-void trigger_switch_usetargets (edict_t *ent, edict_t *activator)
+void trigger_switch_usetargets(edict_t *ent, edict_t *activator)
 {
 	// Check for a delay
 	if (ent->delay)
@@ -2070,7 +2070,7 @@ void trigger_switch_usetargets (edict_t *ent, edict_t *activator)
 	}
 }
 
-void trigger_switch (edict_t *ent)
+void trigger_switch(edict_t *ent)
 {
 	if (ent->nextthink) // Already been triggered
 		return;
@@ -2091,7 +2091,7 @@ void trigger_switch (edict_t *ent)
 	}
 }
 
-void touch_trigger_switch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void touch_trigger_switch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other->client || (other->flags & FL_ROBOT))
 	{
@@ -2124,13 +2124,13 @@ void touch_trigger_switch (edict_t *self, edict_t *other, cplane_t *plane, csurf
 	trigger_switch(self);
 }
 
-void use_trigger_switch (edict_t *ent, edict_t *other, edict_t *activator)
+void use_trigger_switch(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	ent->activator = activator;
 	trigger_switch(ent);
 }
 
-void SP_trigger_switch (edict_t *ent)
+void SP_trigger_switch(edict_t *ent)
 {
 	ent->class_id = ENTITY_TRIGGER_SWITCH;
 

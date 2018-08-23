@@ -191,7 +191,7 @@ DeathmatchScoreboardMessage
 
 ==================
 */
-void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
+void DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 {
 	char	entry[1024];
 	char	string[1400];
@@ -302,7 +302,7 @@ Draw instead of help message.
 Note that it isn't that hard to overflow the 1400 byte message limit!
 ==================
 */
-void DeathmatchScoreboard (edict_t *ent)
+void DeathmatchScoreboard(edict_t *ent)
 {
 	DeathmatchScoreboardMessage(ent, ent->enemy);
 	gi.unicast(ent, true);
@@ -348,7 +348,7 @@ HelpComputer
 Draw help computer.
 ==================
 */
-void HelpComputer (edict_t *ent)
+void HelpComputer(edict_t *ent)
 {
 	char	string[1024];
 	char	*sk;
@@ -424,7 +424,7 @@ void Cmd_Help_f(edict_t *ent)
 
 
 //=======================================================================
-void WhatIsIt (edict_t *ent)
+void WhatIsIt(edict_t *ent)
 {
 	edict_t *touch[MAX_EDICTS];
 	vec3_t dir, end, entp, forward, mins, maxs, start, viewp;
@@ -499,7 +499,7 @@ G_SetStats
 #define STAT_SPEED_CTF  31
 
 extern void WhatsIt(edict_t *ent);
-void G_SetStats (edict_t *ent)
+void G_SetStats(edict_t *ent)
 {
 	//
 	// health
@@ -834,7 +834,7 @@ void G_SetStats (edict_t *ent)
 G_CheckChaseStats
 ===============
 */
-void G_CheckChaseStats (edict_t *ent)
+void G_CheckChaseStats(edict_t *ent)
 {
 	for (int i = 1; i <= maxclients->value; i++)
 	{
@@ -852,7 +852,7 @@ void G_CheckChaseStats (edict_t *ent)
 G_SetSpectatorStats
 ===============
 */
-void G_SetSpectatorStats (edict_t *ent)
+void G_SetSpectatorStats(edict_t *ent)
 {
 	gclient_t *cl = ent->client;
 

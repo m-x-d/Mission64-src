@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
-void InitiallyDead (edict_t *self);
+void InitiallyDead(edict_t *self);
 
 // Lazarus: If worldspawn CORPSE_SINK effects flag is set, monsters/actors fade out and sink into the floor 30 seconds after death
 
 #define SINKAMT			1
-void FadeSink (edict_t *ent)
+void FadeSink(edict_t *ent)
 {
 	ent->count++;
 	ent->s.origin[2] -= SINKAMT;
@@ -44,7 +44,7 @@ void FadeSink (edict_t *ent)
 	ent->nextthink = level.time + FRAMETIME;
 }
 
-void FadeDieSink (edict_t *ent)
+void FadeDieSink(edict_t *ent)
 {
 	ent->takedamage = DAMAGE_NO;	// can't gib 'em once they start sinking
 	ent->s.effects &= ~EF_FLIES;
@@ -171,7 +171,7 @@ void monster_fire_bullet(edict_t *self, vec3_t start, vec3_t dir, int damage, in
 	gi.multicast(start, MULTICAST_PVS);
 }
 
-void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype)
+void monster_fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int flashtype)
 {
 	fire_shotgun (self, start, aimdir, damage, kick, hspread, vspread, count, MOD_UNKNOWN);
 
@@ -211,7 +211,7 @@ void monster_fire_rocket(edict_t *self, vec3_t start, vec3_t dir, int damage, in
 	gi.multicast(start, MULTICAST_PVS);
 }	
 
-void monster_fire_railgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype)
+void monster_fire_railgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int flashtype)
 {
 	fire_rail(self, start, aimdir, damage, kick);
 
@@ -237,13 +237,13 @@ void monster_fire_bfg(edict_t *self, vec3_t start, vec3_t aimdir, int damage, in
 // Monster utility functions
 //
 
-void M_FliesOff (edict_t *self)
+void M_FliesOff(edict_t *self)
 {
 	self->s.effects &= ~EF_FLIES;
 	self->s.sound = 0;
 }
 
-void M_FliesOn (edict_t *self)
+void M_FliesOn(edict_t *self)
 {
 	if (self->waterlevel)
 		return;
@@ -253,7 +253,7 @@ void M_FliesOn (edict_t *self)
 	self->nextthink = level.time + 60;
 }
 
-void M_FlyCheck (edict_t *self)
+void M_FlyCheck(edict_t *self)
 {
 	//Knightmare- keep running lava check
 	self->postthink = deadmonster_think;
@@ -398,7 +398,7 @@ void M_CatagorizePosition(edict_t *ent)
 }
 
 
-void M_WorldEffects (edict_t *ent)
+void M_WorldEffects(edict_t *ent)
 {
 	int		dmg;
 
@@ -518,7 +518,7 @@ void M_droptofloor(edict_t *ent)
 }
 
 
-void M_SetEffects (edict_t *ent)
+void M_SetEffects(edict_t *ent)
 {
 	ent->s.effects &= ~(EF_COLOR_SHELL|EF_POWERSCREEN);
 	ent->s.renderfx &= ~(RF_SHELL_RED|RF_SHELL_GREEN|RF_SHELL_BLUE);
@@ -706,7 +706,7 @@ void monster_use(edict_t *self, edict_t *other, edict_t *activator)
 void monster_start_go(edict_t *self);
 
 
-void monster_triggered_spawn (edict_t *self)
+void monster_triggered_spawn(edict_t *self)
 {
 	self->s.origin[2] += 1;
 	KillBox(self);
@@ -1097,7 +1097,7 @@ void swimmonster_start(edict_t *self)
 //===============================================================
 // Following functions unique to Lazarus
 
-void InitiallyDead (edict_t *self)
+void InitiallyDead(edict_t *self)
 {
 	if (self->max_health > 0) return;
 
@@ -1133,7 +1133,7 @@ void InitiallyDead (edict_t *self)
 
 #include "pak.h"
 
-int PatchMonsterModel (char *modelname)
+int PatchMonsterModel(char *modelname)
 {
 	char		skins[MAX_SKINS][MAX_SKINNAME];	// skin entries
 	char		infilename[MAX_OSPATH];
@@ -1436,7 +1436,7 @@ void HintTestNext(edict_t *self, edict_t *hint)
 	}
 }
 
-int HintTestStart (edict_t *self)
+int HintTestStart(edict_t *self)
 {
 	edict_t	*hint = NULL;
 	vec3_t	dir;

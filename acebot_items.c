@@ -162,7 +162,7 @@ qboolean ACEIT_IsVisible(edict_t *self, vec3_t goal)
 ///////////////////////////////////////////////////////////////////////
 //  Weapon changing support
 ///////////////////////////////////////////////////////////////////////
-qboolean ACEIT_ChangeWeapon (edict_t *ent, gitem_t *item)
+qboolean ACEIT_ChangeWeapon(edict_t *ent, gitem_t *item)
 {
 	int			ammo_index;
 	gitem_t		*ammo_item;

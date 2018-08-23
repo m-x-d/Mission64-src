@@ -108,7 +108,7 @@ typedef enum {false, true}	qboolean;
 // from Quake3 source
 #ifdef _MSC_VER	// _WIN32
 //#define Q_vsnprintf _vsnprintf
-__inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list Args) {
+__inline int Q_vsnprintf(char *Dest, size_t Count, const char *Format, va_list Args) {
 	int ret = _vsnprintf(Dest, Count, Format, Args);
 	Dest[Count-1] = 0;	// null terminate
 	return ret;
@@ -224,7 +224,7 @@ __inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list 
 #define	ERR_DISCONNECT		2		// don't kill server
 
 #define	PRINT_ALL			0
-#define PRINT_DEVELOPER		      1		// only print when "developer 1"
+#define PRINT_DEVELOPER		1		// only print when "developer 1"
 #define PRINT_ALERT			2		
 
 
@@ -240,8 +240,8 @@ MULTICAST_PVS_R
 } multicast_t;
 
 short	ShortSwap (short l);
-int		LongSwap (int l);
-float	FloatSwap (float f);
+int		LongSwap(int l);
+float	FloatSwap(float f);
 
 /*
 ==============================================================
@@ -290,7 +290,7 @@ extern vec4_t vec4_origin;
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
 // microsoft's fabs seems to be ungodly slow...
-//float Q_fabs (float f);
+//float Q_fabs(float f);
 //#define	fabs(f) Q_fabs(f)
 #if !defined C_ONLY && !defined __linux__ && !defined __sgi
 extern long Q_ftol( float f );
@@ -329,36 +329,36 @@ void _VectorSubtract(const vec3_t veca, const vec3_t vecb, vec3_t out);
 void _VectorAdd(const vec3_t veca, const vec3_t vecb, vec3_t out);
 void _VectorCopy(const vec3_t in, vec3_t out);
 
-void ClearBounds (vec3_t mins, vec3_t maxs);
-void AddPointToBounds (const vec3_t v, vec3_t mins, vec3_t maxs);
+void ClearBounds(vec3_t mins, vec3_t maxs);
+void AddPointToBounds(const vec3_t v, vec3_t mins, vec3_t maxs);
 int VectorCompare(const vec3_t v1, const vec3_t v2);
 vec_t VectorLength(const vec3_t v);
-void CrossProduct (const vec3_t v1, const vec3_t v2, vec3_t cross);
+void CrossProduct(const vec3_t v1, const vec3_t v2, vec3_t cross);
 vec_t VectorNormalize(vec3_t v);		// returns vector length
-vec_t VectorNormalize2 (const vec3_t v, vec3_t out);
-void VectorNormalizeFast (vec3_t v);	// From Q2E
-void VectorInverse (vec3_t v);
+vec_t VectorNormalize2(const vec3_t v, vec3_t out);
+void VectorNormalizeFast(vec3_t v);	// From Q2E
+void VectorInverse(vec3_t v);
 void VectorScale(const vec3_t in, vec_t scale, vec3_t out);
 int Q_log2(int val);
-float Q_rsqrt (float in);	// From Q2E
+float Q_rsqrt(float in);	// From Q2E
 
 // From Q2E
-void VectorRotate (const vec3_t v, const vec3_t matrix[3], vec3_t out);
-void AnglesToAxis (const vec3_t angles, vec3_t axis[3]);
-void AxisClear (vec3_t axis[3]);
-void AxisCopy (const vec3_t in[3], vec3_t out[3]);
-qboolean AxisCompare (const vec3_t axis1[3], const vec3_t axis2[3]);
+void VectorRotate(const vec3_t v, const vec3_t matrix[3], vec3_t out);
+void AnglesToAxis(const vec3_t angles, vec3_t axis[3]);
+void AxisClear(vec3_t axis[3]);
+void AxisCopy(const vec3_t in[3], vec3_t out[3]);
+qboolean AxisCompare(const vec3_t axis1[3], const vec3_t axis2[3]);
 
 
-void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
-void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
+void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
+void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4]);
 
 void AngleVectors(const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-void MakeNormalVectors (vec3_t forward, vec3_t right, vec3_t up);
-void VecToAngleRolled (vec3_t value1, float angleyaw, vec3_t angles);
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *plane);
+void MakeNormalVectors(vec3_t forward, vec3_t right, vec3_t up);
+void VecToAngleRolled(vec3_t value1, float angleyaw, vec3_t angles);
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *plane);
 float	anglemod(float a);
-float LerpAngle (float a2, float a1, float frac);
+float LerpAngle(float a2, float a1, float frac);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
 	(((p)->type < 3)?						\
@@ -383,19 +383,19 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 
 //=============================================
 
-char *COM_SkipPath (char *pathname);
-void COM_StripExtension (char *in, char *out);
-void COM_FileBase (char *in, char *out);
-void COM_FilePath (char *in, char *out);
-char *COM_FileExtension (char *in);
-void COM_DefaultExtension (char *path, char *extension);
+char *COM_SkipPath(char *pathname);
+void COM_StripExtension(char *in, char *out);
+void COM_FileBase(char *in, char *out);
+void COM_FilePath(char *in, char *out);
+char *COM_FileExtension(char *in);
+void COM_DefaultExtension(char *path, char *extension);
 
-char *COM_Parse (char **data_p);
+char *COM_Parse(char **data_p);
 // data is an in/out parm, returns a parsed out token
-char *COM_ParseExt (char **data_p, qboolean allowNewLines);
+char *COM_ParseExt(char **data_p, qboolean allowNewLines);
 
-void Com_sprintf (char *dest, int size, char *fmt, ...);
-long Com_HashFileName (const char *fname, int hashSize, qboolean sized);
+void Com_sprintf(char *dest, int size, char *fmt, ...);
+long Com_HashFileName(const char *fname, int hashSize, qboolean sized);
 
 void Com_PageInMemory (const byte *buffer, int size);
 
@@ -434,28 +434,28 @@ void Com_PageInMemory (const byte *buffer, int size);
 //=============================================
 
 // portable case insensitive compare
-int Q_stricmp (char *s1, char *s2);
-int Q_strcasecmp (char *s1, char *s2);
-int Q_strncasecmp (char *s1, char *s2, int n);
+int Q_stricmp(char *s1, char *s2);
+int Q_strcasecmp(char *s1, char *s2);
+int Q_strncasecmp(char *s1, char *s2, int n);
 
-void Q_strncpyz (char *dst, const char *src, int dstSize);
-void Q_strncatz (char *dst, const char *src, int dstSize);
-void Q_snprintfz (char *dst, int dstSize, const char *fmt, ...);
-char *Q_strlwr (char *string);
-char *Q_strupr (char *string);
+void Q_strncpyz(char *dst, const char *src, int dstSize);
+void Q_strncatz(char *dst, const char *src, int dstSize);
+void Q_snprintfz(char *dst, int dstSize, const char *fmt, ...);
+char *Q_strlwr(char *string);
+char *Q_strupr(char *string);
 
 //=============================================
 
 short	BigShort(short l);
 short	LittleShort(short l);
-int		BigLong (int l);
-int		LittleLong (int l);
+int		BigLong(int l);
+int		LittleLong(int l);
 qint64	BigLong64 (qint64 l);
 qint64	LittleLong64 (qint64 l);
-float	BigFloat (float l);
-float	LittleFloat (float l);
+float	BigFloat(float l);
+float	LittleFloat(float l);
 
-void	Swap_Init (void);
+void	Swap_Init(void);
 char	*va(char *format, ...);
 
 //=============================================
@@ -467,10 +467,10 @@ char	*va(char *format, ...);
 #define	MAX_INFO_VALUE		64
 #define	MAX_INFO_STRING		512
 
-char *Info_ValueForKey (char *s, char *key);
-void Info_RemoveKey (char *s, char *key);
-void Info_SetValueForKey (char *s, char *key, char *value);
-qboolean Info_Validate (char *s);
+char *Info_ValueForKey(char *s, char *key);
+void Info_RemoveKey(char *s, char *key);
+void Info_SetValueForKey(char *s, char *key, char *value);
+qboolean Info_Validate(char *s);
 
 /*
 ==============================================================
@@ -482,36 +482,36 @@ SYSTEM SPECIFIC
 
 extern	int	curtime;		// time returned by last Sys_Milliseconds
 
-int		Sys_Milliseconds (void);
-void	Sys_Mkdir (char *path);
-void	Sys_Rmdir (char *path);
+int		Sys_Milliseconds(void);
+void	Sys_Mkdir(char *path);
+void	Sys_Rmdir(char *path);
 
 // large block stack allocation routines
-void	*Hunk_Begin (int maxsize);
-void	*Hunk_Alloc (int size);
-void	Hunk_Free (void *buf);
-int		Hunk_End (void);
+void	*Hunk_Begin(int maxsize);
+void	*Hunk_Alloc(int size);
+void	Hunk_Free(void *buf);
+int		Hunk_End(void);
 
 // directory searching
-#define SFF_ARCH    0x01
-#define SFF_HIDDEN  0x02
-#define SFF_RDONLY  0x04
-#define SFF_SUBDIR  0x08
-#define SFF_SYSTEM  0x10
+#define SFF_ARCH	0x01
+#define SFF_HIDDEN	0x02
+#define SFF_RDONLY	0x04
+#define SFF_SUBDIR	0x08
+#define SFF_SYSTEM	0x10
 
 /*
 ** pass in an attribute mask of things you wish to REJECT
 */
-char	*Sys_FindFirst (char *path, unsigned musthave, unsigned canthave );
-char	*Sys_FindNext ( unsigned musthave, unsigned canthave );
-void	Sys_FindClose (void);
+char	*Sys_FindFirst(char *path, unsigned musthave, unsigned canthave);
+char	*Sys_FindNext(unsigned musthave, unsigned canthave);
+void	Sys_FindClose(void);
 
-void	Sys_Sleep (int msec);
-unsigned	Sys_TickCount (void);
+void	Sys_Sleep(int msec);
+unsigned	Sys_TickCount(void);
 
 // this is only here so the functions in q_shared.c and q_shwin.c can link
-void Sys_Error (char *error, ...);
-void Com_Printf (char *msg, ...);
+void Sys_Error(char *error, ...);
+void Com_Printf(char *msg, ...);
 
 
 /*
@@ -817,8 +817,8 @@ typedef struct
 	int			waterlevel;
 
 	// callbacks to test the world
-	trace_t		(*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-	int			(*pointcontents) (vec3_t point);
+	trace_t		(*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+	int			(*pointcontents)(vec3_t point);
 } pmove_t;
 
 
@@ -1201,7 +1201,7 @@ typedef struct
 #define	MZ2_SUPERTANK_GRENADE_1			211
 #define	MZ2_SUPERTANK_GRENADE_2			212
 
-extern	vec3_t monster_flash_offset [];
+extern vec3_t monster_flash_offset[];
 
 
 // temp entity events

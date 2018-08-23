@@ -31,7 +31,7 @@ void G_ProjectSource(const vec3_t point, const vec3_t distance, const vec3_t for
 	result[2] = point[2] + forward[2] * distance[0] + right[2] * distance[1] + distance[2];
 }
 
-void G_ProjectSource2 (const vec3_t point, const vec3_t distance, const vec3_t forward, const vec3_t right, const vec3_t up, vec3_t result)
+void G_ProjectSource2(const vec3_t point, const vec3_t distance, const vec3_t forward, const vec3_t right, const vec3_t up, vec3_t result)
 {
 	result[0] = point[0] + forward[0] * distance[0] + right[0] * distance[1] + up[0] * distance[2];
 	result[1] = point[1] + forward[1] * distance[0] + right[1] * distance[1] + up[1] * distance[2];
@@ -78,7 +78,7 @@ findradius
 Returns entities that have origins within a spherical area
 =================
 */
-edict_t *findradius (edict_t *from, const vec3_t org, float rad)
+edict_t *findradius(edict_t *from, const vec3_t org, float rad)
 {
 	vec3_t	eorg;
 
@@ -151,7 +151,7 @@ edict_t *G_PickTarget(char *targetname)
 
 
 
-void Think_Delay (edict_t *ent)
+void Think_Delay(edict_t *ent)
 {
 	G_UseTargets(ent, ent->activator);
 	G_FreeEdict(ent);
@@ -278,7 +278,7 @@ TempVector
 This is just a convenience function for making temporary vectors for function calls
 =============
 */
-float *tv (float x, float y, float z)
+float *tv(float x, float y, float z)
 {
 	static	int		index;
 	static	vec3_t	vecs[8];
@@ -302,7 +302,7 @@ VectorToString
 This is just a convenience function for printing vectors
 =============
 */
-char *vtos (vec3_t v)
+char *vtos(vec3_t v)
 {
 	static	int		index;
 	static	char	str[8][32];
@@ -322,7 +322,7 @@ vec3_t MOVEDIR_UP	= {0, 0, 1};
 vec3_t VEC_DOWN		= {0, -2, 0};
 vec3_t MOVEDIR_DOWN	= {0, 0, -1};
 
-void G_SetMovedir (vec3_t angles, vec3_t movedir)
+void G_SetMovedir(vec3_t angles, vec3_t movedir)
 {
 	if (VectorCompare(angles, VEC_UP))
 		VectorCopy(MOVEDIR_UP, movedir);
@@ -335,7 +335,7 @@ void G_SetMovedir (vec3_t angles, vec3_t movedir)
 }
 
 
-float vectoyaw2 (vec3_t vec)
+float vectoyaw2(vec3_t vec)
 {
 	if (vec[PITCH] == 0)
 	{
@@ -362,7 +362,7 @@ float vectoyaw(vec3_t vec)
 }
 
 
-void vectoangles2 (vec3_t value1, vec3_t angles)
+void vectoangles2(vec3_t value1, vec3_t angles)
 {
 	float yaw, pitch;
 	
@@ -406,7 +406,7 @@ void vectoangles(vec3_t value1, vec3_t angles)
 }
 
 
-char *G_CopyString (char *in)
+char *G_CopyString(char *in)
 {
 	char *out = gi.TagMalloc(strlen(in) + 1, TAG_LEVEL);
 	strcpy(out, in);
@@ -414,7 +414,7 @@ char *G_CopyString (char *in)
 }
 
 
-void G_InitEdict (edict_t *e)
+void G_InitEdict(edict_t *e)
 {
 	e->inuse = true;
 	e->classname = "noclass";
@@ -554,7 +554,7 @@ G_TouchSolids
 Call after linking a new trigger in during gameplay to force all entities it covers to immediately touch it
 ============
 */
-void G_TouchSolids (edict_t *ent)
+void G_TouchSolids(edict_t *ent)
 {
 	edict_t *touch[MAX_EDICTS];
 
@@ -790,13 +790,13 @@ void GameDirRelativePath(char *filename, char *output)
 /* Lazarus: G_UseTarget is similar to G_UseTargets, but only triggers a single target rather than all entities matching target
 			criteria. It *does*, however, kill all killtargets */
 
-void Think_Delay_Single (edict_t *ent)
+void Think_Delay_Single(edict_t *ent)
 {
 	G_UseTarget(ent, ent->activator, ent->target_ent);
 	G_FreeEdict(ent);
 }
 
-void G_UseTarget (edict_t *ent, edict_t *activator, edict_t *target)
+void G_UseTarget(edict_t *ent, edict_t *activator, edict_t *target)
 {
 	// Check for a delay
 	if (ent->delay)
@@ -881,7 +881,7 @@ char *idmapnames[] = { "base1", "base2", "base3", "biggun", "boss1", "boss2", "b
 						  "ware1", "ware2", "waste1", "waste2", "waste3", "q2dm1", "q2dm2", "q2dm3", "q2dm4", "q2dm5", "q2dm6", "q2dm7", "q2dm8", "base64", "city64", "sewer64", NULL }; //mxd
 
 //Knightmare- IsIdMap checks if the current map is a stock id map, this is used for certain hacks.
-qboolean IsIdMap (void)
+qboolean IsIdMap(void)
 {
 	int counter = 0;
 	while (idmapnames[counter])
@@ -895,7 +895,7 @@ qboolean IsIdMap (void)
 	return false;
 }
 
-void my_bprintf (int printlevel, char *fmt, ...)
+void my_bprintf(int printlevel, char *fmt, ...)
 {
 	char	bigbuffer[0x10000];
 	va_list	argptr;

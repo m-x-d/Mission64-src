@@ -135,24 +135,24 @@ cvar_t	*sv_step_fraction;	// Knightmare- this was a define in p_view.c
 
 cvar_t	*blaster_color; // Knightmare added
 
-void SpawnEntities (char *mapname, char *entities, char *spawnpoint);
-//void ClientThink (edict_t *ent, usercmd_t *cmd);
-//qboolean ClientConnect (edict_t *ent, char *userinfo);
-//void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void ClientDisconnect (edict_t *ent);
-void ClientBegin (edict_t *ent);
-void ClientCommand (edict_t *ent);
+void SpawnEntities(char *mapname, char *entities, char *spawnpoint);
+//void ClientThink(edict_t *ent, usercmd_t *cmd);
+//qboolean ClientConnect(edict_t *ent, char *userinfo);
+//void ClientUserinfoChanged(edict_t *ent, char *userinfo);
+void ClientDisconnect(edict_t *ent);
+void ClientBegin(edict_t *ent);
+void ClientCommand(edict_t *ent);
 //void RunEntity(edict_t *ent);
-void WriteGame (char *filename, qboolean autosave);
-void ReadGame (char *filename);
-void WriteLevel (char *filename);
-void ReadLevel (char *filename);
-void InitGame (void);
-void G_RunFrame (void);
+void WriteGame(char *filename, qboolean autosave);
+void ReadGame(char *filename);
+void WriteLevel(char *filename);
+void ReadLevel(char *filename);
+void InitGame(void);
+void G_RunFrame(void);
 
 //===================================================================
 
-void ShutdownGame (void)
+void ShutdownGame(void)
 {
 	gi.dprintf("==== ShutdownGame ====\n");
 
@@ -177,7 +177,7 @@ int	max_modelindex;
 int	max_soundindex;
 
 
-int Debug_Modelindex (char *name)
+int Debug_Modelindex(char *name)
 {
 	const int modelnum = RealFunc.modelindex(name);
 	if (modelnum > max_modelindex)
@@ -189,7 +189,7 @@ int Debug_Modelindex (char *name)
 	return modelnum;
 }
 
-int Debug_Soundindex (char *name)
+int Debug_Soundindex(char *name)
 {
 	const int soundnum = RealFunc.soundindex(name);
 	if (soundnum > max_soundindex)
@@ -259,7 +259,7 @@ game_export_t *GetGameAPI (game_import_t *import)
 
 #ifndef GAME_HARD_LINKED
 // this is only here so the functions in q_shared.c and q_shwin.c can link
-void Sys_Error (char *error, ...)
+void Sys_Error(char *error, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -271,7 +271,7 @@ void Sys_Error (char *error, ...)
 	gi.error(ERR_FATAL, "%s", text);
 }
 
-void Com_Printf (char *msg, ...)
+void Com_Printf(char *msg, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -543,7 +543,7 @@ void G_RunFrame(void)
 	}
 
 	if (use_techs->value || (ctf->value && !((int)dmflags->value & DF_CTF_NO_TECH)) )
-		CheckNumTechs ();
+		CheckNumTechs();
 
 	//
 	// treat each object in turn

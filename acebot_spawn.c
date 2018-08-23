@@ -175,7 +175,7 @@ void ACESP_HoldSpawn(edict_t *self)
 ///////////////////////////////////////////////////////////////////////
 // Modified version of id's code
 ///////////////////////////////////////////////////////////////////////
-void ACESP_PutClientInServer (edict_t *bot, qboolean respawn, int team)
+void ACESP_PutClientInServer(edict_t *bot, qboolean respawn, int team)
 {
 	vec3_t	mins = {-16, -16, -24};
 	vec3_t	maxs = {16, 16, 32};
@@ -365,7 +365,7 @@ void ACESP_Respawn(edict_t *self)
 ///////////////////////////////////////////////////////////////////////
 // Find a free client spot
 ///////////////////////////////////////////////////////////////////////
-edict_t *ACESP_FindFreeClient (void)
+edict_t *ACESP_FindFreeClient(void)
 {
 	edict_t *bot;
 	int	i;
@@ -600,7 +600,7 @@ void ACESP_SetName(edict_t *bot, char *name, char *skin, char *team)
 ///////////////////////////////////////////////////////////////////////
 // Spawn the bot
 ///////////////////////////////////////////////////////////////////////
-void ACESP_SpawnBot (char *team, char *name, char *skin, char *userinfo)
+void ACESP_SpawnBot(char *team, char *name, char *skin, char *userinfo)
 {
 	edict_t *bot = ACESP_FindFreeClient();
 	

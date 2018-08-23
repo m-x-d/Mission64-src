@@ -22,211 +22,211 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 #include "pak.h"
 
-void SP_item_health (edict_t *self);
-void SP_item_health_small (edict_t *self);
-void SP_item_health_large (edict_t *self);
-void SP_item_health_mega (edict_t *self);
+void SP_item_health(edict_t *self);
+void SP_item_health_small(edict_t *self);
+void SP_item_health_large(edict_t *self);
+void SP_item_health_mega(edict_t *self);
 
-void SP_info_player_start (edict_t *ent);
-void SP_info_player_deathmatch (edict_t *ent);
-void SP_info_player_coop (edict_t *ent);
-void SP_info_player_intermission (edict_t *ent);
+void SP_info_player_start(edict_t *ent);
+void SP_info_player_deathmatch(edict_t *ent);
+void SP_info_player_coop(edict_t *ent);
+void SP_info_player_intermission(edict_t *ent);
 
-void SP_func_plat (edict_t *ent);
+void SP_func_plat(edict_t *ent);
 void SP_func_rotating(edict_t *ent);
-void SP_func_button (edict_t *ent);
-void SP_func_door (edict_t *ent);
-void SP_func_door_dh (edict_t *ent); //mxd
-void SP_func_door_secret (edict_t *ent);
+void SP_func_button(edict_t *ent);
+void SP_func_door(edict_t *ent);
+void SP_func_door_dh(edict_t *ent); //mxd
+void SP_func_door_secret(edict_t *ent);
 void SP_func_door_rotating(edict_t *ent);
-void SP_func_water (edict_t *ent);
-void SP_func_train (edict_t *ent);
-void SP_func_conveyor (edict_t *self);
-void SP_func_wall (edict_t *self);
-void SP_func_object (edict_t *self);
-void SP_func_explosive (edict_t *self);
-void SP_func_timer (edict_t *self);
-void SP_func_areaportal (edict_t *ent);
-void SP_func_clock (edict_t *ent);
-void SP_func_killbox (edict_t *ent);
+void SP_func_water(edict_t *ent);
+void SP_func_train(edict_t *ent);
+void SP_func_conveyor(edict_t *self);
+void SP_func_wall(edict_t *self);
+void SP_func_object(edict_t *self);
+void SP_func_explosive(edict_t *self);
+void SP_func_timer(edict_t *self);
+void SP_func_areaportal(edict_t *ent);
+void SP_func_clock(edict_t *ent);
+void SP_func_killbox(edict_t *ent);
 
-void SP_trigger_always (edict_t *ent);
-void SP_trigger_once (edict_t *ent);
-void SP_trigger_multiple (edict_t *ent);
-void SP_trigger_relay (edict_t *ent);
-void SP_trigger_push (edict_t *ent);
-void SP_trigger_hurt (edict_t *ent);
-void SP_trigger_key (edict_t *ent);
-void SP_trigger_counter (edict_t *ent);
-void SP_trigger_elevator (edict_t *ent);
-void SP_trigger_gravity (edict_t *ent);
-void SP_trigger_monsterjump (edict_t *ent);
+void SP_trigger_always(edict_t *ent);
+void SP_trigger_once(edict_t *ent);
+void SP_trigger_multiple(edict_t *ent);
+void SP_trigger_relay(edict_t *ent);
+void SP_trigger_push(edict_t *ent);
+void SP_trigger_hurt(edict_t *ent);
+void SP_trigger_key(edict_t *ent);
+void SP_trigger_counter(edict_t *ent);
+void SP_trigger_elevator(edict_t *ent);
+void SP_trigger_gravity(edict_t *ent);
+void SP_trigger_monsterjump(edict_t *ent);
 
-void SP_target_temp_entity (edict_t *ent);
-void SP_target_speaker (edict_t *ent);
-void SP_target_explosion (edict_t *ent);
-void SP_target_changelevel (edict_t *ent);
-void SP_target_secret (edict_t *ent);
-void SP_target_goal (edict_t *ent);
-void SP_target_splash (edict_t *ent);
-void SP_target_spawner (edict_t *ent);
-void SP_target_blaster (edict_t *ent);
-void SP_target_crosslevel_trigger (edict_t *ent);
-void SP_target_crosslevel_target (edict_t *ent);
-void SP_target_laser (edict_t *self);
-void SP_target_help (edict_t *ent);
-void SP_target_actor (edict_t *ent);
-void SP_target_lightramp (edict_t *self);
-void SP_target_earthquake (edict_t *ent);
-void SP_target_character (edict_t *ent);
-void SP_target_string (edict_t *ent);
+void SP_target_temp_entity(edict_t *ent);
+void SP_target_speaker(edict_t *ent);
+void SP_target_explosion(edict_t *ent);
+void SP_target_changelevel(edict_t *ent);
+void SP_target_secret(edict_t *ent);
+void SP_target_goal(edict_t *ent);
+void SP_target_splash(edict_t *ent);
+void SP_target_spawner(edict_t *ent);
+void SP_target_blaster(edict_t *ent);
+void SP_target_crosslevel_trigger(edict_t *ent);
+void SP_target_crosslevel_target(edict_t *ent);
+void SP_target_laser(edict_t *self);
+void SP_target_help(edict_t *ent);
+void SP_target_actor(edict_t *ent);
+void SP_target_lightramp(edict_t *self);
+void SP_target_earthquake(edict_t *ent);
+void SP_target_character(edict_t *ent);
+void SP_target_string(edict_t *ent);
 
-void SP_worldspawn (edict_t *ent);
-void SP_viewthing (edict_t *ent);
+void SP_worldspawn(edict_t *ent);
+void SP_viewthing(edict_t *ent);
 
-void SP_light (edict_t *self);
-void SP_light_mine1 (edict_t *ent);
-void SP_light_mine2 (edict_t *ent);
-void SP_info_null (edict_t *self);
-void SP_info_notnull (edict_t *self);
-void SP_path_corner (edict_t *self);
-void SP_point_combat (edict_t *self);
+void SP_light(edict_t *self);
+void SP_light_mine1(edict_t *ent);
+void SP_light_mine2(edict_t *ent);
+void SP_info_null(edict_t *self);
+void SP_info_notnull(edict_t *self);
+void SP_path_corner(edict_t *self);
+void SP_point_combat(edict_t *self);
 
-void SP_misc_explobox (edict_t *self);
-void SP_misc_banner (edict_t *self);
-void SP_misc_satellite_dish (edict_t *self);
-void SP_misc_actor (edict_t *self);
-void SP_misc_gib_arm (edict_t *self);
-void SP_misc_gib_leg (edict_t *self);
-void SP_misc_gib_head (edict_t *self);
-void SP_misc_insane (edict_t *self);
-void SP_misc_deadsoldier (edict_t *self);
-void SP_misc_deadparasite (edict_t *self); //mxd
-void SP_misc_viper (edict_t *self);
-void SP_misc_viper_bomb (edict_t *self);
-void SP_misc_bigviper (edict_t *self);
-void SP_misc_strogg_ship (edict_t *self);
-void SP_misc_teleporter (edict_t *self);
-void SP_misc_teleporter_dest (edict_t *self);
-void SP_misc_blackhole (edict_t *self);
-void SP_misc_eastertank (edict_t *self);
-void SP_misc_easterchick (edict_t *self);
-void SP_misc_easterchick2 (edict_t *self);
+void SP_misc_explobox(edict_t *self);
+void SP_misc_banner(edict_t *self);
+void SP_misc_satellite_dish(edict_t *self);
+void SP_misc_actor(edict_t *self);
+void SP_misc_gib_arm(edict_t *self);
+void SP_misc_gib_leg(edict_t *self);
+void SP_misc_gib_head(edict_t *self);
+void SP_misc_insane(edict_t *self);
+void SP_misc_deadsoldier(edict_t *self);
+void SP_misc_deadparasite(edict_t *self); //mxd
+void SP_misc_viper(edict_t *self);
+void SP_misc_viper_bomb(edict_t *self);
+void SP_misc_bigviper(edict_t *self);
+void SP_misc_strogg_ship(edict_t *self);
+void SP_misc_teleporter(edict_t *self);
+void SP_misc_teleporter_dest(edict_t *self);
+void SP_misc_blackhole(edict_t *self);
+void SP_misc_eastertank(edict_t *self);
+void SP_misc_easterchick(edict_t *self);
+void SP_misc_easterchick2(edict_t *self);
 
-void SP_monster_berserk (edict_t *self);
-void SP_monster_gladiator (edict_t *self);
-void SP_monster_gunner (edict_t *self);
-void SP_monster_infantry (edict_t *self);
-void SP_monster_soldier_light (edict_t *self);
-void SP_monster_soldier (edict_t *self);
-void SP_monster_soldier_ss (edict_t *self);
-void SP_monster_tank (edict_t *self);
-void SP_monster_medic (edict_t *self);
-void SP_monster_flipper (edict_t *self);
-void SP_monster_chick (edict_t *self);
-void SP_monster_parasite (edict_t *self);
-void SP_monster_flyer (edict_t *self);
-void SP_monster_brain (edict_t *self);
-void SP_monster_floater (edict_t *self);
-void SP_monster_hover (edict_t *self);
-void SP_monster_mutant (edict_t *self);
-void SP_monster_supertank (edict_t *self);
-void SP_monster_boss2 (edict_t *self);
-void SP_monster_jorg (edict_t *self);
-void SP_monster_boss3_stand (edict_t *self);
+void SP_monster_berserk(edict_t *self);
+void SP_monster_gladiator(edict_t *self);
+void SP_monster_gunner(edict_t *self);
+void SP_monster_infantry(edict_t *self);
+void SP_monster_soldier_light(edict_t *self);
+void SP_monster_soldier(edict_t *self);
+void SP_monster_soldier_ss(edict_t *self);
+void SP_monster_tank(edict_t *self);
+void SP_monster_medic(edict_t *self);
+void SP_monster_flipper(edict_t *self);
+void SP_monster_chick(edict_t *self);
+void SP_monster_parasite(edict_t *self);
+void SP_monster_flyer(edict_t *self);
+void SP_monster_brain(edict_t *self);
+void SP_monster_floater(edict_t *self);
+void SP_monster_hover(edict_t *self);
+void SP_monster_mutant(edict_t *self);
+void SP_monster_supertank(edict_t *self);
+void SP_monster_boss2(edict_t *self);
+void SP_monster_jorg(edict_t *self);
+void SP_monster_boss3_stand(edict_t *self);
 
-void SP_monster_commander_body (edict_t *self);
+void SP_monster_commander_body(edict_t *self);
 
-void SP_turret_breach (edict_t *self);
-void SP_turret_base (edict_t *self);
-void SP_turret_driver (edict_t *self);
+void SP_turret_breach(edict_t *self);
+void SP_turret_base(edict_t *self);
+void SP_turret_driver(edict_t *self);
 
 // Lazarus
-void SP_crane_beam (edict_t *self);
-void SP_crane_hoist (edict_t *self);
-void SP_crane_hook (edict_t *self);
-void SP_crane_control (edict_t *self);
+void SP_crane_beam(edict_t *self);
+void SP_crane_hoist(edict_t *self);
+void SP_crane_hook(edict_t *self);
+void SP_crane_control(edict_t *self);
 void SP_crane_reset(edict_t *self);
-void SP_hint_path (edict_t *self);
-void SP_func_bobbingwater (edict_t *self);
-void SP_func_door_rot_dh (edict_t *self);
-void SP_func_door_swinging (edict_t *self);
+void SP_hint_path(edict_t *self);
+void SP_func_bobbingwater(edict_t *self);
+void SP_func_door_rot_dh(edict_t *self);
+void SP_func_door_swinging(edict_t *self);
 
-void SP_func_breakaway (edict_t *self); // Knightmare added
+void SP_func_breakaway(edict_t *self); // Knightmare added
 void SP_func_force_wall(edict_t *ent);
-void SP_func_monitor (edict_t *self);
-void SP_func_pendulum (edict_t *self);
-void SP_func_pivot (edict_t *self);
-void SP_func_pushable (edict_t *self);
-void SP_func_reflect (edict_t *self);
-void SP_func_rotating_dh (edict_t *self);
-void SP_func_trackchange (edict_t *self);
-void SP_func_tracktrain (edict_t *self);
-void SP_func_trainbutton (edict_t *self);
-void SP_func_vehicle (edict_t *self);
-void SP_info_train_start (edict_t *self);
-void SP_misc_light (edict_t *self);
-void SP_model_spawn (edict_t *self);
-void SP_model_train (edict_t *self);
-void SP_model_turret (edict_t *self);
-void SP_monster_makron (edict_t *self);
-void SP_path_track (edict_t *self);
-void SP_target_anger (edict_t *self);
-void SP_target_animation (edict_t *self);
-void SP_target_attractor (edict_t *self);
-void SP_target_CD (edict_t *self);
-void SP_target_change (edict_t *self);
-void SP_target_clone (edict_t *self);
-void SP_target_effect (edict_t *self);
-void SP_target_fade (edict_t *self);
-void SP_target_failure (edict_t *self);
-void SP_target_fog (edict_t *self);
-void SP_target_fountain (edict_t *self);
-void SP_target_lightswitch (edict_t *self);
-void SP_target_locator (edict_t *self);
-void SP_target_lock (edict_t *self);
-void SP_target_lock_clue (edict_t *self);
-void SP_target_lock_code (edict_t *self);
-void SP_target_lock_digit (edict_t *self);
-void SP_target_monitor (edict_t *ent);
-void SP_target_monsterbattle (edict_t *self);
-void SP_target_movewith (edict_t *self);
-void SP_target_precipitation (edict_t *self);
-void SP_target_rocks (edict_t *self);
-void SP_target_rotation (edict_t *self);
-void SP_target_command (edict_t *self);
-void SP_target_set_effect (edict_t *self);
-void SP_target_skill (edict_t *self);
-void SP_target_sky (edict_t *self);
-void SP_target_text (edict_t *self);
-void SP_thing (edict_t *self);
-void SP_tremor_trigger_multiple (edict_t *self);
-void SP_trigger_bbox (edict_t *self);
-void SP_trigger_disguise (edict_t *self);
-void SP_trigger_fog (edict_t *self);
-void SP_trigger_inside (edict_t *self);
-void SP_trigger_look (edict_t *self);
-void SP_trigger_mass (edict_t *self);
-void SP_trigger_scales (edict_t *self);
-void SP_trigger_switch (edict_t *self);
-void SP_trigger_speaker (edict_t *self);
-void SP_trigger_teleporter (edict_t *self);
-void SP_trigger_transition (edict_t *self);
+void SP_func_monitor(edict_t *self);
+void SP_func_pendulum(edict_t *self);
+void SP_func_pivot(edict_t *self);
+void SP_func_pushable(edict_t *self);
+void SP_func_reflect(edict_t *self);
+void SP_func_rotating_dh(edict_t *self);
+void SP_func_trackchange(edict_t *self);
+void SP_func_tracktrain(edict_t *self);
+void SP_func_trainbutton(edict_t *self);
+void SP_func_vehicle(edict_t *self);
+void SP_info_train_start(edict_t *self);
+void SP_misc_light(edict_t *self);
+void SP_model_spawn(edict_t *self);
+void SP_model_train(edict_t *self);
+void SP_model_turret(edict_t *self);
+void SP_monster_makron(edict_t *self);
+void SP_path_track(edict_t *self);
+void SP_target_anger(edict_t *self);
+void SP_target_animation(edict_t *self);
+void SP_target_attractor(edict_t *self);
+void SP_target_CD(edict_t *self);
+void SP_target_change(edict_t *self);
+void SP_target_clone(edict_t *self);
+void SP_target_effect(edict_t *self);
+void SP_target_fade(edict_t *self);
+void SP_target_failure(edict_t *self);
+void SP_target_fog(edict_t *self);
+void SP_target_fountain(edict_t *self);
+void SP_target_lightswitch(edict_t *self);
+void SP_target_locator(edict_t *self);
+void SP_target_lock(edict_t *self);
+void SP_target_lock_clue(edict_t *self);
+void SP_target_lock_code(edict_t *self);
+void SP_target_lock_digit(edict_t *self);
+void SP_target_monitor(edict_t *ent);
+void SP_target_monsterbattle(edict_t *self);
+void SP_target_movewith(edict_t *self);
+void SP_target_precipitation(edict_t *self);
+void SP_target_rocks(edict_t *self);
+void SP_target_rotation(edict_t *self);
+void SP_target_command(edict_t *self);
+void SP_target_set_effect(edict_t *self);
+void SP_target_skill(edict_t *self);
+void SP_target_sky(edict_t *self);
+void SP_target_text(edict_t *self);
+void SP_thing(edict_t *self);
+void SP_tremor_trigger_multiple(edict_t *self);
+void SP_trigger_bbox(edict_t *self);
+void SP_trigger_disguise(edict_t *self);
+void SP_trigger_fog(edict_t *self);
+void SP_trigger_inside(edict_t *self);
+void SP_trigger_look(edict_t *self);
+void SP_trigger_mass(edict_t *self);
+void SP_trigger_scales(edict_t *self);
+void SP_trigger_switch(edict_t *self);
+void SP_trigger_speaker(edict_t *self);
+void SP_trigger_teleporter(edict_t *self);
+void SP_trigger_transition(edict_t *self);
 
 // Knightmare- entities that use origin-based train pathing
-void SP_func_train_origin (edict_t *self);
-void SP_model_train_origin (edict_t *self);
-void SP_misc_viper_origin (edict_t *ent);
-void SP_misc_strogg_ship_origin (edict_t *ent);
+void SP_func_train_origin(edict_t *self);
+void SP_model_train_origin(edict_t *self);
+void SP_misc_viper_origin(edict_t *ent);
+void SP_misc_strogg_ship_origin(edict_t *ent);
 
 // transition entities
-void SP_bolt (edict_t *self);
-void SP_debris (edict_t *self);
-void SP_gib (edict_t *self);
-void SP_gibhead (edict_t *self);
-void SP_grenade (edict_t *self);
-void SP_handgrenade (edict_t *self);
-void SP_rocket (edict_t *self);
+void SP_bolt(edict_t *self);
+void SP_debris(edict_t *self);
+void SP_gib(edict_t *self);
+void SP_gibhead(edict_t *self);
+void SP_grenade(edict_t *self);
+void SP_handgrenade(edict_t *self);
+void SP_rocket(edict_t *self);
 //
 // end Lazarus
 
@@ -524,7 +524,7 @@ void ED_CallSpawn(edict_t *ent)
 ED_NewString
 =============
 */
-char *ED_NewString (char *string)
+char *ED_NewString(char *string)
 {
 	const int l = strlen(string) + 1;
 	char *newb = gi.TagMalloc(l, TAG_LEVEL);
@@ -555,7 +555,7 @@ Takes a key/value pair and sets the binary values
 in an edict
 ===============
 */
-void ED_ParseField (char *key, char *value, edict_t *ent)
+void ED_ParseField(char *key, char *value, edict_t *ent)
 {
 	byte	*b;
 	float	v;
@@ -622,34 +622,34 @@ Called from LoadAliasData to try
 loading script file from disk.
 ====================
 */
-char *ReadTextFile (char *filename, int *size)
+char *ReadTextFile(char *filename, int *size)
 {
-    FILE *fp;
-    char *filestring = NULL;
-    int len;
+	FILE *fp;
+	char *filestring = NULL;
+	int len;
 
-    fp = fopen(filename, "r");
-    if (!fp)
+	fp = fopen(filename, "r");
+	if (!fp)
 		return NULL;
 
-    fseek(fp, 0, SEEK_END);
-    len = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);
+	len = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 
-    filestring = gi.TagMalloc(len + 1, TAG_LEVEL);
-    if (!filestring)
+	filestring = gi.TagMalloc(len + 1, TAG_LEVEL);
+	if (!filestring)
 	{
 		fclose(fp);
 		return NULL;
-    }
+	}
 
-    len = fread(filestring, 1, len, fp);
+	len = fread(filestring, 1, len, fp);
 	*size = len;
-    filestring[len] = 0;
+	filestring[len] = 0;
 
-    fclose(fp);
+	fclose(fp);
 
-    return filestring;
+	return filestring;
 }
 
 /*
@@ -660,14 +660,14 @@ Tries to load script file from
 disk, and then from a pak file.
 ====================
 */
-qboolean LoadAliasFile (char *name)
+qboolean LoadAliasFile(char *name)
 {
 	char aliasfilename[MAX_QPATH] = "";
 
 	alias_from_pak = false;
 
 	GameDirRelativePath (name, aliasfilename);
-    alias_data = ReadTextFile(aliasfilename, &alias_data_size);
+	alias_data = ReadTextFile(aliasfilename, &alias_data_size);
 
 	// If file doesn't exist on hard disk, it must be in a pak file
 	if (!alias_data)
@@ -745,7 +745,7 @@ Loads entity alias file either on disk
 or from a pak file in the game dir.
 ====================
 */
-void LoadAliasData (void)
+void LoadAliasData(void)
 {
 #ifdef KMQUAKE2_ENGINE_MOD // use new engine file loading function instead
 	// try per-level script file
@@ -771,7 +771,7 @@ loads that if found.
 Returns true if an alias was loaded for the given entity.
 ====================
 */
-qboolean ED_ParseEntityAlias (char *data, edict_t *ent)
+qboolean ED_ParseEntityAlias(char *data, edict_t *ent)
 {
 	char		*search_token;
 	char		entclassname[256];
@@ -913,7 +913,7 @@ Parses an edict out of the given string, returning the new position
 ed should be a properly initialized empty edict.
 ====================
 */
-char *ED_ParseEdict (char *data, edict_t *ent)
+char *ED_ParseEdict(char *data, edict_t *ent)
 {
 	char keyname[256];
 
@@ -985,7 +985,7 @@ All but the first will have the FL_TEAMSLAVE flag set.
 All but the last will have the teamchain field set to the next one
 ================
 */
-void G_FindTeams (void)
+void G_FindTeams(void)
 {
 	edict_t	*e, *e2;
 	int		i, j;
@@ -1029,9 +1029,9 @@ void G_FindTeams (void)
 		gi.dprintf("%i teams with %i entities\n", c, c2);
 }
 
-void trans_ent_filename (char *);
+void trans_ent_filename(char *);
 void ReadEdict (FILE *f, edict_t *ent);
-void LoadTransitionEnts (void)
+void LoadTransitionEnts(void)
 {
 	if (developer->value)
 		gi.dprintf("==== LoadTransitionEnts ====\n");
@@ -1125,7 +1125,7 @@ Creates a server's entity / program execution context by
 parsing textual entity definitions out of an ent file.
 ==============
 */
-void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
+void SpawnEntities(char *mapname, char *entities, char *spawnpoint)
 {
 	int			i;
 	//extern int	max_modelindex;
@@ -1561,7 +1561,7 @@ Only used for the world.
 "message"	text to print at user logon
 */
 //void SetChromakey();
-void SP_worldspawn (edict_t *ent)
+void SP_worldspawn(edict_t *ent)
 {
 // ACEBOT_ADD
 	static char current_map[55];
@@ -1578,10 +1578,10 @@ void SP_worldspawn (edict_t *ent)
 	paused = false;
 
 	// reserve some spots for dead player bodies for coop / deathmatch
-	InitBodyQue ();
+	InitBodyQue();
 
 	// set configstrings for items
-	SetItemNames ();
+	SetItemNames();
 
 	if (st.nextmap)
 		Q_strncpyz(level.nextmap, st.nextmap, sizeof(level.nextmap));
@@ -1791,7 +1791,7 @@ void Hud_Off()
 	nohud = 1;
 }
 
-void Cmd_ToggleHud ()
+void Cmd_ToggleHud()
 {
 	if (deathmatch->value)
 		return;

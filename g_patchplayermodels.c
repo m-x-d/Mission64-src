@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Argh!
 // 
 // Add function declaration to g_local.h:
-//   void PatchPlayerModels (edict_t *ent);
+//   void PatchPlayerModels(edict_t *ent);
 //
 // Add function call where ever you want:
 //   PatchPlayerModels (ent);
@@ -39,7 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //         for misc_actor (all id skins, and slots for 10 custom 
 //         skins), and saves them to the current moddir location
 //
-int PatchPlayerModels (char *modelname)
+int PatchPlayerModels(char *modelname)
 {
 	int		numskins;	// number of skin entries
 	char	skins[MAX_MD2SKINS][MAX_SKINNAME];	// skin entries

@@ -286,7 +286,7 @@ qboolean ACEMV_CheckEyes(edict_t *self, usercmd_t *ucmd)
 // 
 // Modified from the original id ChangeYaw code...
 ///////////////////////////////////////////////////////////////////////
-void ACEMV_ChangeBotAngle (edict_t *ent)
+void ACEMV_ChangeBotAngle(edict_t *ent)
 {
 	float	ideal_yaw;
 	float   ideal_pitch;
@@ -651,11 +651,11 @@ void ACEMV_Wander(edict_t *self, usercmd_t *ucmd)
 // NOTE: Very simple for now, just a basic move about avoidance.
 //       Change this routine for more advanced attack movement.
 ///////////////////////////////////////////////////////////////////////
-void ACEMV_Attack (edict_t *self, usercmd_t *ucmd)
+void ACEMV_Attack(edict_t *self, usercmd_t *ucmd)
 {
 	float c;
-	vec3_t  target;
-	vec3_t  angles;
+	vec3_t target;
+	vec3_t angles;
 	
 	// Randomly choose a movement direction
 	c = random();

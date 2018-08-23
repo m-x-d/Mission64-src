@@ -37,33 +37,33 @@ static int	sound_death;
 static int	sound_search1;
 static int	sound_search2;
 
-static	int	tread_sound;
+static int	tread_sound;
 
-void BossExplode (edict_t *self);
+void BossExplode(edict_t *self);
 
-void TreadSound (edict_t *self)
+void TreadSound(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, tread_sound, 1, ATTN_NORM, 0);
 }
 
-void supertank_search (edict_t *self)
+void supertank_search(edict_t *self)
 {
 	const int sound_search = (random() < 0.5 ? sound_search1 : sound_search2);
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
 
-void supertank_dead (edict_t *self);
-void supertankRocket (edict_t *self);
-void supertankMachineGun (edict_t *self);
-void supertank_reattack1 (edict_t *self);
+void supertank_dead(edict_t *self);
+void supertankRocket(edict_t *self);
+void supertankMachineGun(edict_t *self);
+void supertank_reattack1(edict_t *self);
 
 
 //
 // stand
 //
 
-mframe_t supertank_frames_stand []=
+mframe_t supertank_frames_stand[]=
 {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -128,12 +128,12 @@ mframe_t supertank_frames_stand []=
 };
 mmove_t	supertank_move_stand = {FRAME_stand_1, FRAME_stand_60, supertank_frames_stand, NULL};
 	
-void supertank_stand (edict_t *self)
+void supertank_stand(edict_t *self)
 {
 	self->monsterinfo.currentmove = &supertank_move_stand;
 }
 
-mframe_t supertank_frames_run [] =
+mframe_t supertank_frames_run[] =
 {
 	{ai_run, 12,	TreadSound},
 	{ai_run, 12,	NULL},
@@ -160,7 +160,7 @@ mmove_t	supertank_move_run = {FRAME_forwrd_1, FRAME_forwrd_18, supertank_frames_
 // walk
 //
 
-mframe_t supertank_frames_forward [] =
+mframe_t supertank_frames_forward[] =
 {
 	{ai_walk, 4,	TreadSound},
 	{ai_walk, 4,	NULL},
@@ -183,17 +183,17 @@ mframe_t supertank_frames_forward [] =
 };
 mmove_t	supertank_move_forward = {FRAME_forwrd_1, FRAME_forwrd_18, supertank_frames_forward, NULL};
 
-/*void supertank_forward (edict_t *self) //mxd. Never used
+/*void supertank_forward(edict_t *self) //mxd. Never used
 {
 	self->monsterinfo.currentmove = &supertank_move_forward;
 }*/
 
-void supertank_walk (edict_t *self)
+void supertank_walk(edict_t *self)
 {
 	self->monsterinfo.currentmove = &supertank_move_forward;
 }
 
-void supertank_run (edict_t *self)
+void supertank_run(edict_t *self)
 {
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.currentmove = &supertank_move_stand;
@@ -201,7 +201,7 @@ void supertank_run (edict_t *self)
 		self->monsterinfo.currentmove = &supertank_move_run;
 }
 
-mframe_t supertank_frames_turn_right [] =
+mframe_t supertank_frames_turn_right[] =
 {
 	{ai_move,	0,	TreadSound},
 	{ai_move,	0,	NULL},
@@ -224,7 +224,7 @@ mframe_t supertank_frames_turn_right [] =
 };
 mmove_t supertank_move_turn_right = {FRAME_right_1, FRAME_right_18, supertank_frames_turn_right, supertank_run};
 
-mframe_t supertank_frames_turn_left [] =
+mframe_t supertank_frames_turn_left[] =
 {
 	{ai_move,	0,	TreadSound},
 	{ai_move,	0,	NULL},
@@ -247,7 +247,7 @@ mframe_t supertank_frames_turn_left [] =
 };
 mmove_t supertank_move_turn_left = {FRAME_left_1, FRAME_left_18, supertank_frames_turn_left, supertank_run};
 
-mframe_t supertank_frames_pain3 [] =
+mframe_t supertank_frames_pain3[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -256,7 +256,7 @@ mframe_t supertank_frames_pain3 [] =
 };
 mmove_t supertank_move_pain3 = {FRAME_pain3_9, FRAME_pain3_12, supertank_frames_pain3, supertank_run};
 
-mframe_t supertank_frames_pain2 [] =
+mframe_t supertank_frames_pain2[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -265,7 +265,7 @@ mframe_t supertank_frames_pain2 [] =
 };
 mmove_t supertank_move_pain2 = {FRAME_pain2_5, FRAME_pain2_8, supertank_frames_pain2, supertank_run};
 
-mframe_t supertank_frames_pain1 [] =
+mframe_t supertank_frames_pain1[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -274,7 +274,7 @@ mframe_t supertank_frames_pain1 [] =
 };
 mmove_t supertank_move_pain1 = {FRAME_pain1_1, FRAME_pain1_4, supertank_frames_pain1, supertank_run};
 
-mframe_t supertank_frames_death1 [] =
+mframe_t supertank_frames_death1[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -441,7 +441,7 @@ void supertank_reattack1(edict_t *self)
 		self->monsterinfo.currentmove = &supertank_move_end_attack1;
 }
 
-void supertank_pain (edict_t *self, edict_t *other, float kick, int damage)
+void supertank_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	if (self->health < self->max_health / 2)
 	{
@@ -484,7 +484,7 @@ void supertank_pain (edict_t *self, edict_t *other, float kick, int damage)
 };
 
 
-void supertankRocket (edict_t *self)
+void supertankRocket(edict_t *self)
 {
 	vec3_t	forward, right;
 	vec3_t	start;
@@ -525,7 +525,7 @@ void supertankRocket (edict_t *self)
 	monster_fire_rocket(self, start, dir, 50, rocketSpeed, flash_number, (self->spawnflags & SF_MONSTER_SPECIAL ? self->enemy : NULL));
 }	
 
-void supertankMachineGun (edict_t *self)
+void supertankMachineGun(edict_t *self)
 {
 	vec3_t	dir;
 	vec3_t	vec;
@@ -592,7 +592,7 @@ void supertank_attack(edict_t *self)
 // death
 //
 
-void supertank_dead (edict_t *self)
+void supertank_dead(edict_t *self)
 {
 	VectorSet(self->mins, -60, -60, 0);
 	VectorSet(self->maxs, 60, 60, 72);
@@ -603,7 +603,7 @@ void supertank_dead (edict_t *self)
 }
 
 
-void BossExplode (edict_t *self)
+void BossExplode(edict_t *self)
 {
 	self->think = BossExplode;
 
@@ -689,7 +689,7 @@ void supertank_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 
 /*QUAKED monster_supertank (1 .5 0) (-64 -64 0) (64 64 72) Ambush Trigger_Spawn Sight
 */
-void SP_monster_supertank (edict_t *self)
+void SP_monster_supertank(edict_t *self)
 {
 	if (deathmatch->value)
 	{

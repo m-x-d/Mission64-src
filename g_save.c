@@ -307,7 +307,7 @@ InitGame
 This will be called when the dll is first loaded, which only happens when a new game is started or a save game is loaded.
 ============
 */
-void InitGame (void)
+void InitGame(void)
 {
 	gi.dprintf("\n====== InitGame (Mission64) ======\n");
 	gi.dprintf("by MaxED\n\n");
@@ -521,7 +521,7 @@ functionList_t *GetFunctionByAddress (const byte *adr)
 	return NULL;
 }
 
-byte *FindFunctionByName (char *name)
+byte *FindFunctionByName(char *name)
 {
 	for (int i = 0; functionList[i].funcStr; i++)
 		if (!strcmp(name, functionList[i].funcStr))
@@ -539,7 +539,7 @@ mmoveList_t *GetMmoveByAddress (mmove_t *adr)
 	return NULL;
 }
 
-mmove_t *FindMmoveByName (char *name)
+mmove_t *FindMmoveByName(char *name)
 {
 	for (int i = 0; mmoveList[i].mmoveStr; i++)
 		if (!strcmp(name, mmoveList[i].mmoveStr))
@@ -894,7 +894,7 @@ Game information include cross level data, like multi level triggers, help compu
 A single player death will automatically restore from the last save position.
 ============
 */
-void WriteGame (char *filename, qboolean autosave)
+void WriteGame(char *filename, qboolean autosave)
 {
 	FILE	*f;
 	char	str[16];
@@ -943,7 +943,7 @@ void WriteGame (char *filename, qboolean autosave)
 	fclose(f);
 }
 
-void ReadGame (char *filename)
+void ReadGame(char *filename)
 {
 	FILE	*f;
 	char	str[16];

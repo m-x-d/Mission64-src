@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
-void M_SetEffects (edict_t *ent);
+void M_SetEffects(edict_t *ent);
 
 /*
 ============
@@ -32,7 +32,7 @@ cleanupHealTarget
 clean up heal targets for medic
 ============
 */
-void cleanupHealTarget (edict_t *self)
+void cleanupHealTarget(edict_t *self)
 {
 	self->monsterinfo.healer = NULL;
 	self->takedamage = DAMAGE_YES;
@@ -110,9 +110,9 @@ qboolean CanDamage(edict_t *targ, edict_t *inflictor)
 Killed
 ============
 */
-void misc_deadsoldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void misc_deadsoldier_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 
-void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	targ->health = max(-999, targ->health);
 
@@ -203,7 +203,7 @@ void SpawnDamage(int type, vec3_t origin, vec3_t normal)
 		ReflectSparks(type, origin, normal);
 }
 
-int	BloodType (int index)
+int	BloodType(int index)
 {
 	switch (index)
 	{
@@ -349,10 +349,10 @@ static int CheckArmor(edict_t *ent, vec3_t point, vec3_t normal, int damage, int
 	return save;
 }
 
-void monster_start_go (edict_t *self);
-void target_animate (edict_t *);
+void monster_start_go(edict_t *self);
+void target_animate(edict_t *);
 
-void DefendMyFriend (edict_t *self, edict_t *enemy)
+void DefendMyFriend(edict_t *self, edict_t *enemy)
 {
 	self->spawnflags &= ~(SF_MONSTER_AMBUSH | SF_MONSTER_SIGHT);
 	self->enemy = enemy;
@@ -360,7 +360,7 @@ void DefendMyFriend (edict_t *self, edict_t *enemy)
 	FoundTarget(self);
 }
 
-void CallMyFriends (edict_t *targ, edict_t *attacker, int damage) //mxd. Added "damage" param
+void CallMyFriends(edict_t *targ, edict_t *attacker, int damage) //mxd. Added "damage" param
 {
 	if (!targ || !attacker)
 		return;

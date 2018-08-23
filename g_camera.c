@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
-void camera_off (edict_t *ent)
+void camera_off(edict_t *ent)
 {
 	if (!ent->client || !ent->client->spycam)
 		return;
@@ -95,7 +95,7 @@ void faker_animate(edict_t *self)
 	gi.linkentity(self);
 }
 
-void camera_on (edict_t *ent)
+void camera_on(edict_t *ent)
 {
 	edict_t		*monster;
 	int			i;
@@ -187,7 +187,7 @@ void camera_on (edict_t *ent)
 }
 
 
-edict_t *G_FindNextCamera (edict_t *camera, edict_t *monitor)
+edict_t *G_FindNextCamera(edict_t *camera, edict_t *monitor)
 {
 	if (!monitor->target)
 		return NULL;
@@ -304,7 +304,7 @@ found_one:
 	return next;
 }
 
-edict_t *G_FindPrevCamera (edict_t *camera, edict_t *monitor)
+edict_t *G_FindPrevCamera(edict_t *camera, edict_t *monitor)
 {
 	edict_t	*newcamera;
 
@@ -406,7 +406,7 @@ found_one:
 	return newcamera;
 }
 
-void use_camera (edict_t *self, edict_t *other, edict_t *activator)
+void use_camera(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!activator->client || activator->client->spycam)
 		return; // already using camera
@@ -433,7 +433,7 @@ void use_camera (edict_t *self, edict_t *other, edict_t *activator)
 	camera_on(activator);
 }
 
-void func_monitor_init (edict_t *self)
+void func_monitor_init(edict_t *self)
 {
 	self->count = 0;
 	edict_t *camera = NULL;
@@ -444,7 +444,7 @@ void func_monitor_init (edict_t *self)
 		self->s.effects = 0; // don't animate a func_monitor that has no cameras
 }
 
-void SP_func_monitor (edict_t *self)
+void SP_func_monitor(edict_t *self)
 {
 	if (!self->target)
 	{

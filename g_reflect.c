@@ -69,7 +69,7 @@ void ReflectExplosion(int type, const vec3_t origin)
 		case 5: org[1] = 2 * mirror->absmax[1] - origin[1] - mirror->moveinfo.distance - 2; break;
 		}
 
-		if(!WithinBBox(org, mirror)) //mxd
+		if (!WithinBBox(org, mirror)) //mxd
 			continue;
 
 		gi.WriteByte(svc_temp_entity);
@@ -79,7 +79,7 @@ void ReflectExplosion(int type, const vec3_t origin)
 	}
 }
 
-void ReflectTrail (int type, const vec3_t start, const vec3_t end)
+void ReflectTrail(int type, const vec3_t start, const vec3_t end)
 {
 	vec3_t	p1, p2;
 
@@ -136,7 +136,7 @@ void ReflectTrail (int type, const vec3_t start, const vec3_t end)
 	}
 }
 
-void ReflectSteam (const vec3_t origin, const vec3_t movedir, int count, int sounds, int speed, int wait, int nextid)
+void ReflectSteam(const vec3_t origin, const vec3_t movedir, int count, int sounds, int speed, int wait, int nextid)
 {
 	vec3_t	org, dir;
 
@@ -197,7 +197,7 @@ void ReflectSteam (const vec3_t origin, const vec3_t movedir, int count, int sou
 	}
 }
 
-void ReflectSparks (int type, const vec3_t origin, const vec3_t movedir)
+void ReflectSparks(int type, const vec3_t origin, const vec3_t movedir)
 {
 	vec3_t	org, dir;
 
@@ -260,7 +260,7 @@ void ReflectSparks (int type, const vec3_t origin, const vec3_t movedir)
 	}
 }
 
-void DeleteReflection (edict_t *ent, int index)
+void DeleteReflection(edict_t *ent, int index)
 {
 	if (index < 0)
 	{
@@ -298,7 +298,7 @@ void DeleteReflection (edict_t *ent, int index)
 	}
 }
 
-void AddReflection (edict_t *ent)
+void AddReflection(edict_t *ent)
 {
 	float		roll;
 	vec3_t		forward;
@@ -430,7 +430,7 @@ void AddReflection (edict_t *ent)
 	}
 }
 
-void use_func_reflect (edict_t *self, edict_t *other, edict_t *activator)
+void use_func_reflect(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->spawnflags & SF_REFLECT_OFF)
 		self->spawnflags &= ~SF_REFLECT_OFF;
@@ -441,7 +441,7 @@ void use_func_reflect (edict_t *self, edict_t *other, edict_t *activator)
 		self->use = NULL;
 }
 
-void SP_func_reflect (edict_t *self)
+void SP_func_reflect(edict_t *self)
 {
 	if (level.num_reflectors >= MAX_MIRRORS)
 	{

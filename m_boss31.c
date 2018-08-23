@@ -30,7 +30,7 @@ jorg
 #include "g_local.h"
 #include "m_boss31.h"
 
-extern void SP_monster_makron (edict_t *self);
+extern void SP_monster_makron(edict_t *self);
 //qboolean visible(edict_t *self, edict_t *other);
 
 static int	sound_pain1;
@@ -48,8 +48,8 @@ static int	sound_step_left;
 static int	sound_step_right;
 static int	sound_death_hit;
 
-void BossExplode (edict_t *self);
-void MakronToss (edict_t *self);
+void BossExplode(edict_t *self);
+void MakronToss(edict_t *self);
 
 
 void jorg_search(edict_t *self)
@@ -65,10 +65,10 @@ void jorg_search(edict_t *self)
 }
 
 
-void jorg_dead (edict_t *self);
-void jorgBFG (edict_t *self);
-//void jorgMachineGun (edict_t *self);
-void jorg_firebullet (edict_t *self);
+void jorg_dead(edict_t *self);
+void jorgBFG(edict_t *self);
+//void jorgMachineGun(edict_t *self);
+void jorg_firebullet(edict_t *self);
 void jorg_reattack1(edict_t *self);
 void jorg_attack1(edict_t *self);
 void jorg_idle(edict_t *self);
@@ -80,7 +80,7 @@ void jorg_death_hit(edict_t *self);
 // stand
 //
 
-mframe_t jorg_frames_stand []=
+mframe_t jorg_frames_stand[]=
 {
 	{ai_stand, 0, jorg_idle},
 	{ai_stand, 0, NULL},
@@ -136,35 +136,35 @@ mframe_t jorg_frames_stand []=
 };
 mmove_t	jorg_move_stand = {FRAME_stand01, FRAME_stand51, jorg_frames_stand, NULL};
 
-void jorg_idle (edict_t *self)
+void jorg_idle(edict_t *self)
 {
 	if (!(self->spawnflags & SF_MONSTER_AMBUSH))
 		gi.sound(self, CHAN_VOICE, sound_idle, 1, ATTN_NORM,0);
 }
 
-void jorg_death_hit (edict_t *self)
+void jorg_death_hit(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_death_hit, 1, ATTN_NORM,0);
 }
 
 
-void jorg_step_left (edict_t *self)
+void jorg_step_left(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_step_left, 1, ATTN_NORM,0);
 }
 
-void jorg_step_right (edict_t *self)
+void jorg_step_right(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, sound_step_right, 1, ATTN_NORM,0);
 }
 
 
-void jorg_stand (edict_t *self)
+void jorg_stand(edict_t *self)
 {
 	self->monsterinfo.currentmove = &jorg_move_stand;
 }
 
-mframe_t jorg_frames_run [] =
+mframe_t jorg_frames_run[] =
 {
 	{ai_run, 17, jorg_step_left},
 	{ai_run, 0,	 NULL},
@@ -187,7 +187,7 @@ mmove_t	jorg_move_run = {FRAME_walk06, FRAME_walk19, jorg_frames_run, NULL};
 // walk
 //
 
-mframe_t jorg_frames_start_walk [] =
+mframe_t jorg_frames_start_walk[] =
 {
 	{ai_walk,	5,	NULL},
 	{ai_walk,	6,	NULL},
@@ -197,7 +197,7 @@ mframe_t jorg_frames_start_walk [] =
 };
 mmove_t jorg_move_start_walk = {FRAME_walk01, FRAME_walk05, jorg_frames_start_walk, NULL};
 
-mframe_t jorg_frames_walk [] =
+mframe_t jorg_frames_walk[] =
 {
 	{ai_walk, 17,	NULL},
 	{ai_walk, 0,	NULL},
@@ -216,7 +216,7 @@ mframe_t jorg_frames_walk [] =
 };
 mmove_t	jorg_move_walk = {FRAME_walk06, FRAME_walk19, jorg_frames_walk, NULL};
 
-mframe_t jorg_frames_end_walk [] =
+mframe_t jorg_frames_end_walk[] =
 {
 	{ai_walk,	11,	NULL},
 	{ai_walk,	0,	NULL},
@@ -227,12 +227,12 @@ mframe_t jorg_frames_end_walk [] =
 };
 mmove_t jorg_move_end_walk = {FRAME_walk20, FRAME_walk25, jorg_frames_end_walk, NULL};
 
-void jorg_walk (edict_t *self)
+void jorg_walk(edict_t *self)
 {
 		self->monsterinfo.currentmove = &jorg_move_walk;
 }
 
-void jorg_run (edict_t *self)
+void jorg_run(edict_t *self)
 {
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.currentmove = &jorg_move_stand;
@@ -240,7 +240,7 @@ void jorg_run (edict_t *self)
 		self->monsterinfo.currentmove = &jorg_move_run;
 }
 
-mframe_t jorg_frames_pain3 [] =
+mframe_t jorg_frames_pain3[] =
 {
 	{ai_move,	-28, NULL},
 	{ai_move,	-6,	 NULL},
@@ -270,7 +270,7 @@ mframe_t jorg_frames_pain3 [] =
 };
 mmove_t jorg_move_pain3 = {FRAME_pain301, FRAME_pain325, jorg_frames_pain3, jorg_run};
 
-mframe_t jorg_frames_pain2 [] =
+mframe_t jorg_frames_pain2[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -278,7 +278,7 @@ mframe_t jorg_frames_pain2 [] =
 };
 mmove_t jorg_move_pain2 = {FRAME_pain201, FRAME_pain203, jorg_frames_pain2, jorg_run};
 
-mframe_t jorg_frames_pain1 [] =
+mframe_t jorg_frames_pain1[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -286,7 +286,7 @@ mframe_t jorg_frames_pain1 [] =
 };
 mmove_t jorg_move_pain1 = {FRAME_pain101, FRAME_pain103, jorg_frames_pain1, jorg_run};
 
-mframe_t jorg_frames_death1 [] =
+mframe_t jorg_frames_death1[] =
 {
 	{ai_move,	0,	NULL},
 	{ai_move,	0,	NULL},
@@ -341,7 +341,7 @@ mframe_t jorg_frames_death1 [] =
 };
 mmove_t jorg_move_death = {FRAME_death01, FRAME_death50, jorg_frames_death1, jorg_dead};
 
-mframe_t jorg_frames_attack2 []=
+mframe_t jorg_frames_attack2[]=
 {
 	{ai_charge,	0,	NULL},
 	{ai_charge,	0,	NULL},
@@ -359,7 +359,7 @@ mframe_t jorg_frames_attack2 []=
 };
 mmove_t jorg_move_attack2 = {FRAME_attak201, FRAME_attak213, jorg_frames_attack2, jorg_run};
 
-mframe_t jorg_frames_start_attack1 [] =
+mframe_t jorg_frames_start_attack1[] =
 {
 	{ai_charge,	0,	NULL},
 	{ai_charge,	0,	NULL},
@@ -418,7 +418,7 @@ void jorg_attack1(edict_t *self)
 	self->monsterinfo.currentmove = &jorg_move_attack1;
 }
 
-void jorg_pain (edict_t *self, edict_t *other, float kick, int damage)
+void jorg_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 
 	if (self->health < (self->max_health / 2))
@@ -469,7 +469,7 @@ void jorg_pain (edict_t *self, edict_t *other, float kick, int damage)
 	}
 };
 
-void jorgBFG (edict_t *self)
+void jorgBFG(edict_t *self)
 {
 	vec3_t	forward, right;
 	vec3_t	start;
@@ -497,7 +497,7 @@ void jorgBFG (edict_t *self)
 	monster_fire_bfg(self, start, dir, 50, 300, 100, 200, MZ2_JORG_BFG_1);
 }	
 
-void jorg_firebullet_right (edict_t *self)
+void jorg_firebullet_right(edict_t *self)
 {
 	vec3_t	forward, right, target;
 	vec3_t	start;
@@ -521,7 +521,7 @@ void jorg_firebullet_right (edict_t *self)
 	monster_fire_bullet(self, start, forward, 6, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, MZ2_JORG_MACHINEGUN_R1);
 }	
 
-void jorg_firebullet_left (edict_t *self)
+void jorg_firebullet_left(edict_t *self)
 {
 	vec3_t	forward, right, target;
 	vec3_t	start;
@@ -544,7 +544,7 @@ void jorg_firebullet_left (edict_t *self)
 	monster_fire_bullet(self, start, forward, 6, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, MZ2_JORG_MACHINEGUN_L1);
 }	
 
-void jorg_firebullet (edict_t *self)
+void jorg_firebullet(edict_t *self)
 {
 	jorg_firebullet_left(self);
 	jorg_firebullet_right(self);
@@ -571,7 +571,7 @@ void jorg_attack(edict_t *self)
 	}
 }
 
-void jorg_dead (edict_t *self)
+void jorg_dead(edict_t *self)
 {
 #if 0
 	edict_t	*tempent;
@@ -616,7 +616,7 @@ void jorg_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, 
 	self->monsterinfo.currentmove = &jorg_move_death;
 }
 
-qboolean Jorg_CheckAttack (edict_t *self)
+qboolean Jorg_CheckAttack(edict_t *self)
 {
 	vec3_t	spot1, spot2;
 	vec3_t	temp;
@@ -689,11 +689,11 @@ qboolean Jorg_CheckAttack (edict_t *self)
 }
 
 
-void MakronPrecache (void);
+void MakronPrecache(void);
 
 /*QUAKED monster_jorg (1 .5 0) (-80 -80 0) (90 90 140) Ambush Trigger_Spawn Sight
 */
-void SP_monster_jorg (edict_t *self)
+void SP_monster_jorg(edict_t *self)
 {
 	if (deathmatch->value)
 	{
@@ -756,8 +756,8 @@ void SP_monster_jorg (edict_t *self)
 	self->monsterinfo.currentmove = &jorg_move_stand;
 	if (self->health < 0)
 	{
-		mmove_t *deathmoves[] = { &jorg_move_death, NULL};
-		M_SetDeath(self,(mmove_t **)&deathmoves);
+		mmove_t *deathmoves[] = { &jorg_move_death, NULL };
+		M_SetDeath(self, (mmove_t **)&deathmoves);
 	}
 
 	// Lazarus

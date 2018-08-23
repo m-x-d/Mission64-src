@@ -21,22 +21,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
-qboolean	Pickup_Weapon (edict_t *ent, edict_t *other);
-void		Use_Weapon (edict_t *ent, gitem_t *inv);
-void		Drop_Weapon (edict_t *ent, gitem_t *inv);
+qboolean	Pickup_Weapon(edict_t *ent, edict_t *other);
+void		Use_Weapon(edict_t *ent, gitem_t *inv);
+void		Drop_Weapon(edict_t *ent, gitem_t *inv);
 
-void Weapon_Blaster (edict_t *ent);
-void Weapon_Shotgun (edict_t *ent);
-void Weapon_SuperShotgun (edict_t *ent);
-void Weapon_Machinegun (edict_t *ent);
-void Weapon_Chaingun (edict_t *ent);
-void Weapon_HyperBlaster (edict_t *ent);
-void Weapon_RocketLauncher (edict_t *ent);
-//void Weapon_Grenade (edict_t *ent); //mxd. Don't use grenades as a weapon
-void Weapon_GrenadeLauncher (edict_t *ent);
-void Weapon_Railgun (edict_t *ent);
-void Weapon_BFG (edict_t *ent);
-//void Weapon_HomingMissileLauncher (edict_t *ent); //mxd. No HML ples
+void Weapon_Blaster(edict_t *ent);
+void Weapon_Shotgun(edict_t *ent);
+void Weapon_SuperShotgun(edict_t *ent);
+void Weapon_Machinegun(edict_t *ent);
+void Weapon_Chaingun(edict_t *ent);
+void Weapon_HyperBlaster(edict_t *ent);
+void Weapon_RocketLauncher(edict_t *ent);
+//void Weapon_Grenade(edict_t *ent); //mxd. Don't use grenades as a weapon
+void Weapon_GrenadeLauncher(edict_t *ent);
+void Weapon_Railgun(edict_t *ent);
+void Weapon_BFG(edict_t *ent);
+//void Weapon_HomingMissileLauncher(edict_t *ent); //mxd. No HML ples
 void Weapon_Null(edict_t *ent);
 
 gitem_armor_t jacketarmor_info	= {  25,  50, .30, .00, ARMOR_JACKET };
@@ -67,9 +67,9 @@ int	rl_index;
 #define NO_DROPTOFLOOR      8
 #define SHOOTABLE           16
 
-void Use_Quad (edict_t *ent, gitem_t *item);
-void Use_Stasis (edict_t *ent, gitem_t *item);
-void Use_Invisibility (edict_t *ent, gitem_t *item); //mxd
+void Use_Quad(edict_t *ent, gitem_t *item);
+void Use_Stasis(edict_t *ent, gitem_t *item);
+void Use_Invisibility(edict_t *ent, gitem_t *item); //mxd
 static int quad_drop_timeout_hack;
 
 
@@ -293,7 +293,7 @@ void SetRespawn(edict_t *ent, float delay)
 
 //======================================================================
 
-qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
+qboolean Pickup_Powerup(edict_t *ent, edict_t *other)
 {
 	const int quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
 	if ((skill->value == 1 && quantity >= sk_powerup_max->value) || (skill->value >= 2 && quantity >= sk_powerup_max->value - 1))
@@ -371,7 +371,7 @@ void Drop_General(edict_t *ent, gitem_t *item)
 }
 
 #ifdef JETPACK_MOD
-void Drop_Jetpack (edict_t *ent, gitem_t *item)
+void Drop_Jetpack(edict_t *ent, gitem_t *item)
 {
 	if (ent->client->jetpack)
 		safe_cprintf(ent,PRINT_HIGH,"Cannot drop jetpack in use\n");
@@ -400,7 +400,7 @@ void Drop_Jetpack (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-qboolean Pickup_Adrenaline (edict_t *ent, edict_t *other)
+qboolean Pickup_Adrenaline(edict_t *ent, edict_t *other)
 {
 	if (!deathmatch->value)
 		other->max_health += 1;
@@ -414,7 +414,7 @@ qboolean Pickup_Adrenaline (edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean Pickup_AncientHead (edict_t *ent, edict_t *other)
+qboolean Pickup_AncientHead(edict_t *ent, edict_t *other)
 {
 	other->max_health += 2;
 
@@ -424,7 +424,7 @@ qboolean Pickup_AncientHead (edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
+qboolean Pickup_Bandolier(edict_t *ent, edict_t *other)
 {
 	//Knightmare- override ammo pickup values with cvars
 	SetAmmoPickupValues();
@@ -454,7 +454,7 @@ qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean Pickup_Pack (edict_t *ent, edict_t *other)
+qboolean Pickup_Pack(edict_t *ent, edict_t *other)
 {
 	//Knightmare- override ammo pickup values with cvars
 	SetAmmoPickupValues();
@@ -507,7 +507,7 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 }
 
 // Knightmare added- Ammogen tech-spawned backpack
-qboolean Pickup_AmmogenPack (edict_t *ent, edict_t *other)
+qboolean Pickup_AmmogenPack(edict_t *ent, edict_t *other)
 {
 	if (!ent || !other)
 		return false;
@@ -552,7 +552,7 @@ qboolean Pickup_AmmogenPack (edict_t *ent, edict_t *other)
 
 //======================================================================
 
-void Use_Quad (edict_t *ent, gitem_t *item)
+void Use_Quad(edict_t *ent, gitem_t *item)
 {
 	int		timeout;
 
@@ -579,7 +579,7 @@ void Use_Quad (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-void Use_Breather (edict_t *ent, gitem_t *item)
+void Use_Breather(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
@@ -594,7 +594,7 @@ void Use_Breather (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-void Use_Envirosuit (edict_t *ent, gitem_t *item)
+void Use_Envirosuit(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
@@ -609,7 +609,7 @@ void Use_Envirosuit (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-void Use_Invulnerability (edict_t *ent, gitem_t *item)
+void Use_Invulnerability(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
@@ -624,7 +624,7 @@ void Use_Invulnerability (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-void	Use_Silencer (edict_t *ent, gitem_t *item)
+void	Use_Silencer(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
@@ -651,7 +651,7 @@ void Use_Invisibility(edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-qboolean Pickup_Key (edict_t *ent, edict_t *other)
+qboolean Pickup_Key(edict_t *ent, edict_t *other)
 {
 	if (coop->value)
 	{
@@ -831,7 +831,7 @@ void MegaHealth_think(edict_t *self)
 		G_FreeEdict(self);
 }
 
-qboolean Pickup_Health (edict_t *ent, edict_t *other)
+qboolean Pickup_Health(edict_t *ent, edict_t *other)
 {
 	if (!(ent->style & HEALTH_IGNORE_MAX) && other->health >= other->max_health)
 		return false;
@@ -978,7 +978,7 @@ qboolean Pickup_Armor(edict_t *ent, edict_t *other)
 //======================================================================
 
 // Knightmare- rewrote this so it's handled properly
-int PowerArmorType (edict_t *ent)
+int PowerArmorType(edict_t *ent)
 {
 	if (!ent->client)
 		return POWER_ARMOR_NONE;
@@ -1175,7 +1175,7 @@ void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 //======================================================================
 
-/*static*/ void drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other == ent->owner)
 		return;
@@ -1183,7 +1183,7 @@ void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 	Touch_Item(ent, other, plane, surf);
 }
 
-/*static*/ void drop_make_touchable (edict_t *ent)
+void drop_make_touchable(edict_t *ent)
 {
 	ent->touch = Touch_Item;
 	if (deathmatch->value)
@@ -1297,7 +1297,7 @@ void Use_Item(edict_t *ent, edict_t *other, edict_t *activator)
 droptofloor
 ================
 */
-void droptofloor (edict_t *ent)
+void droptofloor(edict_t *ent)
 {
 	vec3_t		dest;
 
@@ -3178,7 +3178,7 @@ mxd. Explosive charges "key"
 
 // QUAKED item_health (.3 .3 1) (-16 -16 -16) (16 16 16)
 
-void SP_item_health (edict_t *self)
+void SP_item_health(edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
@@ -3195,7 +3195,7 @@ void SP_item_health (edict_t *self)
 
 // QUAKED item_health_small (.3 .3 1) (-16 -16 -16) (16 16 16)
 
-void SP_item_health_small (edict_t *self)
+void SP_item_health_small(edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
@@ -3215,7 +3215,7 @@ void SP_item_health_small (edict_t *self)
 
 // QUAKED item_health_large (.3 .3 1) (-16 -16 -16) (16 16 16)
 
-void SP_item_health_large (edict_t *self)
+void SP_item_health_large(edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
@@ -3232,7 +3232,7 @@ void SP_item_health_large (edict_t *self)
 
 // QUAKED item_health_mega (.3 .3 1) (-16 -16 -16) (16 16 16)
 
-void SP_item_health_mega (edict_t *self)
+void SP_item_health_mega(edict_t *self)
 {
 	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
 	{
@@ -3249,7 +3249,7 @@ void SP_item_health_mega (edict_t *self)
 }
 
 
-void InitItems (void)
+void InitItems(void)
 {
 	game.num_items = sizeof(itemlist)/sizeof(itemlist[0]) - 1;
 }
@@ -3263,7 +3263,7 @@ SetItemNames
 Called by worldspawn
 ===============
 */
-void SetItemNames (void)
+void SetItemNames(void)
 {
 	for (int i = 0; i < game.num_items; i++)
 	{

@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 
 
-void Svcmd_Test_f (void)
+void Svcmd_Test_f(void)
 {
 	safe_cprintf(NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
 }
@@ -73,7 +73,7 @@ int			numipfilters;
 StringToFilter
 =================
 */
-static qboolean StringToFilter (char *s, ipfilter_t *f)
+static qboolean StringToFilter(char *s, ipfilter_t *f)
 {
 	char	num[128];
 	byte	b[4];
@@ -121,7 +121,7 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 SV_FilterPacket
 =================
 */
-qboolean SV_FilterPacket (char *from)
+qboolean SV_FilterPacket(char *from)
 {
 	byte m[4];
 
@@ -158,7 +158,7 @@ qboolean SV_FilterPacket (char *from)
 SV_AddIP_f
 =================
 */
-void SVCmd_AddIP_f (void)
+void SVCmd_AddIP_f(void)
 {
 	if (gi.argc() < 3)
 	{
@@ -191,7 +191,7 @@ void SVCmd_AddIP_f (void)
 SV_RemoveIP_f
 =================
 */
-void SVCmd_RemoveIP_f (void)
+void SVCmd_RemoveIP_f(void)
 {
 	if (gi.argc() < 3)
 	{
@@ -225,7 +225,7 @@ void SVCmd_RemoveIP_f (void)
 SV_ListIP_f
 =================
 */
-void SVCmd_ListIP_f (void)
+void SVCmd_ListIP_f(void)
 {
 	byte	b[4];
 
@@ -282,7 +282,7 @@ ServerCommand will be called when an "sv" command is issued.
 The game can issue gi.argc() / gi.argv() commands to get the rest of the parameters
 =================
 */
-void ServerCommand (void)
+void ServerCommand(void)
 {
 	char *cmd = gi.argv(1);
 

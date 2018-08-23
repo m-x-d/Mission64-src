@@ -111,7 +111,7 @@ pr_global_struct->trace_normal is set to the normal of the blocking wall
 =============
 */
 //FIXME since we need to test end position contents here, can we avoid doing it again later in catagorize position?
-qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
+qboolean SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 {
 	vec3_t		oldorg, neworg, end;
 	trace_t		trace;
@@ -595,7 +595,7 @@ SV_StepDirection
 Turns to the movement direction, and walks the current distance if facing it.
 ======================
 */
-qboolean SV_StepDirection (edict_t *ent, float yaw, float dist)
+qboolean SV_StepDirection(edict_t *ent, float yaw, float dist)
 {
 	vec3_t move, oldorigin;
 
@@ -650,7 +650,7 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist)
 SV_FixCheckBottom
 ======================
 */
-void SV_FixCheckBottom (edict_t *ent)
+void SV_FixCheckBottom(edict_t *ent)
 {
 	ent->flags |= FL_PARTIALGROUND;
 }
@@ -663,7 +663,7 @@ SV_NewChaseDir
 ================
 */
 #define	DI_NODIR	-1
-void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
+void SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist)
 {
 	float d[3];
 	float tdir, olddir;
@@ -787,7 +787,7 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 SV_CloseEnough
 ======================
 */
-qboolean SV_CloseEnough (edict_t *ent, edict_t *goal, float dist)
+qboolean SV_CloseEnough(edict_t *ent, edict_t *goal, float dist)
 {
 	for (int i = 0; i < 3; i++)
 	{

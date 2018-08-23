@@ -49,12 +49,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SF_PATH_DISABLE_TRAIN		0x0008		// player loses control of train
 #define SF_PATH_ABS_SPEED			0x0010		// speed modifier is absolute rather than a multiplier
 
-void tracktrain_next (edict_t *self);
-void tracktrain_reach_dest (edict_t *self);
+void tracktrain_next(edict_t *self);
+void tracktrain_reach_dest(edict_t *self);
 
 //=============================================================================
 
-static float track_AngleMod (float in)
+static float track_AngleMod(float in)
 {
 	if (in < 0)
 		return in + 360 * ((int)(in / 360) + 1);
@@ -65,7 +65,7 @@ static float track_AngleMod (float in)
 	return in;
 }
 
-static float track_ApproachAngle (float targAngle, /*float inAngle,*/ float speed)
+static float track_ApproachAngle(float targAngle, /*float inAngle,*/ float speed)
 {
 	targAngle = track_AngleMod(targAngle);
 	float out = track_AngleMod(targAngle);
@@ -130,7 +130,7 @@ void path_track_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_path_track (edict_t *self)
+void SP_path_track(edict_t *self)
 {
 	if (!self->targetname)
 	{
@@ -180,7 +180,7 @@ speed			= Move/Rotate speed
 #define SF_TRACK_YAXIS			0x0080
 
 
-void trackchange_done (edict_t *self)
+void trackchange_done(edict_t *self)
 {
 	edict_t	*train = self->target_ent;
 
@@ -334,7 +334,7 @@ void trackchange_use(edict_t *self, edict_t *other, edict_t *activator)
 	gi.linkentity(self);
 }
 
-void SP_func_trackchange (edict_t *self)
+void SP_func_trackchange(edict_t *self)
 {
 	self->class_id = ENTITY_FUNC_TRACKCHANGE;
 
@@ -421,9 +421,9 @@ distance	wheelbase, determines turn rate. default=50
 height		height of origin above path_tracks, default=4
 roll		roll angle while turning, default=0
 */
-void tracktrain_think (edict_t *self);
+void tracktrain_think(edict_t *self);
 
-void tracktrain_drive (edict_t *train, edict_t *other)
+void tracktrain_drive(edict_t *train, edict_t *other)
 {
 	vec3_t	angles, offset;
 	vec3_t	f1, l1, u1;
@@ -504,7 +504,7 @@ void tracktrain_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 	BecomeExplosion1(self);
 }
 
-void tracktrain_disengage (edict_t *train)
+void tracktrain_disengage(edict_t *train)
 {
 	edict_t *driver = train->owner;
 	if (!driver)
@@ -558,7 +558,7 @@ void tracktrain_disengage (edict_t *train)
 	driver->vehicle = NULL;
 }
 
-void tracktrain_hide (edict_t *self)
+void tracktrain_hide(edict_t *self)
 {
 	self->solid = SOLID_NOT;
 	self->svflags |= SVF_NOCLIENT;
@@ -1085,7 +1085,7 @@ void tracktrain_think(edict_t *self)
 		self->think = tracktrain_reach_dest;
 }
 
-void tracktrain_blocked (edict_t *self, edict_t *other)
+void tracktrain_blocked(edict_t *self, edict_t *other)
 {
 	vec3_t	dir;
 	int		knockback;
@@ -1150,7 +1150,7 @@ void tracktrain_blocked (edict_t *self, edict_t *other)
 	self->touch_debounce_time = level.time + 0.5;
 }
 
-void tracktrain_reach_dest (edict_t *self)
+void tracktrain_reach_dest(edict_t *self)
 {
 	edict_t	*path = self->target_ent;
 
@@ -1201,7 +1201,7 @@ void tracktrain_reach_dest (edict_t *self)
 	tracktrain_next(self);
 }
 
-qboolean is_backing_up (edict_t *train)
+qboolean is_backing_up(edict_t *train)
 {
 	vec3_t forward, v_norm;
 
@@ -1457,7 +1457,7 @@ edict_t *NextPathTrack(edict_t *train, edict_t *path)
 	return next;
 }
 
-void LookAhead (edict_t *train, vec3_t point, float dist)
+void LookAhead(edict_t *train, vec3_t point, float dist)
 {
 	vec3_t	v;
 	int		n = 0;
@@ -1539,7 +1539,7 @@ void train_angles(edict_t *train)
 	train->yaw_speed = fabs(angles[YAW]) * 10;
 }
 
-void tracktrain_turn (edict_t *self)
+void tracktrain_turn(edict_t *self)
 {
 	edict_t *train = self->enemy;
 	if (!train || !train->inuse)
@@ -1592,7 +1592,7 @@ void tracktrain_turn (edict_t *self)
 }
 
 
-void tracktrain_next (edict_t *self)
+void tracktrain_next(edict_t *self)
 {
 	vec3_t dest;
 
@@ -1668,7 +1668,7 @@ void tracktrain_next (edict_t *self)
 	}
 }
 
-void func_tracktrain_find (edict_t *self)
+void func_tracktrain_find(edict_t *self)
 {
 	vec3_t vec;
 
@@ -1768,7 +1768,7 @@ void tracktrain_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-void SP_func_tracktrain (edict_t *self)
+void SP_func_tracktrain(edict_t *self)
 {
 	self->class_id = ENTITY_FUNC_TRACKTRAIN;
 
@@ -1892,7 +1892,7 @@ void SP_func_tracktrain (edict_t *self)
 
 }
 
-void find_tracktrain (edict_t *self)
+void find_tracktrain(edict_t *self)
 {
 	// This gives game a chance to put player in place before restarting train
 	if (!g_edicts[1].linkcount)
@@ -2008,7 +2008,7 @@ void find_tracktrain (edict_t *self)
 	G_FreeEdict(self);
 }
 
-void SP_info_train_start (edict_t *self)
+void SP_info_train_start(edict_t *self)
 {
 	if (!self->targetname)
 	{

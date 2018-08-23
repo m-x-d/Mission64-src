@@ -1219,7 +1219,7 @@ SV_Physics_Pusher
 Bmodel objects don't interact with each other, but push all box objects
 ================
 */
-void SV_Physics_Pusher (edict_t *ent)
+void SV_Physics_Pusher(edict_t *ent)
 {
 	vec3_t	move, amove;
 	edict_t	*part;
@@ -1324,7 +1324,7 @@ SV_Physics_None
 Non moving objects can only think
 =============
 */
-void SV_Physics_None (edict_t *ent)
+void SV_Physics_None(edict_t *ent)
 {
 	// regular thinking
 	SV_RunThink(ent);
@@ -1337,7 +1337,7 @@ SV_Physics_Noclip
 A moving object that doesn't obey physics
 =============
 */
-void SV_Physics_Noclip (edict_t *ent)
+void SV_Physics_Noclip(edict_t *ent)
 {
 	// regular thinking
 	if (!SV_RunThink(ent))
@@ -1364,7 +1364,7 @@ SV_Physics_Toss
 Toss, bounce, and fly movement.  When onground, do nothing.
 =============
 */
-void SV_Physics_Toss (edict_t *ent)
+void SV_Physics_Toss(edict_t *ent)
 {
 	vec3_t	move;
 	float	backoff;
@@ -1529,7 +1529,7 @@ FIXME: is this true?
 #define sv_friction			6
 #define sv_waterfriction	1
 
-void SV_AddRotationalFriction (edict_t *ent)
+void SV_AddRotationalFriction(edict_t *ent)
 {
 	VectorMA(ent->s.angles, FRAMETIME, ent->avelocity, ent->s.angles);
 	const float adjustment = FRAMETIME * sv_stopspeed->value * sv_friction; //PGM now a cvar
@@ -1545,7 +1545,7 @@ void SV_AddRotationalFriction (edict_t *ent)
 
 #define WATER_DENSITY 0.00190735
 
-float RiderMass (edict_t *platform)
+float RiderMass(edict_t *platform)
 {
 	float	mass = 0;
 	vec3_t	point;
@@ -1583,7 +1583,7 @@ float RiderMass (edict_t *platform)
 	return mass;
 }
 
-void SV_Physics_Step (edict_t *ent)
+void SV_Physics_Step(edict_t *ent)
 {
 	qboolean	hitsound = false;
 	float		speed, newspeed, control;
@@ -2221,7 +2221,7 @@ not_allsolid:
 
 
 
-void SV_Physics_Vehicle (edict_t *ent)
+void SV_Physics_Vehicle(edict_t *ent)
 {
 	// See if we're on the ground
 	if (!ent->groundentity)
@@ -2404,7 +2404,7 @@ SV_Physics_Debris
 Toss, bounce, and fly movement. When onground, do nothing.
 =============
 */
-void SV_Physics_Debris (edict_t *ent)
+void SV_Physics_Debris(edict_t *ent)
 {
 	vec3_t move;
 	vec3_t old_origin;

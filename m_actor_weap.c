@@ -122,7 +122,7 @@ void ActorTarget(edict_t *self, vec3_t target)
 }
 
 //Blaster
-void actorBlaster (edict_t *self)
+void actorBlaster(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -186,7 +186,7 @@ void actorBlaster (edict_t *self)
 }
 
 //Shotgun
-void actorShotgun (edict_t *self)
+void actorShotgun(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -235,7 +235,7 @@ void actorShotgun (edict_t *self)
 }
 
 //Super Shotgun
-void actorSuperShotgun (edict_t *self)
+void actorSuperShotgun(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -294,7 +294,7 @@ void actorSuperShotgun (edict_t *self)
 }
 
 // Machinegun
-void actorMachineGun (edict_t *self)
+void actorMachineGun(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -348,7 +348,7 @@ void actorMachineGun (edict_t *self)
 }
 
 // Chaingun
-void actorChaingun (edict_t *self)
+void actorChaingun(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -433,7 +433,7 @@ void actorChaingun (edict_t *self)
 // DWH: Pretty much a straight copy from Lazarus gunner code
 #define GRENADE_VELOCITY 632.4555320337
 #define GRENADE_VELOCITY_SQUARED 400000
-void actorGrenadeLauncher (edict_t *self)
+void actorGrenadeLauncher(edict_t *self)
 {
 	vec3_t	start,target;
 	vec3_t	forward, right, up;
@@ -609,7 +609,7 @@ void actorGrenadeLauncher (edict_t *self)
 
 
 // Rocket Launcher
-void actorRocket (edict_t *self)
+void actorRocket(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -644,7 +644,7 @@ void actorRocket (edict_t *self)
 		TraceAimPoint(start, target);
 }
 
-void actorHyperblaster (edict_t *self)
+void actorHyperblaster(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -754,7 +754,7 @@ void actorHyperblaster (edict_t *self)
 }
 
 // Railgun
-void actorRailGun (edict_t *self)
+void actorRailGun(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;
@@ -788,7 +788,7 @@ void actorRailGun (edict_t *self)
 		TraceAimPoint(start, target);
 }
 
-void actorBFG (edict_t *self)
+void actorBFG(edict_t *self)
 {
 	vec3_t	start, target;
 	vec3_t	forward, right, up;

@@ -22,13 +22,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef P_TEXT_H
 #define P_TEXT_H
 
-enum {
+enum
+{
 	TEXT_LEFT,
 	TEXT_CENTER,
 	TEXT_RIGHT
 };
 
-typedef struct texthnd_s {
+typedef struct texthnd_s
+{
 	struct text_s *lines;
 	int		nlines;
 	int		curline;
@@ -43,7 +45,8 @@ typedef struct texthnd_s {
 	byte	*buffer;
 } texthnd_t;
 
-typedef struct text_s {
+typedef struct text_s
+{
 	char *text;
 } text_t;
 

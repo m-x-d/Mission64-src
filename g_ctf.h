@@ -49,25 +49,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CONFIG_CTF_MATCH (CS_AIRACCEL-1)
 #define CONFIG_CTF_TEAMINFO	(CS_AIRACCEL-2)
 
-typedef enum {
+typedef enum
+{
 	CTF_NOTEAM,
 	CTF_TEAM1,
 	CTF_TEAM2,
 	CTF_TEAM3 // Knightmare added
 } ctfteam_t;
 
-typedef enum {
+typedef enum
+{
 	CTF_STATE_START,
 	CTF_STATE_PLAYING
 } ctfstate_t;
 
-typedef enum {
+typedef enum
+{
 	CTF_GRAPPLE_STATE_FLY,
 	CTF_GRAPPLE_STATE_PULL,
 	CTF_GRAPPLE_STATE_HANG
 } ctfgrapplestate_t;
 
-typedef struct ghost_s {
+typedef struct ghost_s
+{
 	char netname[16];
 	int number;
 
@@ -84,7 +88,8 @@ typedef struct ghost_s {
 	edict_t *ent;
 } ghost_t;
 
-typedef enum match_s {
+typedef enum match_s
+{
 	MATCH_NONE,
 	MATCH_SETUP,
 	MATCH_PREGAME,
@@ -92,7 +97,8 @@ typedef enum match_s {
 	MATCH_POST
 } match_t;
 
-typedef enum {
+typedef enum
+{
 	ELECT_NONE,
 	ELECT_MATCH,
 	ELECT_ADMIN,
@@ -153,7 +159,7 @@ char *CTFTeamName(int team);
 char *CTFOtherTeamName(int team);
 void CTFAssignSkin(edict_t *ent, char *s);
 void CTFAssignTeam(gclient_t *who);
-edict_t *SelectCTFSpawnPoint (edict_t *ent);
+edict_t *SelectCTFSpawnPoint(edict_t *ent);
 qboolean CTFPickup_Flag(edict_t *ent, edict_t *other);
 qboolean CTFDrop_Flag(edict_t *ent, gitem_t *item);
 void CTFEffects(edict_t *player);
@@ -161,24 +167,24 @@ void CTFCalcScores(void);
 void SetCTFStats(edict_t *ent);
 gitem_t *CTFWhat_Flag(edict_t *ent);
 void CTFDeadDropFlag(edict_t *self);
-void CTFScoreboardMessage (edict_t *ent, edict_t *killer);
+void CTFScoreboardMessage(edict_t *ent, edict_t *killer);
 void CTFTeam_f(edict_t *ent);
 void CTFID_f(edict_t *ent);
 void CTFSay_Team(edict_t *who, char *msg);
-void CTFFlagSetup (edict_t *ent);
+void CTFFlagSetup(edict_t *ent);
 void CTFResetFlag(int ctf_team);
 void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker);
 void CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker);
 
 // GRAPPLE
-void CTFWeapon_Grapple (edict_t *ent);
+void CTFWeapon_Grapple(edict_t *ent);
 void CTFPlayerResetGrapple(edict_t *ent);
 void CTFGrapplePull(edict_t *self);
 void CTFResetGrapple(edict_t *self);
 
 //TECH
 gitem_t *CTFWhat_Tech(edict_t *ent);
-qboolean CTFPickup_Tech (edict_t *ent, edict_t *other);
+qboolean CTFPickup_Tech(edict_t *ent, edict_t *other);
 void CTFDrop_Tech(edict_t *ent, gitem_t *item);
 void CTFDeadDropTech(edict_t *ent);
 void CTFSetupTechSpawn(void);
@@ -191,7 +197,7 @@ void CTFApplyRegeneration(edict_t *ent);
 qboolean CTFHasRegeneration(edict_t *ent);
 void CTFApplyVampire(edict_t *ent, int dmg);
 void CTFApplyVampireSound(edict_t *ent);
-void CTFApplyAmmogen (edict_t *attacker, edict_t *targ);
+void CTFApplyAmmogen(edict_t *attacker, edict_t *targ);
 void CTFApplyAmmogenSound(edict_t *ent);
 void CTFRespawnTech(edict_t *ent);
 void CTFResetTech(void);
@@ -217,8 +223,8 @@ void CTFPlayerList(edict_t *ent);
 
 qboolean CTFCheckRules(void);
 
-void SP_misc_ctf_banner (edict_t *ent);
-void SP_misc_ctf_small_banner (edict_t *ent);
+void SP_misc_ctf_banner(edict_t *ent);
+void SP_misc_ctf_small_banner(edict_t *ent);
 
 extern char *ctf_statusbar;
 extern char *ttctf_statusbar; // Knightmare added
@@ -229,8 +235,8 @@ extern char *ttctf_statusbar; // Knightmare added
 
 void CTFObserver(edict_t *ent);
 
-void SP_trigger_teleport (edict_t *ent);
-void SP_info_teleport_destination (edict_t *ent);
+void SP_trigger_teleport(edict_t *ent);
+void SP_info_teleport_destination(edict_t *ent);
 
 void CTFSetPowerUpEffect(edict_t *ent, int def);
 

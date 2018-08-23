@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef JETPACK_MOD
 
 // We get silly velocity-effects when we are on ground and try to accelerate, so lift us a little bit if possible
-qboolean Jet_AvoidGround (edict_t *ent)
+qboolean Jet_AvoidGround(edict_t *ent)
 {
 	vec3_t new_origin;
 	
@@ -42,7 +42,7 @@ qboolean Jet_AvoidGround (edict_t *ent)
 }
 
 // If a player dies with activated jetpack this function will be called and produces a little explosion
-void Jet_BecomeExplosion (edict_t *ent, int damage)
+void Jet_BecomeExplosion(edict_t *ent, int damage)
 {
 	gi.WriteByte(svc_temp_entity);
 	gi.WriteByte(TE_EXPLOSION1);
@@ -59,7 +59,7 @@ void Jet_BecomeExplosion (edict_t *ent, int damage)
 
 // The lifting effect is done through changing the origin, it gives the best results.
  // Of course its a little dangerous because if we dont take care, we can move into solid
-void Jet_ApplyLifting (edict_t *ent)
+void Jet_ApplyLifting(edict_t *ent)
 {
 	const int time = 24;
 
@@ -88,7 +88,7 @@ void Jet_ApplyLifting (edict_t *ent)
 		VectorCopy(new_origin, ent->s.origin);
 }
 
-void Jet_ApplySparks (edict_t *ent)
+void Jet_ApplySparks(edict_t *ent)
 {
 	vec3_t  forward, right;
 	vec3_t  pack_pos, jet_vector;
@@ -114,7 +114,7 @@ direction Boosters: the big Main Booster and the smaller up-down and left-right 
 There are only 2 adds to the code of the first tutorial: the jetpack_nextthink and the rolling.
 The other modifications results in the use of the built-in quake functions,
 there is no change in moving behavior (reinventing the wheel is a lot of "fun" and a BIG waste of time ;-))*/
-void Jet_ApplyJet (edict_t *ent, usercmd_t *ucmd)
+void Jet_ApplyJet(edict_t *ent, usercmd_t *ucmd)
 {
 	// Clear gravity so we dont have to compensate it with the Boosters
 	ent->client->ps.pmove.gravity = 0;
