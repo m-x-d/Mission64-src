@@ -1236,7 +1236,7 @@ void SV_Physics_Pusher(edict_t *ent)
 		if (part->attracted)
 			part->velocity[0] = part->velocity[1] = 0;
 
-		if (VectorLength(part->velocity) || VectorLength(part->avelocity))
+		if (VectorLengthSquared(part->velocity) || VectorLengthSquared(part->avelocity))
 		{
 			// object is moving
 			VectorScale(part->velocity, FRAMETIME, move);
@@ -2115,7 +2115,7 @@ not_allsolid:
 				// if not a func_pushable, match speeds...
 				VectorCopy(trace.ent->velocity, ent->velocity);
 			}
-			else if (ent->mass && VectorLength(ent->velocity))
+			else if (ent->mass && VectorLengthSquared(ent->velocity))
 			{
 				// otherwise push func_pushable (if vehicle has mass & is moving)
 				const float e = 0.0; // coefficient of restitution //TODO: this doesn't seem right (mxd)...
@@ -2235,7 +2235,7 @@ void SV_Physics_Vehicle(edict_t *ent)
 	// Move angles
 	VectorMA(ent->s.angles, FRAMETIME, ent->avelocity, ent->s.angles);
 
-	if (VectorLength(ent->velocity))
+	if (VectorLengthSquared(ent->velocity))
 	{
 		if (ent->org_size[0])
 		{

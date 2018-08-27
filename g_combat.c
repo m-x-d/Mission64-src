@@ -595,7 +595,7 @@ void M_ReactToDamage(edict_t *targ, edict_t *attacker)
 			else
 			{
 				// Attacked by a point entity or moving brush model not covered above. Find a vector that will hide the monster from the attacker.
-				if (!VectorLength(attacker->size))
+				if (!VectorLengthSquared(attacker->size))
 					VectorCopy(attacker->s.origin, atk); // point entity
 				else
 					VectorMA(attacker->mins, 0.5, attacker->size, atk); // brush model... can't rely on origin

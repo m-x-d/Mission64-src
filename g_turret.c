@@ -1440,7 +1440,7 @@ void SP_turret_breach(edict_t *self)
 			Com_sprintf(modelname, sizeof(modelname), "models/%s", self->usermodel);
 		self->s.modelindex = gi.modelindex(modelname);
 
-		if (VectorLength(self->bleft) == 0 && VectorLength(self->tright) == 0)
+		if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 		{
 			VectorSet(self->bleft, -16, -16, -16);
 			VectorSet(self->tright, 16, 16, 16);

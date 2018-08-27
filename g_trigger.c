@@ -1184,7 +1184,7 @@ void SP_trigger_bbox(edict_t *ent)
 	if (ent->spawnflags & TRIGGER_CAMOWNER)
 		ent->svflags |= SVF_TRIGGER_CAMOWNER;
 
-	if (!VectorLength(ent->bleft) && !VectorLength(ent->tright))
+	if (!VectorLengthSquared(ent->bleft) && !VectorLengthSquared(ent->tright))
 	{
 		VectorSet(ent->bleft, -16, -16, -16);
 		VectorSet(ent->tright, 16, 16, 16);
@@ -1300,14 +1300,19 @@ void trigger_look_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 		
 		if (end[0] < self->s.origin[0] + self->bleft[0])
 			return;
+
 		if (end[1] < self->s.origin[1] + self->bleft[1])
 			return;
+
 		if (end[2] < self->s.origin[2] + self->bleft[2])
 			return;
+
 		if (end[0] > self->s.origin[0] + self->tright[0])
 			return;
+
 		if (end[1] > self->s.origin[1] + self->tright[1])
 			return;
+
 		if (end[2] > self->s.origin[2] + self->tright[2])
 			return;
 		
@@ -1384,7 +1389,7 @@ void SP_trigger_look(edict_t *self)
 	if (self->spawnflags & TRIGGER_CAMOWNER)
 		self->svflags |= SVF_TRIGGER_CAMOWNER;
 
-	if (VectorLength(self->bleft) == 0 && VectorLength(self->tright) == 0)
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		VectorSet(self->bleft, -16, -16, -16);
 		VectorSet(self->tright, 16, 16, 16);
@@ -1461,7 +1466,7 @@ void SP_trigger_speaker(edict_t *self)
 		self->use = trigger_speaker_enable;
 	}
 
-	if (!VectorLength(self->bleft) && !VectorLength(self->tright))
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		VectorSet(self->bleft, -16, -16, -16);
 		VectorSet(self->tright, 16, 16, 16);

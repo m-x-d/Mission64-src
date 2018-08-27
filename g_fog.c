@@ -959,7 +959,7 @@ void SP_trigger_fog_bbox(edict_t *self)
 	self->svflags |= SVF_NOCLIENT;
 	self->solid = SOLID_NOT;
 
-	if (!VectorLength(self->bleft) && !VectorLength(self->tright))
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		VectorSet(self->bleft, -16, -16, -16);
 		VectorSet(self->tright, 16, 16, 16);

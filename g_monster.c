@@ -926,7 +926,7 @@ qboolean monster_start(edict_t *self)
 
 void monster_start_go(edict_t *self)
 {
-	vec3_t	v;
+	vec3_t v;
 
 	if (self->health <= 0)
 	{
@@ -936,8 +936,8 @@ void monster_start_go(edict_t *self)
 	}
 
 	// Lazarus: move_origin for func_monitor
-	if (!VectorLength(self->move_origin))
-		VectorSet(self->move_origin,0,0,self->viewheight);
+	if (!VectorLengthSquared(self->move_origin))
+		VectorSet(self->move_origin, 0, 0, self->viewheight);
 
 	// check for target to point_combat and change to combattarget
 	if (self->target)
@@ -1445,7 +1445,7 @@ int HintTestStart(edict_t *self)
 	if (!hint_chains_exist)
 		return 0;
 
-	for (int i = game.maxclients+1; i<globals.num_edicts; i++)
+	for (int i = game.maxclients + 1; i < globals.num_edicts; i++)
 	{
 			edict_t *e = &g_edicts[i];
 			if (!e->inuse || Q_stricmp(e->classname, "hint_path") || !visible(self, e) || !canReach(self, e))
@@ -1463,8 +1463,10 @@ int HintTestStart(edict_t *self)
 	if (hint)
 	{
 		self->hint_chain_id = hint->hint_chain_id;
+
 		if (!self->monsterinfo.pathdir)
 			self->monsterinfo.pathdir = 1;
+
 		VectorSubtract(hint->s.origin, self->s.origin, dir);
 		self->ideal_yaw = vectoyaw(dir);
 		self->enemy = self->oldenemy = NULL;

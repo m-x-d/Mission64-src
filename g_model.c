@@ -178,7 +178,7 @@ void SP_model_spawn(edict_t *ent)
 	// Change framenumbers to last frame to play
 	ent->framenumbers += ent->startframe;
 
-	if (VectorLength(ent->bleft))
+	if (VectorLengthSquared(ent->bleft))
 	{
 		VectorCopy(ent->bleft, ent->mins);
 	}
@@ -188,7 +188,7 @@ void SP_model_spawn(edict_t *ent)
 		ent->solid = SOLID_NOT;
 	}
 
-	if (VectorLength(ent->tright))
+	if (VectorLengthSquared(ent->tright))
 	{
 		VectorCopy(ent->tright, ent->maxs);
 	}

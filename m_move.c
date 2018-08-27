@@ -251,9 +251,9 @@ qboolean SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 			// Never jump unless it places monster closer to his goal
 			vec3_t dir;
 			VectorSubtract(target->s.origin, oldorg, dir);
-			d1 = VectorLength(dir);
+			d1 = VectorLengthSquared(dir);
 			VectorSubtract(target->s.origin, trace.endpos, dir);
-			d2 = VectorLength(dir);
+			d2 = VectorLengthSquared(dir);
 
 			canjump = d2 < d1;
 		}
@@ -345,9 +345,9 @@ qboolean SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 			if (!Q_stricmp(grenade->classname, "grenade") || !Q_stricmp(grenade->classname, "hgrenade"))
 			{
 				VectorSubtract(grenade->s.origin, oldorg, dir);
-				const vec_t g1 = VectorLength(dir);
+				const vec_t g1 = VectorLengthSquared(dir);
 				VectorSubtract(grenade->s.origin, neworg, dir);
-				const vec_t g2 = VectorLength(dir);
+				const vec_t g2 = VectorLengthSquared(dir);
 
 				if (g2 < g1)
 					return false;
@@ -480,7 +480,7 @@ qboolean SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 					if (!tr.ent || (!tr.ent->client && !(tr.ent->svflags & SVF_MONSTER) && !(tr.ent->svflags & SVF_DEADMONSTER)))
 					{
 						VectorSubtract(target->s.origin, tr.endpos, dir);
-						d2 = VectorLength(dir);
+						d2 = VectorLengthSquared(dir);
 						if (d2 < d1)
 							skip = true;
 					}

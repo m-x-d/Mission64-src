@@ -1466,7 +1466,7 @@ void func_explosive_spawn(edict_t *self, edict_t *other, edict_t *activator)
 // Lazarus func_explosive can be damaged by impact
 void func_explosive_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if (!self->health || other->mass <= 200 || VectorLength(other->velocity) == 0)
+	if (!self->health || other->mass <= 200 || !VectorLengthSquared(other->velocity))
 		return;
 	
 	// Check for impact damage
@@ -1621,7 +1621,7 @@ void func_breakaway_hit(edict_t *self, edict_t *other, cplane_t *plane, csurface
 		return;
 	}
 
-	if (VectorLength(plane->normal))
+	if (VectorLengthSquared(plane->normal))
 	{
 		//roll in direction of movement
 		if (!(self->spawnflags & BREAKAWAY_TARGET_ANGLE))
@@ -1668,7 +1668,7 @@ void func_breakaway_think(edict_t *self)
 	}
 
 	// Don't become immobile until we're on solid ground
-	if (!VectorLength(self->velocity) && self->groundentity && self->groundentity == world)
+	if (!VectorLengthSquared(self->velocity) && self->groundentity && self->groundentity == world)
 	{
 		VectorClear(self->velocity);
 		VectorClear(self->avelocity);
@@ -1822,7 +1822,7 @@ void SP_func_breakaway(edict_t *self)
 	if (self->health2)
 		PrecacheDebris(self->gib_type);
 
-	if (!VectorLength(self->bleft) && !VectorLength(self->tright))
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		VectorSet(self->bleft, -16, -16, -16);
 		VectorSet(self->tright, 16, 16, 16);
@@ -4115,14 +4115,14 @@ void SP_target_precipitation(edict_t *ent)
 			ent->speed = 300;
 	}
 
-	if (VectorLength(ent->bleft) == 0.0f && VectorLength(ent->tright) == 0.0f)
+	if (!VectorLengthSquared(ent->bleft) && !VectorLengthSquared(ent->tright))
 	{
 		// Default distribution places raindrops vertically for full coverage, to help avoid "lumps"
 		VectorSet(ent->bleft, -512, -512, -ent->speed * 0.05f);
 		VectorSet(ent->tright, 512,  512,  ent->speed * 0.05f);
 	}
 
-	if (VectorLength(ent->s.angles) > 0)
+	if (VectorLengthSquared(ent->s.angles))
 		G_SetMovedir(ent->s.angles, ent->movedir);
 	else
 		VectorSet(ent->movedir, 0, 0, -1);
@@ -4298,7 +4298,7 @@ void SP_target_fountain(edict_t *ent)
 	if (ent->speed <= 0)
 		ent->speed = 300;
 
-	if (VectorLength(ent->bleft) == 0.0f && VectorLength(ent->tright) == 0.0f)
+	if (!VectorLengthSquared(ent->bleft) && !VectorLengthSquared(ent->tright))
 	{
 		// Default distribution places raindrops vertically for full coverage, to help avoid "lumps"
 		VectorSet(ent->bleft, -32, -32, 64);

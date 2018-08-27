@@ -2677,7 +2677,7 @@ void target_effect_use(edict_t *self, edict_t *other, edict_t *activator)
 			return;
 
 		edict_t *mover = G_Find(NULL, FOFS(targetname), self->movewith);
-		if (!mover || !VectorLength(mover->velocity))
+		if (!mover || !VectorLengthSquared(mover->velocity))
 			return;
 	}
 
@@ -2883,12 +2883,14 @@ void target_attractor_think_single(edict_t *self)
 			VectorSubtract(self->s.origin,ent->s.origin,dir);
 			dist = VectorLength(dir);
 
-			if (dist > self->moveinfo.distance) continue;
+			if (dist > self->moveinfo.distance)
+				continue;
 
 			if (self->spawnflags & ATTRACTOR_SIGHT)
 			{
 				tr = gi.trace(self->s.origin, vec3_origin, vec3_origin, ent->s.origin, NULL, MASK_OPAQUE | MASK_SHOT);
-				if (tr.ent != ent) continue;
+				if (tr.ent != ent)
+					continue;
 			}
 
 			if (dist < best_dist)
@@ -2910,12 +2912,14 @@ void target_attractor_think_single(edict_t *self)
 			VectorSubtract(self->s.origin,ent->s.origin,dir);
 			dist = VectorLength(dir);
 
-			if (dist > self->moveinfo.distance) continue;
+			if (dist > self->moveinfo.distance)
+				continue;
 			
 			if (self->spawnflags & ATTRACTOR_SIGHT)
 			{
 				tr = gi.trace(self->s.origin,vec3_origin,vec3_origin,ent->s.origin,NULL,MASK_OPAQUE | MASK_SHOT);
-				if (tr.ent != ent) continue;
+				if (tr.ent != ent)
+					continue;
 			}
 
 			if (dist < best_dist)
@@ -2939,12 +2943,14 @@ void target_attractor_think_single(edict_t *self)
 			VectorSubtract(self->s.origin, targ_org, dir);
 			dist = VectorLength(dir);
 
-			if (dist > self->moveinfo.distance) continue;
+			if (dist > self->moveinfo.distance)
+				continue;
 
 			if (self->spawnflags & ATTRACTOR_SIGHT)
 			{
 				tr = gi.trace(self->s.origin, vec3_origin, vec3_origin, targ_org, NULL, MASK_OPAQUE | MASK_SHOT);
-				if (tr.ent != ent) continue;
+				if (tr.ent != ent)
+					continue;
 			}
 
 			if (dist < best_dist)
@@ -4071,7 +4077,7 @@ void use_target_change(edict_t *self, edict_t *other, edict_t *activator)
 			havenewteams = true;
 		}
 
-		if (VectorLength(self->s.angles))
+		if (VectorLengthSquared(self->s.angles))
 		{
 			VectorCopy(self->s.angles, target_ent->s.angles);
 			if (target_ent->solid == SOLID_BSP)
@@ -4558,7 +4564,7 @@ void clone(edict_t *self, edict_t *other, edict_t *activator)
 	VectorCopy(parent->movedir, child->movedir);
 	VectorCopy(self->s.angles, child->s.angles);
 
-	if (VectorLength(child->s.angles) != 0)
+	if (VectorLengthSquared(child->s.angles))
 	{
 		if (child->s.angles[YAW] == 90 || child->s.angles[YAW] == 270)
 		{
@@ -4710,7 +4716,7 @@ void clone(edict_t *self, edict_t *other, edict_t *activator)
 
 			child->speaker = speaker;
 
-			if (VectorLength(child->s.origin))
+			if (VectorLengthSquared(child->s.origin))
 			{
 				VectorCopy(child->s.origin, speaker->s.origin);
 			}

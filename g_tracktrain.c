@@ -1505,7 +1505,7 @@ void train_angles(edict_t *train)
 	if (train->moveinfo.state < STOP || (train->moveinfo.state == STOP && is_backing_up(train)))
 		VectorNegate(v, v);
 
-	if (VectorLength(v))
+	if (VectorLengthSquared(v))
 	{
 		vectoangles2(v, angles);
 		train->ideal_yaw = angles[YAW];
@@ -1551,7 +1551,7 @@ void tracktrain_turn(edict_t *self)
 		return;
 
 	// Train doesn't turn if at a complete stop
-	if (!VectorLength(train->velocity))
+	if (!VectorLengthSquared(train->velocity))
 	{
 		VectorClear(train->avelocity);
 		gi.linkentity(train);
@@ -1797,7 +1797,7 @@ void SP_func_tracktrain(edict_t *self)
 	self->mass = 2000;
 
 	// Driving position
-	if (VectorLength(self->bleft) == 0 && VectorLength(self->tright) == 0)
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		VectorSet(self->bleft, -8, -8, -8);
 		VectorSet(self->tright, 8, 8, 8);

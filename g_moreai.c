@@ -708,11 +708,10 @@ jumpDist: distance monster is attempting to advance downLimit/upLimit: max altit
 */
 qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, float upLimit)
 {
-	edict_t		*target;
-	trace_t		jumpTrace;
-	int			enemy_relHeight;
-	vec3_t		point1, point2, forward, up;
-	vec_t		d1;
+	edict_t	*target;
+	trace_t	jumpTrace;
+	int		enemy_relHeight;
+	vec3_t	point1, point2, forward, up;
 
 	// Lazarus: Rogue only did this for enemies. We do it for enemies or movetargets
 	if (!monster->monsterinfo.jump)
@@ -726,7 +725,7 @@ qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, f
 		return false;
 
 	VectorSubtract(target->s.origin, monster->s.origin, point1);
-	const vec_t d0 = VectorLength(point1);
+	const vec_t d0 = VectorLengthSquared(point1);
 
 	AngleVectors(monster->s.angles, forward, NULL, up);
 	VectorMA(monster->s.origin, 48, forward, point1);
@@ -757,7 +756,7 @@ qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, f
 				return false;
 
 			VectorSubtract(target->s.origin, jumpTrace.endpos, point1);
-			d1 = VectorLength(point1);
+			const vec_t d1 = VectorLengthSquared(point1);
 			if (d0 < d1)
 				return false;
 
@@ -779,7 +778,7 @@ qboolean check_jump_blocked(edict_t *monster, float jumpDist, float downLimit, f
 			&& jumpTrace.endpos[2] - monster->absmin[2] <= upLimit && jumpTrace.contents & MASK_SOLID)
 		{
 			VectorSubtract(target->s.origin, jumpTrace.endpos, point1);
-			d1 = VectorLength(point1);
+			const vec_t d1 = VectorLengthSquared(point1);
 			if (d0 < d1)
 				return false;
 

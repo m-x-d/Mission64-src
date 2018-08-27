@@ -737,7 +737,16 @@ vec_t VectorLength(const vec3_t v)
 	float length = 0;
 	for (int i = 0; i < 3; i++)
 		length += v[i] * v[i];
-	length = sqrtf(length); // FIXME
+
+	return sqrtf(length); // FIXME
+}
+
+//mxd
+vec_t VectorLengthSquared(const vec3_t v)
+{
+	float length = 0;
+	for (int i = 0; i < 3; i++)
+		length += v[i] * v[i];
 
 	return length;
 }

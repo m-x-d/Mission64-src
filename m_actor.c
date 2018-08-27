@@ -1324,7 +1324,7 @@ void SP_misc_actor(edict_t *self)
 		}
 	}
 
-	if (!VectorLength(self->bleft) && !VectorLength(self->tright))
+	if (!VectorLengthSquared(self->bleft) && !VectorLengthSquared(self->tright))
 	{
 		switch(ActorID)
 		{
@@ -1389,13 +1389,14 @@ void SP_misc_actor(edict_t *self)
 		self->actor_weapon[1] = self->sounds % 100;
 	}
 
-	if (!VectorLength(self->muzzle))
+	if (!VectorLengthSquared(self->muzzle))
 	{
 		switch(ActorID)
 		{
 		case ACTOR_ALIEN:
 			VectorSet(self->muzzle, 42, 5, 15);
 			break;
+
 		case ACTOR_HUNTER:
 			switch(self->actor_weapon[0])
 			{
@@ -1411,6 +1412,7 @@ void SP_misc_actor(edict_t *self)
 			case 10: VectorSet(self->muzzle, 42, 5, 20); break;
 			}
 			break;
+
 		case ACTOR_PARANOID:
 			switch(self->actor_weapon[0])
 			{
@@ -1426,15 +1428,19 @@ void SP_misc_actor(edict_t *self)
 			case 10: VectorSet(self->muzzle, 28, 7, 10); break;
 			}
 			break;
+
 		case ACTOR_RATAMAHATTA:
 			VectorSet(self->muzzle, 24, 13, 10);
 			break;
+
 		case ACTOR_RHINO:
 			VectorSet(self->muzzle, 29, 7, 10);
 			break;
+
 		case ACTOR_SAS:
 			VectorSet(self->muzzle, 17, 6.5, 17);
 			break;
+
 		case ACTOR_SLITH:
 			switch(self->actor_weapon[0])
 			{
@@ -1450,12 +1456,15 @@ void SP_misc_actor(edict_t *self)
 			case 10: VectorSet(self->muzzle, 20, 5, -1); break;
 			}
 			break;
+
 		case ACTOR_TERRAN:
 			VectorSet(self->muzzle, 42, 7, 11.5);
 			break;
+
 		case ACTOR_WALKER:
 			VectorSet(self->muzzle, 9, 16, 7);
 			break;
+
 		case ACTOR_WASTE:
 			switch(self->actor_weapon[0])
 			{
@@ -1471,9 +1480,11 @@ void SP_misc_actor(edict_t *self)
 			case 10: VectorSet(self->muzzle, 22, 11, 7); break;
 			}
 			break;
+
 		case ACTOR_XENOID:
 			VectorSet(self->muzzle, 20, 12, 7);
 			break;
+
 		case ACTOR_ZUMLIN:
 			switch(self->actor_weapon[0])
 			{
@@ -1489,6 +1500,7 @@ void SP_misc_actor(edict_t *self)
 			case 10: VectorSet(self->muzzle, 16, 5, -2); break;
 			}
 			break;
+
 		default:
 			switch(self->actor_weapon[0])
 			{
@@ -1497,24 +1509,22 @@ void SP_misc_actor(edict_t *self)
 			case 8: VectorSet(self->muzzle, 18, 8, 6); break;
 			default:VectorSet(self->muzzle, 18.4, 7.4, 9.6); break;
 			}
+			break;
 		}
 	}
 
-	if (!VectorLength(self->muzzle2))
+	if (!VectorLengthSquared(self->muzzle2))
 	{
 		switch(ActorID)
 		{
-		case ACTOR_RHINO:
-			VectorSet(self->muzzle2, 27, -15, 13);
-			break;
-		case ACTOR_WALKER:
-			VectorSet(self->muzzle2, 9, -11, 7);
-			break;
+		case ACTOR_RHINO:  VectorSet(self->muzzle2, 27, -15, 13); break;
+		case ACTOR_WALKER: VectorSet(self->muzzle2, 9, -11, 7); break;
 		}
 	}
-
-	if (VectorLength(self->muzzle2))
+	else
+	{
 		self->monsterinfo.aiflags |= AI_TWO_GUNS;
+	}
 
 	self->pain = actor_pain;
 	self->die = actor_die;
@@ -2201,7 +2211,7 @@ void actor_moveit(edict_t *player, edict_t *actor)
 	dir[2] = 0;
 	VectorNormalize(dir);
 
-	if (!VectorLength(dir))
+	if (!VectorLengthSquared(dir))
 		VectorSet(dir, 1.0f, 0.0f, 0.0f);
 
 	VectorMA(actor->s.origin, travel, dir, end);

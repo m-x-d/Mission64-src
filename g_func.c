@@ -1190,7 +1190,7 @@ void rotating_blocked(edict_t *self, edict_t *other)
 
 void rotating_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if (self->avelocity[0] || self->avelocity[1] || self->avelocity[2])
+	if (VectorLengthSquared(self->avelocity))
 		T_Damage(other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 }
 
@@ -2222,7 +2222,7 @@ void func_door_dh_init(edict_t *ent)
 		st.lip = ent->oldmovetype;
 		
 		// Unless the Origin brush is used, s.origin will be 0 0 0...
-		if (VectorLength(ent->s.origin))
+		if (VectorLengthSquared(ent->s.origin))
 		{
 			VectorCopy(new_origin->s.origin, ent->s.origin);
 		}
@@ -3213,7 +3213,7 @@ void SP_func_train(edict_t *self)
 		speaker->spawnflags = 7; // owner must be moving to play
 		self->speaker = speaker;
 
-		if (VectorLength(self->s.origin))
+		if (VectorLengthSquared(self->s.origin))
 		{
 			VectorCopy(self->s.origin, speaker->s.origin);
 		}
@@ -3993,7 +3993,7 @@ void box_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 			v[2] = 0;
 			VectorNormalize(v);
-			if (!VectorLength(v))
+			if (!VectorLengthSquared(v))
 			{
 				v[0] = crandom();
 				v[1] = sqrt(1.0 - v[0] * v[0]);
@@ -4248,7 +4248,7 @@ void SP_func_pushable(edict_t *self)
 		case 3: self->noise_index = gi.soundindex("weapons/rockfly.wav"); break;
 	}
 
-	if (self->sounds && !VectorLength(self->s.origin))
+	if (self->sounds && !VectorLengthSquared(self->s.origin))
 	{
 		edict_t *speaker = G_Spawn();
 		speaker->classname = "moving_speaker";

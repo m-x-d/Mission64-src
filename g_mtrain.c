@@ -53,7 +53,7 @@ void model_train_animator(edict_t *animator)
 	}
 
 	animator->nextthink = level.time + FRAMETIME;
-	if (VectorLength(train->velocity) == 0)
+	if (!VectorLengthSquared(train->velocity))
 		return;
 
 	train->s.frame++;

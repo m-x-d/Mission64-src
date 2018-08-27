@@ -74,7 +74,7 @@ void Jet_ApplyLifting(edict_t *ent)
 	VectorCopy(ent->s.origin, new_origin);
 	new_origin[2] += delta;
 
-	if (VectorLength(ent->velocity) == 0)
+	if (!VectorLengthSquared(ent->velocity))
 	{
 		// I dont know the reason yet, but there is some floating so we have to compensate that here (only if there is no velocity left)
 		new_origin[0] -= 0.125;
@@ -192,7 +192,7 @@ void Jet_ApplyJet(edict_t *ent, usercmd_t *ucmd)
 		ent->velocity[1] = clamp(ent->velocity[1], -maxvelocity, maxvelocity);
 
 		// Add some gentle up and down when idle (not accelerating)
-		if (VectorLength(acc) == 0 && !ent->groundentity)
+		if (!VectorLengthSquared(acc) && !ent->groundentity)
 			Jet_ApplyLifting(ent);
 	}
 

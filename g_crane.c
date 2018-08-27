@@ -962,10 +962,9 @@ void crane_control_action(edict_t *control, edict_t *activator, const vec3_t poi
 	control->activator = activator;
 
 	// if any part of crane is currently moving, do nothing.
-	if (VectorLength(control->velocity) > 0.0f) return;
-	if (VectorLength(beam->velocity) > 0.0f) return;
-	if (VectorLength(hoist->velocity) > 0.0f) return;
-	if (VectorLength(hook->velocity) > 0.0f) return;
+	if (VectorLengthSquared(control->velocity) || VectorLengthSquared(beam->velocity)
+		|| VectorLengthSquared(hoist->velocity) || VectorLengthSquared(hook->velocity))
+		return;
 
 	// now find which row and column of buttons corresponds to "point"
 	int row = (2 * (point[2] - control->absmin[2])) / (control->absmax[2] - control->absmin[2]);
@@ -1508,7 +1507,7 @@ void SP_crane_control(edict_t *self)
 //mxd
 void SpawnSpeaker(edict_t *self)
 {
-	if (self->noise_index && !VectorLength(self->s.origin)) //TODO: (mxd): why !VectorLength(self->s.origin) condition? 
+	if (self->noise_index && !VectorLengthSquared(self->s.origin)) //TODO: (mxd): why !VectorLength(self->s.origin) condition? 
 	{
 		edict_t *speaker = G_Spawn();
 		speaker->classname = "moving_speaker";
@@ -1705,10 +1704,8 @@ void crane_reset_use(edict_t *self, edict_t *other, edict_t *activator)
 
 	VectorSubtract(beam->pos1, self->s.origin, v1);
 	VectorSubtract(beam->pos2, self->s.origin, v2);
-	const float d1 = VectorLength(v1);
-	const float d2 = VectorLength(v2);
 
-	control->crane_increment = (d2 < d1 ? 1 : -1);
+	control->crane_increment = (VectorLengthSquared(v2) < VectorLengthSquared(v1) ? 1 : -1);
 
 	if (beam->movedir[0] > 0)
 	{
@@ -1747,7 +1744,7 @@ void crane_reset_use(edict_t *self, edict_t *other, edict_t *activator)
 		dir = 1;
 		if (control->crane_increment > 0)
 		{
-			if (Crane_Hook_Bonk(hook,1,1,bonk))
+			if (Crane_Hook_Bonk(hook, 1, 1, bonk))
 			{
 				bonk[1] += beam->absmax[1] - hook->absmax[1];
 				beam->crane_bonk = min(bonk[1], beam->pos2[1]);
