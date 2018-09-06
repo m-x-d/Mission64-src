@@ -355,7 +355,8 @@ void M_CheckGround(edict_t *ent)
 		//ent->groundentity = trace.ent; //mxd. Already assigned above
 		//ent->groundentity_linkcount = trace.ent->linkcount; //mxd. Already assigned above
 //		ent->velocity[2] = 0; Lazarus: what if the groundentity is moving?
-		ent->velocity[2] = trace.ent->velocity[2];
+//		ent->velocity[2] = trace.ent->velocity[2];
+		ent->velocity[2] = 0; //mxd. The above line causes entities to jump around on rapidly raising plats. See https://github.com/yquake2/yquake2/issues/320
 	}
 }
 
