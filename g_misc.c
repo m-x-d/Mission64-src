@@ -2061,8 +2061,8 @@ void SP_misc_explobox(edict_t *self)
 	if ((self->spawnflags & 1) || (self->gib_type == GIB_BARREL))
 	{
 		self->gib_type = GIB_BARREL;
-		for (i=1; i<=5; i++)
-			gi.modelindex(va("models/objects/barrel_gibs/gib%i.md2",i));
+		for (int i = 1; i < 6; i++)
+			gi.modelindex(va("models/objects/barrel_gibs/gib%i.md2", i));
 	}
 	else
 	{

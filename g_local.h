@@ -1649,9 +1649,7 @@ struct edict_s
 {
 	entity_state_t	s;
 	struct gclient_s	*client;	// NULL if not a player
-									// the server expects the first part
-									// of gclient_s to be a player_state_t
-									// but the rest of it is opaque
+									// the server expects the first part of gclient_s to be a player_state_t but the rest of it is opaque
 
 	qboolean	inuse;
 	int			linkcount;

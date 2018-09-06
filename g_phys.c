@@ -303,7 +303,7 @@ retry:
 			VectorCopy(trace.endpos, end);
 			end[2] += 1;
 			VectorSubtract(end, ent->s.origin, ent->velocity);
-			VectorScale(ent->velocity, 1.0/time_left, ent->velocity);
+			VectorScale(ent->velocity, 1.0 / time_left, ent->velocity);
 			num_retries++;
 
 			goto retry;
@@ -605,7 +605,7 @@ retry:
 
 			for (j = 0; j < numplanes; j++)
 				if (j != i && !VectorCompare(planes[i], planes[j]) && DotProduct(new_velocity, planes[j]) < 0)
-						break; // not ok
+					break; // not ok
 
 			if (j == numplanes)
 				break;
@@ -635,13 +635,10 @@ retry:
 //
 // if velocity is against the original velocity, stop dead to avoid tiny occilations in sloping corners
 //
-		if (!ent->bounce_me)
+		if (!ent->bounce_me && DotProduct(ent->velocity, primal_velocity) <= 0)
 		{
-			if (DotProduct(ent->velocity, primal_velocity) <= 0)
-			{
-				VectorCopy(vec3_origin, ent->velocity);
-				return blocked;
-			}
+			VectorCopy(vec3_origin, ent->velocity);
+			return blocked;
 		}
 	}
 
@@ -1585,21 +1582,15 @@ float RiderMass(edict_t *platform)
 
 void SV_Physics_Step(edict_t *ent)
 {
-	qboolean	hitsound = false;
-	float		speed, newspeed, control;
-	float		friction;
-	edict_t		*e;
-	int			mask;
-	int			i;
-	vec3_t		point, end;
-	vec3_t		old_origin, move;
-
+	qboolean hitsound = false;
+	
 	// airborne monsters should always check for ground
 	if (!ent->groundentity)
 		M_CheckGround(ent);
 
 	const int oldwaterlevel = ent->waterlevel;
 
+	vec3_t old_origin;
 	VectorCopy(ent->s.origin, old_origin);
 
 	// Lazarus: If density hasn't been calculated yet, do so now
@@ -1626,7 +1617,8 @@ void SV_Physics_Step(edict_t *ent)
 
 	// If not a monster, then determine whether we're in water (monsters take care of this in g_monster.c)
 	if (!(ent->svflags & SVF_MONSTER) && (ent->flags & FL_SWIM)) //mxd. ent->flags && FL_SWIM --> ent->flags & FL_SWIM
-	{ 
+	{
+		vec3_t point;
 		point[0] = (ent->absmax[0] + ent->absmin[0]) / 2;
 		point[1] = (ent->absmax[1] + ent->absmin[1]) / 2;
 		point[2] = ent->absmin[2] + 1;
@@ -1641,7 +1633,7 @@ void SV_Physics_Step(edict_t *ent)
 		{
 			ent->watertype = cont;
 			ent->waterlevel = 1;
-			point[2] = ent->absmin[2] + ent->size[2]/2;
+			point[2] = ent->absmin[2] + ent->size[2] / 2;
 			cont = gi.pointcontents(point);
 
 			if (cont & MASK_WATER)
@@ -1663,7 +1655,7 @@ void SV_Physics_Step(edict_t *ent)
 	if (ground)
 		wasonground = true;
 		
-	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
+	if (VectorLengthSquared(ent->avelocity) > 0)
 		SV_AddRotationalFriction(ent);
 
 	// add gravity except:
@@ -1681,11 +1673,11 @@ void SV_Physics_Step(edict_t *ent)
 	// friction for flying monsters that have been given vertical velocity
 	if ((ent->flags & FL_FLY) && ent->velocity[2] != 0)
 	{
-		speed = fabs(ent->velocity[2]);
-		control = max(sv_stopspeed->value, speed);
-		friction = sv_friction / 3.0f;
+		const float speed = fabs(ent->velocity[2]);
+		const float control = max(sv_stopspeed->value, speed);
+		const float friction = sv_friction / 3.0f;
 
-		newspeed = speed - (FRAMETIME * control * friction);
+		float newspeed = speed - (FRAMETIME * control * friction);
 		newspeed = max(0, newspeed);
 		newspeed /= speed;
 
@@ -1698,10 +1690,10 @@ void SV_Physics_Step(edict_t *ent)
 		// Lazarus: This is id's swag at drag. It works mostly, but for submerged crates we can do better.
 		if ((ent->flags & FL_SWIM) && ent->velocity[2] != 0)
 		{
-			speed = fabs(ent->velocity[2]);
-			control = max(sv_stopspeed->value, speed);
+			const float speed = fabs(ent->velocity[2]);
+			const float control = max(sv_stopspeed->value, speed);
 
-			newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
+			float newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
 			newspeed = max(0, newspeed);
 			newspeed /= speed;
 
@@ -1712,14 +1704,19 @@ void SV_Physics_Step(edict_t *ent)
 	// Lazarus: Floating stuff
 	if (ent->movetype == MOVETYPE_PUSHABLE && (ent->flags & FL_SWIM) && ent->waterlevel) //mxd. ent->flags && FL_SWIM --> ent->flags & FL_SWIM
 	{
-		float	waterlevel;
-		float	Accel, Force;
+		float waterlevel;
 
-		VectorCopy(point, end);
 		if (ent->waterlevel < 3)
 		{
+			vec3_t point;
+			point[0] = (ent->absmax[0] + ent->absmin[0]) / 2;
+			point[1] = (ent->absmax[1] + ent->absmin[1]) / 2;
 			point[2] = ent->absmax[2];
-			end[2]   = ent->absmin[2];
+
+			vec3_t end;
+			VectorCopy(point, end);
+			end[2] = ent->absmin[2];
+
 			const trace_t tr = gi.trace(point, NULL, NULL, end, ent, MASK_WATER);
 			waterlevel = tr.endpos[2];
 		}
@@ -1731,7 +1728,7 @@ void SV_Physics_Step(edict_t *ent)
 
 		const float rider_mass = RiderMass(ent);
 		const float total_mass = rider_mass + ent->mass;
-		const float Area = ent->size[0] * ent->size[1];
+		const float area = ent->size[0] * ent->size[1];
 
 		if (waterlevel < ent->absmax[2])
 		{
@@ -1739,10 +1736,10 @@ void SV_Physics_Step(edict_t *ent)
 			// our drag calculation used for fully submerged crates good for this situation
 			if (ent->velocity[2] != 0)
 			{
-				speed = fabs(ent->velocity[2]);
-				control = max(sv_stopspeed->value, speed);
+				const float speed = fabs(ent->velocity[2]);
+				const float control = max(sv_stopspeed->value, speed);
 
-				newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
+				float newspeed = speed - (FRAMETIME * control * sv_waterfriction * ent->waterlevel);
 				newspeed = max(0, newspeed);
 				newspeed /= speed;
 
@@ -1750,12 +1747,12 @@ void SV_Physics_Step(edict_t *ent)
 			}
 
 			// Apply physics and bob AFTER friction, or the damn thing will never move.
-			Force = -total_mass + ((waterlevel-ent->absmin[2]) * Area * WATER_DENSITY);
-			Accel = Force * sv_gravity->value / total_mass;
-			ent->velocity[2] += Accel * FRAMETIME;
+			const float force = -total_mass + ((waterlevel-ent->absmin[2]) * area * WATER_DENSITY);
+			const float accel = force * sv_gravity->value / total_mass;
+			ent->velocity[2] += accel * FRAMETIME;
 
 			const int time = ent->duration * 10;
-			const float t0 = ent->bobframe%time;
+			const float t0 = ent->bobframe % time;
 			const float t1 = (ent->bobframe + 1) % time;
 			const float z0 = sin(2 * M_PI * t0 / time);
 			const float z1 = sin(2 * M_PI * t1 / time);
@@ -1766,25 +1763,25 @@ void SV_Physics_Step(edict_t *ent)
 		else
 		{
 			// Crate is fully submerged
-			Force = -total_mass + ent->volume * WATER_DENSITY;
+			float force = -total_mass + ent->volume * WATER_DENSITY;
 			if (sv_gravity->value)
 			{
-				float Drag = 0.00190735 * 1.05 * Area * (ent->velocity[2] * ent->velocity[2]) / sv_gravity->value;
-				if (Drag > fabsf(Force))
+				float drag = 0.00190735 * 1.05 * area * (ent->velocity[2] * ent->velocity[2]) / sv_gravity->value;
+				if (drag > fabsf(force))
 				{
 					// Drag actually CAN be > total weight, but if we do this we tend to
 					// get crates flying back out of the water after being dropped from some height
-					Drag = fabsf(Force);
+					drag = fabsf(force);
 				}
 
 				if (ent->velocity[2] > 0)
-					Drag = -Drag;
+					drag *= -1;
 
-				Force += Drag;
+				force += drag;
 			}
 
-			Accel = Force * sv_gravity->value / total_mass;
-			ent->velocity[2] += Accel * FRAMETIME;
+			const float accel = force * sv_gravity->value / total_mass;
+			ent->velocity[2] += accel * FRAMETIME;
 		}
 
 		if (ent->watertype & MASK_CURRENT)
@@ -1811,11 +1808,14 @@ void SV_Physics_Step(edict_t *ent)
 	}
 
 	// Conveyor
-	if (wasonground && (ground->movetype == MOVETYPE_CONVEYOR))
+	if (wasonground && ground->movetype == MOVETYPE_CONVEYOR)
 	{
-		VectorCopy(ent->s.origin,point);
+		vec3_t point;
+		VectorCopy(ent->s.origin, point);
 		point[2] += 1;
-		VectorCopy(point,end);
+
+		vec3_t end;
+		VectorCopy(point, end);
 		end[2] -= 256;
 
 		const trace_t tr = gi.trace(point, ent->mins, ent->maxs, end, ent, MASK_SOLID);
@@ -1835,41 +1835,38 @@ void SV_Physics_Step(edict_t *ent)
 		}
 	}
 
-	if (ent->velocity[2] || ent->velocity[1] || ent->velocity[0])
+	if (VectorLengthSquared(ent->velocity) > 0)
 	{
-		// apply friction
-		// let dead monsters who aren't completely onground slide
+		// Apply friction. Let dead monsters who aren't completely onground slide
 		if (wasonground || (ent->flags & (FL_SWIM | FL_FLY)))
 		{
-			if (!onconveyor)
+			if (!onconveyor && (ent->health > 0 || M_CheckBottom(ent)))
 			{
-				if (!(ent->health <= 0.0 && !M_CheckBottom(ent)))
-				{
-					float *vel = ent->velocity;
-					speed = sqrtf(vel[0] * vel[0] + vel[1] * vel[1]);
+				float *vel = ent->velocity;
+				const float speed = sqrtf(vel[0] * vel[0] + vel[1] * vel[1]);
 					
-					if (speed)
-					{
-						friction = sv_friction;
-						control = max(sv_stopspeed->value, speed);
+				if (speed)
+				{
+					const float friction = sv_friction;
+					const float control = max(sv_stopspeed->value, speed);
 
-						newspeed = speed - FRAMETIME * control * friction;
-						newspeed = max(0, newspeed);
-						newspeed /= speed;
+					float newspeed = speed - FRAMETIME * control * friction;
+					newspeed = max(0, newspeed);
+					newspeed /= speed;
 
-						vel[0] *= newspeed;
-						vel[1] *= newspeed;
-					}
+					vel[0] *= newspeed;
+					vel[1] *= newspeed;
 				}
 			}
 		}
 
+		int mask;
 		if (ent->svflags & SVF_MONSTER)
 			mask = MASK_MONSTERSOLID;
 		else if (ent->movetype == MOVETYPE_PUSHABLE)
 			mask = MASK_MONSTERSOLID | MASK_PLAYERSOLID;
 		else if (ent->clipmask)
-			mask = ent->clipmask;		// Lazarus edition
+			mask = ent->clipmask; // Lazarus edition
 		else
 			mask = MASK_SOLID;
 
@@ -1898,13 +1895,18 @@ void SV_Physics_Step(edict_t *ent)
 		{
 			if (ent->bounce_me == 2)
 				VectorMA(old_origin, FRAMETIME, ent->velocity, ent->s.origin);
+
+			vec3_t move;
 			VectorSubtract(ent->s.origin, old_origin, move);
 
-			for (i = 1, e = g_edicts + i; i < globals.num_edicts; i++, e++)
+			for (int i = 1; i < globals.num_edicts; i++)
 			{
+				edict_t *e = g_edicts + i;
 				if (e != ent && e->groundentity == ent)
 				{
+					vec3_t end;
 					VectorAdd(e->s.origin, move, end);
+
 					const trace_t tr = gi.trace(e->s.origin, e->mins, e->maxs, end, ent, MASK_SOLID);
 					VectorCopy(tr.endpos, e->s.origin);
 					gi.linkentity(e);

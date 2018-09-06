@@ -1495,8 +1495,7 @@ typedef enum
 
 
 // entity_state_t is the information conveyed from the server
-// in an update message about entities that the client will
-// need to render in some way
+// in an update message about entities that the client will need to render in some way
 typedef struct entity_state_s
 {
 	int		number;			// edict index

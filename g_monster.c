@@ -310,8 +310,6 @@ void AdjustAccuracy(edict_t *self, vec3_t target)
 
 void M_CheckGround(edict_t *ent)
 {
-	vec3_t		point;
-
 	if (level.time < ent->gravity_debounce_time)
 		return;
 
@@ -325,6 +323,7 @@ void M_CheckGround(edict_t *ent)
 	}
 
 // if the hull point one-quarter unit down is solid the entity is on ground
+	vec3_t point;
 	point[0] = ent->s.origin[0];
 	point[1] = ent->s.origin[1];
 	point[2] = ent->s.origin[2] - 0.25;
@@ -346,13 +345,15 @@ void M_CheckGround(edict_t *ent)
 
 	ent->groundentity = trace.ent;
 	ent->groundentity_linkcount = trace.ent->linkcount;
+
 //	if (!trace.startsolid && !trace.allsolid)
 //		VectorCopy(trace.endpos, ent->s.origin);
+
 	if (!trace.startsolid && !trace.allsolid)
 	{
 		VectorCopy(trace.endpos, ent->s.origin);
-		ent->groundentity = trace.ent;
-		ent->groundentity_linkcount = trace.ent->linkcount;
+		//ent->groundentity = trace.ent; //mxd. Already assigned above
+		//ent->groundentity_linkcount = trace.ent->linkcount; //mxd. Already assigned above
 //		ent->velocity[2] = 0; Lazarus: what if the groundentity is moving?
 		ent->velocity[2] = trace.ent->velocity[2];
 	}
@@ -361,7 +362,7 @@ void M_CheckGround(edict_t *ent)
 
 void M_CatagorizePosition(edict_t *ent)
 {
-	vec3_t		point;
+	vec3_t point;
 
 //
 // get waterlevel
@@ -370,8 +371,8 @@ void M_CatagorizePosition(edict_t *ent)
 //	point[0] = ent->s.origin[0];
 //	point[1] = ent->s.origin[1];
 //	point[2] = ent->s.origin[2] + ent->mins[2] + 1;	
-	point[0] = (ent->absmax[0] + ent->absmin[0])/2;
-	point[1] = (ent->absmax[1] + ent->absmin[1])/2;
+	point[0] = (ent->absmax[0] + ent->absmin[0]) / 2;
+	point[1] = (ent->absmax[1] + ent->absmin[1]) / 2;
 	point[2] =  ent->absmin[2] + 2;
 
 	int cont = gi.pointcontents(point);

@@ -32,8 +32,6 @@ M_CheckBottom
 Returns false if any part of the bottom of the entity is off an edge that is not a staircase.
 =============
 */
-int c_yes, c_no;
-
 qboolean M_CheckBottom(edict_t *ent)
 {
 	vec3_t	mins, maxs, start, stop;
@@ -56,11 +54,9 @@ qboolean M_CheckBottom(edict_t *ent)
 		}
 	}
 
-	c_yes++;
 	return true; // we got out easy
 
 realcheck:
-	c_no++;
 
 	//
 	// check it for real...
@@ -96,7 +92,6 @@ realcheck:
 		}
 	}
 
-	c_yes++;
 	return true;
 }
 

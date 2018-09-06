@@ -1196,7 +1196,7 @@ void rotating_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 
 void rotating_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	if (!VectorCompare(self->avelocity, vec3_origin))
+	if (VectorLengthSquared(self->avelocity) > 0)
 	{
 		self->s.sound = 0;
 		if (self->spawnflags & ROTATING_ACCEL) // decelerate
