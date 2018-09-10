@@ -316,11 +316,12 @@ void M_CheckGround(edict_t *ent)
 	if (ent->flags & (FL_SWIM | FL_FLY))
 		return;
 
-	if (ent->velocity[2] > 100)
+	//mxd. This screws entity movement on moving plats with velocity[2] > 100
+	/*if (ent->velocity[2] > 100)
 	{
 		ent->groundentity = NULL;
 		return;
-	}
+	}*/
 
 // if the hull point one-quarter unit down is solid the entity is on ground
 	vec3_t point;

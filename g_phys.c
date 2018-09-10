@@ -1377,8 +1377,8 @@ void SV_Physics_Toss(edict_t *ent)
 	if (ent->groundentity)
 		wasonground = true;
 
-	if (ent->velocity[2] > 0)
-		ent->groundentity = NULL;
+	//if (ent->velocity[2] > 0) //mxd. What if groundentity is moving up?
+		//ent->groundentity = NULL;
 
 // check for the groundentity going away
 	if (ent->groundentity && !ent->groundentity->inuse)
@@ -1467,6 +1467,7 @@ void SV_Physics_Toss(edict_t *ent)
 				ent->groundentity = trace.ent;
 				ent->groundentity_linkcount = trace.ent->linkcount;
 				VectorCopy(vec3_origin, ent->velocity);
+				ent->velocity[2] = trace.ent->velocity[2]; //mxd. What if ground is moving?
 				VectorCopy(vec3_origin, ent->avelocity);
 			}
 		}
