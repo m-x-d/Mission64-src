@@ -3527,9 +3527,6 @@ void target_monitor_move(edict_t *self)
 
 void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 {
-	//int			i;
-	//edict_t		*monster;
-
 	if (!activator->client)
 		return;
 
@@ -3542,7 +3539,7 @@ void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 	}
 
 	if (self->target)
-		self->target_ent = G_Find(NULL,FOFS(targetname),self->target);
+		self->target_ent = G_Find(NULL, FOFS(targetname), self->target);
 
 	// If this is a CHASE_CAM target_monitor and the target no longer exists, remove this target_monitor and exit
 	if ((self->spawnflags & SF_MONITOR_CHASECAM) && (!self->target_ent || !self->target_ent->inuse))
@@ -3580,7 +3577,7 @@ void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 	VectorCopy(activator->mins, faker->mins);
 	VectorCopy(activator->maxs, faker->maxs);
 
-    // Create a client so you can pick up items/be shot/etc while in camera
+	// Create a client so you can pick up items/be shot/etc while in camera
 	gclient_t *cl = (gclient_t *)gi.TagMalloc(sizeof(gclient_t), TAG_LEVEL);
 	faker->client = cl; 
 	faker->target_ent = activator;
@@ -3685,7 +3682,7 @@ void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 			self->target_ent->svflags |= SVF_NOCLIENT;
 		}
 
-		VectorCopy(self->target_ent->s.origin,self->s.origin);
+		VectorCopy(self->target_ent->s.origin, self->s.origin);
 		self->think = target_monitor_move;
 		self->think(self);
 	}
@@ -3699,8 +3696,6 @@ void use_target_monitor(edict_t *self, edict_t *other, edict_t *activator)
 
 void SP_target_monitor(edict_t *self)
 {
-	char	buffer[MAX_QPATH];
-
 	if (!self->wait)
 		self->wait = 3;
 
@@ -3709,10 +3704,11 @@ void SP_target_monitor(edict_t *self)
 
 	if (st.noise)
 	{
+		char buffer[MAX_QPATH];
 		if (!strstr(st.noise, ".wav"))
 			Com_sprintf(buffer, sizeof(buffer), "%s.wav", st.noise);
 		else
-			strncpy(buffer, st.noise, sizeof(buffer));
+			Q_strncpyz(buffer, st.noise, sizeof(buffer));
 
 		self->noise_index = gi.soundindex(buffer);
 	}

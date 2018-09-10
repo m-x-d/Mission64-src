@@ -396,7 +396,7 @@ retry:
 				return blocked;
 			}
 
-			CrossProduct (planes[0], planes[1], dir);
+			CrossProduct(planes[0], planes[1], dir);
 			const float d = DotProduct(dir, ent->velocity);
 			VectorScale(dir, d, ent->velocity);
 		}
@@ -1506,9 +1506,7 @@ void SV_Physics_Toss(edict_t *ent)
 
 /*
 ===============================================================================
-
-STEPPING MOVEMENT
-
+	STEPPING MOVEMENT
 ===============================================================================
 */
 
@@ -1559,7 +1557,7 @@ float RiderMass(edict_t *platform)
 			mass += rider->mass;
 			mass += RiderMass(rider);
 		}
-		else if (rider->movetype == MOVETYPE_PUSHABLE )
+		else if (rider->movetype == MOVETYPE_PUSHABLE)
 		{
 			// Bah - special case for func_pushable riders. Swimming func_pushables don't really have a groundentity, even
 			// though they may be sitting on another swimming func_pushable, which is what we need to know.

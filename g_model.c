@@ -135,6 +135,8 @@ void SP_model_spawn(edict_t *ent)
 {
 	char modelname[256];
 
+	ent->class_id = ENTITY_MODEL_SPAWN; //mxd
+
 	//paranoia checks
 	if (!ent->usermodel && !(ent->spawnflags & NO_MODEL) && !(ent->spawnflags & PLAYER_MODEL))
 	{
