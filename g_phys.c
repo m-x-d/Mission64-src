@@ -253,6 +253,10 @@ int SV_FlyMove(edict_t *ent, float time, int mask)
 	int			blocked;
 	int			num_retries = 0;
 
+	//mxd. We don't want to modify ent.origin[2] if it was already modified by M_CheckGround (in this case ent->velocity[2] and ent->groundentity->velocity[2] will be matching)
+	const qboolean keepz = (ent->groundentity && ent->velocity[2] > 0 && ent->velocity[2] == ent->groundentity->velocity[2]);
+	const float entz = ent->s.origin[2];
+
 retry:
 
 	numbumps = 4;
@@ -283,6 +287,11 @@ retry:
 		{
 			// actually covered some distance
 			VectorCopy(trace.endpos, ent->s.origin);
+
+			//mxd. Keep vertical position if already modified by M_CheckGround
+			if (keepz)
+				ent->s.origin[2] = entz;
+
 			VectorCopy(ent->velocity, original_velocity);
 			numplanes = 0;
 		}
