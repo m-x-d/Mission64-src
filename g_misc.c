@@ -2964,6 +2964,134 @@ void SP_misc_gib_head(edict_t *ent)
 	gi.linkentity(ent);
 }
 
+/*QUAKED misc_halo (1 0 0) (-8 -8 -8) (8 8 8) //mxd
+Unreal / Q2 N64-style sprite-based light halo
+
+Properties:
+	distance:	proximity fade start distance
+	alpha:		maximum alpha
+
+Flags:
+	1: Ignore perspective scale
+	2: N64-style distance-based rolling
+*/
+
+void misc_halo_think(edict_t *self)
+{
+	// Check if the player can see us...
+	qboolean isvisible = false;
+	vec3_t viewpos;
+
+	for (int i = 1; i <= game.maxclients; i++)
+	{
+		if(g_edicts[i].inuse && g_edicts[i].client)
+		{
+			VectorCopy(g_edicts[i].s.origin, viewpos);
+			viewpos[2] += g_edicts[i].viewheight;
+
+			if (gi.inPVS(viewpos, self->s.origin))
+			{
+				// Check if we aren't obscured by anything...
+				const trace_t trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, viewpos, self, CONTENTS_SOLID | CONTENTS_MONSTER);
+				isvisible = (trace.fraction == 1.0f || trace.ent == &g_edicts[i]);
+			}
+
+			break;
+		}
+	}
+
+	// Get distance to the player
+	vec3_t diff;
+	VectorSubtract(self->s.origin, viewpos, diff);
+	const float dist = VectorLength(diff);
+
+	// Update alpha
+	if (isvisible)
+	{
+		const float mindist = self->moveinfo.distance / 4;
+
+		// Check distance...
+		if (dist > self->moveinfo.distance)
+		{
+			self->s.alpha = min(self->alpha, self->s.alpha + 0.15f);
+		}
+		else if (dist < mindist)
+		{
+			self->s.alpha = 0.01f;
+		}
+		else
+		{
+			const float delta = (dist - mindist) / (self->moveinfo.distance - mindist); // 0.1 - slightly further than mindist, 0.9 - slightly closer than maxdist
+			self->s.alpha = clamp(self->s.alpha + 0.15f, 0.01f, delta * self->alpha);
+		}
+	}
+	else
+	{
+		if (self->s.alpha > 0.01f) // Because 0 alpha is threated as opaque... 
+			self->s.alpha = max(0.01f, self->s.alpha - 0.15f);
+	}
+
+	// Change roll based on distance to the player, Q2 N64-style
+	if (self->spawnflags & 2)
+		self->s.angles[ROLL] = clamp(-dist / 16.0f, -45, 0);
+
+	self->nextthink = level.time + FRAMETIME;
+}
+
+void SP_misc_halo(edict_t *ent)
+{
+	ent->class_id = ENTITY_MISC_HALO;
+	
+	char modelname[256];
+	if (!ent->usermodel) // Default sprite
+	{
+		Q_strncpyz(modelname, "sprites/flare.sp2", sizeof(modelname));
+	}
+	else if (strstr(ent->usermodel, ".sp2"))
+	{
+		// Check for "sprites/" already in path
+		if (!strncmp(ent->usermodel, "sprites/", 8))
+			Com_sprintf(modelname, sizeof(modelname), "%s", ent->usermodel);
+		else
+			Com_sprintf(modelname, sizeof(modelname), "sprites/%s", ent->usermodel);
+	}
+	else
+	{
+		// Check for "models/" already in path
+		if (!strncmp(ent->usermodel, "models/", 7))
+			Com_sprintf(modelname, sizeof(modelname), "%s", ent->usermodel);
+		else
+			Com_sprintf(modelname, sizeof(modelname), "models/%s", ent->usermodel);
+	}
+
+	ent->s.modelindex = gi.modelindex(modelname);
+
+	ent->solid = SOLID_NOT;
+	ent->movetype = MOVETYPE_NONE;
+
+	if (!st.distance) // Distance-based fade start
+		ent->moveinfo.distance = 256;
+	else
+		ent->moveinfo.distance = max(0, st.distance);
+
+	ent->s.effects |= ent->effects;
+	ent->s.renderfx |= ent->renderfx;
+	ent->s.renderfx |= RF_TRANSLUCENT | RF_DEPTHHACK;
+
+	if(ent->spawnflags & 1) // Ignore scale
+		ent->s.renderfx |= RF_NOSCALE;
+
+	if (!ent->alpha) // Maximum opacity. Because 1.0 looks fugly
+		ent->alpha = 0.9f;
+
+	ent->s.alpha = 0.01f; // Start (nearly) invisible
+
+	ent->think = misc_halo_think;
+	ent->nextthink = level.time + FRAMETIME;
+
+	gi.linkentity(ent);
+}
+
 //=====================================================
 
 /*QUAKED target_character (0 0 1) ?

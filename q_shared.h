@@ -105,6 +105,10 @@ typedef enum {false, true}	qboolean;
 #define clamp(value, minimum, maximum) (min(maximum, max(minimum, value)))
 #endif
 
+#ifndef sign //mxd. Same as Math.Sign in C#
+#define sign(value) (value == 0 ? 0 : (value > 0 ? 1 : -1))
+#endif
+
 // from Quake3 source
 #ifdef _MSC_VER	// _WIN32
 //#define Q_vsnprintf _vsnprintf
@@ -896,6 +900,7 @@ typedef struct
 //ROGUE
 
 #define RF_NOSHADOW			0x00080000 // Knightmare- no shadow flag
+#define RF_NOSCALE			0x00160000 //mxd
 
 #define RF_MASK_SHELL		(RF_SHELL_RED|RF_SHELL_GREEN|RF_SHELL_BLUE|RF_SHELL_DOUBLE|RF_SHELL_HALF_DAM)
 
