@@ -2970,6 +2970,7 @@ Unreal / Q2 N64-style sprite-based light halo
 Properties:
 	distance:	proximity fade start distance
 	alpha:		maximum alpha
+	lip:		angular fade (in degrees)
 
 Flags:
 	1: Ignore perspective scale
@@ -3010,7 +3011,7 @@ void misc_halo_think(edict_t *self)
 	{
 		const float mindist = self->moveinfo.distance / 4;
 
-		// Check distance...
+		// Distance fade
 		if (dist > self->moveinfo.distance)
 		{
 			self->s.alpha = min(self->alpha, self->s.alpha + 0.15f);
@@ -3024,10 +3025,31 @@ void misc_halo_think(edict_t *self)
 			const float delta = (dist - mindist) / (self->moveinfo.distance - mindist); // 0.1 - slightly further than mindist, 0.9 - slightly closer than maxdist
 			self->s.alpha = clamp(self->s.alpha + 0.15f, 0.01f, delta * self->alpha);
 		}
+
+		// Angular fade
+		if(self->angle)
+		{
+			vec3_t da, sa;
+			VectorNormalize2(diff, da);
+			AngleVectors(self->s.angles, sa, NULL, NULL);
+			
+			const float d = -DotProduct(da, sa) + 1.0f; // near 2 - player is in front of sprite, near 0 - player is behind sprite
+			const float anglescaler = 2.0f - self->angle / 180.0f; // convert to 0 .. 2 range...
+
+			if(d < anglescaler) // Outside of cone
+			{
+				self->s.alpha = 0.01f;
+			}
+			else
+			{
+				const float scaler = (d - anglescaler) / (2.0f - anglescaler);
+				self->s.alpha = max(self->s.alpha * scaler, 0.01f);
+			}
+		}
 	}
 	else
 	{
-		if (self->s.alpha > 0.01f) // Because 0 alpha is threated as opaque... 
+		if (self->s.alpha > 0.01f) // Because 0 alpha is treated as opaque... 
 			self->s.alpha = max(0.01f, self->s.alpha - 0.15f);
 	}
 
@@ -3085,6 +3107,7 @@ void SP_misc_halo(edict_t *ent)
 		ent->alpha = 0.9f;
 
 	ent->s.alpha = 0.01f; // Start (nearly) invisible
+	ent->angle = st.lip; // Angular fade
 
 	ent->think = misc_halo_think;
 	ent->nextthink = level.time + FRAMETIME;
